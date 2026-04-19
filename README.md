@@ -1,4 +1,5 @@
-# RAIA Protocol
+# RAIA™ Protocol
+### Real Estate Artificial Intelligence Agent Protocol
 
 > **The open standard for AI agents to transact property.**
 
@@ -22,7 +23,7 @@ Every AI-to-AI property interaction today is either a web scrape (fragile, unver
 
 And get back a machine-readable, verified response from a licensed estate agent's AI.
 
-**RAIA Protocol is that standard.**
+**RAIA™ Protocol is that standard.**
 
 ---
 
@@ -68,6 +69,14 @@ If you have already implemented A2A or MCP, RAIA adds a property schema layer on
 **Portals and CRMs** who want to expose their listings to AI-agent traffic without bespoke integrations.
 
 ---
+
+## The AI Agent Marketplace
+
+RAIA Protocol is the marketplace layer where AI agents connect to transact property.
+
+Estate agent AI (Aigents) publish their portfolios and capabilities to the RAIA registry. Personal AI assistants discover, query and transact with them directly — no portal, no human intermediary at each step.
+
+The registry at `estateaigents.org` is the connection point. Any agent that implements the protocol can participate. Any AI assistant that speaks A2A or MCP can query it.
 
 ## Jurisdictions
 
@@ -121,7 +130,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [GOVERNANCE.md](GOVERNANCE.md).
 
 ## Trademark
 
-RAIA is a registered UK trademark (UK00003359082, Classes 36 + 42). MIT licensed. The RAIA name may not be used to imply endorsement without permission.
+RAIA™ is a registered UK word mark (UK00003359082, Classes 36 + 42, registered 2018).
+
+Class 36 covers estate agency services. Class 42 covers software and AI services.
+
+The protocol specification is MIT licensed — you can implement it freely.
+The RAIA™ name may not be used to claim registry membership or official endorsement without written permission from EstateAigents Ltd.
 
 ---
 
@@ -129,4 +143,4 @@ RAIA is a registered UK trademark (UK00003359082, Classes 36 + 42). MIT licensed
 
 MIT — see [LICENSE](LICENSE)
 
-Protocol specification © 2026 EstateAigents Ltd.
+Protocol specification © 2026 EstateAigents Ltd. RAIA™ is a registered UK trademark UK00003359082.
