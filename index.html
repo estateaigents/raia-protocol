@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAIA Protocol — EstateAigents.org</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="shortcut icon" href="/favicon.svg">
+<meta name="description" content="The open standard for AI agents to transact property. Built on Google A2A and Anthropic MCP.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0d0d0d;
+    --white: #fafaf8;
+    --off-white: #f4f3ef;
+    --accent: #2563FF;
+    --accent-light: #e8eeff;
+    --mid: #6b6b6b;
+    --border: #e2e1dc;
+    --code-bg: #f0efe9;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(250,250,248,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    padding: 0 48px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    text-decoration: none;
+  }
+
+  .logo-text {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--black);
+  }
+
+  .logo-accent {
+    color: #4040ff;
+  }
+
+  .logo-tld {
+    color: #666666;
+    font-weight: 400;
+    font-size: 14px;
+    margin-left: 1px;
+  }
+
+  #org-nav-icon {
+    border-radius: 4px;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+    color: var(--mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--black); }
+
+  .nav-cta {
+    background: var(--black);
+    color: var(--white) !important;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 13px !important;
+    font-weight: 500;
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: #333 !important; }
+
+  .hero {
+    padding: 140px 48px 100px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+    animation-delay: 0.1s;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 28px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    color: var(--black);
+    margin-bottom: 8px;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero-subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 24px;
+  }
+
+  .hero-desc {
+    font-size: 17px;
+    color: #444;
+    line-height: 1.7;
+    margin-bottom: 36px;
+    max-width: 440px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--black);
+    color: var(--white);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-primary:hover { background: #222; transform: translateY(-1px); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--black);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1.5px solid var(--border);
+    transition: border-color 0.2s, transform 0.15s;
+  }
+
+  .btn-secondary:hover { border-color: #aaa; transform: translateY(-1px); }
+
+  .hero-right {
+    background: var(--off-white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+    animation-delay: 0.3s;
+  }
+
+  .diagram-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 20px;
+  }
+
+  .diagram-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .diagram-row:last-child { border-bottom: none; }
+  .diagram-indent { padding-left: 20px; }
+  .diagram-indent2 { padding-left: 40px; }
+  .diagram-arrow { color: var(--mid); flex-shrink: 0; }
+
+  .diagram-name { font-weight: 500; color: var(--black); }
+  .diagram-name.accent { color: var(--accent); }
+  .diagram-desc { font-size: 11px; color: var(--mid); margin-top: 2px; }
+
+  .diagram-tag {
+    margin-left: auto;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .tag-open { background: #e8f5e9; color: #2e7d32; }
+  .tag-vertical { background: var(--accent-light); color: var(--accent); }
+  .tag-transport { background: #fff3e0; color: #e65100; }
+
+  .section-divider {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 48px;
+    border-top: 1px solid var(--border);
+  }
+
+  .capabilities {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+    animation-delay: 0.5s;
+  }
+
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  .section-desc {
+    font-size: 16px;
+    color: var(--mid);
+    max-width: 500px;
+    margin-bottom: 48px;
+  }
+
+  .cap-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .cap-card {
+    background: var(--white);
+    padding: 28px 24px;
+    transition: background 0.2s;
+  }
+
+  .cap-card:hover { background: var(--off-white); }
+
+  .cap-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--mid);
+    margin-bottom: 12px;
+  }
+
+  .cap-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    margin-bottom: 8px;
+  }
+
+  .cap-desc { font-size: 13px; color: var(--mid); line-height: 1.6; }
+
+  .built-on {
+    background: var(--off-white);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 80px 48px;
+  }
+
+  .built-on-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .protocol-cards { display: flex; flex-direction: column; gap: 12px; }
+
+  .protocol-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+
+  .protocol-card:hover { border-color: var(--accent); transform: translateX(4px); }
+
+  .protocol-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .icon-a2a { background: #e8f5e9; }
+  .icon-mcp { background: #fff3e0; }
+  .icon-raia { background: var(--accent-light); }
+
+  .protocol-name { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+  .protocol-desc { font-size: 13px; color: var(--mid); }
+  .protocol-arrow { margin-left: auto; color: var(--mid); font-size: 18px; align-self: center; }
+
+  .code-block {
+    background: var(--black);
+    border-radius: 10px;
+    padding: 24px 28px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    overflow-x: auto;
+  }
+
+  .code-comment { color: #666; }
+  .code-key { color: #7dd3fc; }
+  .code-str { color: #86efac; }
+  .code-num { color: #fbbf24; }
+  .code-punct { color: #888; }
+
+  .jurisdictions {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 48px;
+  }
+
+  .juris-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 40px;
+  }
+
+  .juris-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+
+  .juris-card:hover { border-color: var(--accent); }
+
+  .juris-code {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    margin-bottom: 6px;
+  }
+
+  .juris-name { font-size: 12px; color: var(--mid); margin-bottom: 10px; }
+
+  .juris-status {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  .status-draft { background: var(--accent-light); color: var(--accent); }
+  .status-planned { background: var(--off-white); color: var(--mid); border: 1px solid var(--border); }
+
+  .reference { background: var(--black); padding: 80px 48px; }
+
+  .reference-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .reference .section-eyebrow { color: #60a5fa; }
+  .reference .section-title { color: var(--white); }
+  .reference .section-desc { color: #888; max-width: 600px; margin-bottom: 32px; }
+
+  .ref-stats { display: flex; gap: 40px; margin-bottom: 36px; }
+
+  .ref-stat-num {
+    font-family: 'Inter', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .ref-stat-label { font-size: 13px; color: #888; }
+
+  .ref-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .ref-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: #1a1a1a;
+    color: #aaa;
+    border: 1px solid #333;
+  }
+
+  .reference-cta { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
+
+  .btn-white {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--white);
+    color: var(--black);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+
+  .btn-white:hover { background: #eee; }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: #888;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: none;
+    white-space: nowrap;
+    border: 1px solid #333;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .btn-ghost:hover { border-color: #666; color: #ccc; }
+
+  .status-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+  }
+
+  .version-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 24px; }
+
+  .version-table th {
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    background: var(--off-white);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .version-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    color: #444;
+  }
+
+  .version-table td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--black);
+    font-weight: 500;
+  }
+
+  .td-draft { color: #d97706 !important; font-weight: 500; }
+  .td-planned { color: var(--mid) !important; }
+
+  .contribute-list { list-style: none; margin-top: 24px; display: flex; flex-direction: column; gap: 12px; }
+
+  .contribute-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 20px;
+    background: var(--off-white);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s;
+  }
+
+  .contribute-item:hover { border-color: var(--accent); }
+  .contribute-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .contribute-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .contribute-desc { font-size: 13px; color: var(--mid); }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-left { font-size: 13px; color: var(--mid); line-height: 1.7; }
+  .footer-left a { color: var(--accent); text-decoration: none; }
+  .footer-left a:hover { text-decoration: underline; }
+
+  .footer-links { display: flex; gap: 24px; list-style: none; }
+  .footer-links a { font-size: 13px; color: var(--mid); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--black); }
+
+  .icon-github { display: inline-block; width: 16px; height: 16px; vertical-align: -3px; }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 24px; }
+    .hero { grid-template-columns: 1fr; padding: 120px 24px 60px; gap: 40px; }
+    h1 { font-size: 38px; }
+    .cap-grid { grid-template-columns: 1fr 1fr; }
+    .built-on-inner { grid-template-columns: 1fr; }
+    .juris-grid { grid-template-columns: repeat(3, 1fr); }
+    .reference-inner { grid-template-columns: 1fr; }
+    .reference-cta { align-items: flex-start; }
+    .status-section { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 20px; }
+    .capabilities, .jurisdictions, .status-section { padding: 60px 24px; }
+    .built-on, .reference { padding: 60px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo" id="org-logo-link">
+    <canvas id="org-nav-icon" width="26" height="26" aria-label="EstateAigents building icon"></canvas>
+    <span class="logo-text">Estate<span class="logo-accent">Aigents</span><span class="logo-tld">.org</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#protocol">Protocol</a></li>
+    <li><a href="#built-on">Stack</a></li>
+    <li><a href="#jurisdictions">Jurisdictions</a></li>
+    <li><a href="https://estateaigents.com" target="_blank">Platform →</a></li>
+    <li><a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="nav-cta">View on GitHub</a></li>
+  </ul>
+</nav>
+
+<section class="hero" id="top">
+  <div class="hero-left">
+    <div class="hero-badge">v0.1 Draft · MIT Licensed</div>
+    <h1>The protocol for <em>AI agents</em> to transact property.</h1>
+    <p class="hero-subtitle">Real Estate Artificial Intelligence Agent Protocol</p>
+    <p class="hero-desc">RAIA™ is the open standard for AI agents to discover, verify and transact property — lettings, sales and management — agent to agent. Built on Google A2A and Anthropic MCP.</p>
+    <div class="hero-actions">
+      <a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="btn-primary">
+        <svg class="icon-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        View on GitHub
+      </a>
+      <a href="https://github.com/estateaigents/raia-protocol/issues/new?labels=schema-working-group" target="_blank" class="btn-secondary">Join working group</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="diagram-label">Protocol stack</div>
+    <div class="diagram-row">
+      <div><div class="diagram-name">Google A2A</div><div class="diagram-desc">General agent-to-agent communication</div></div>
+      <span class="diagram-tag tag-open">Open</span>
+    </div>
+    <div class="diagram-row diagram-indent">
+      <div class="diagram-arrow">└──</div>
+      <div><div class="diagram-name accent">RAIA™ Protocol</div><div class="diagram-desc">Property vertical — estate agents + personal AI</div></div>
+      <span class="diagram-tag tag-vertical">Vertical</span>
+    </div>
+    <div class="diagram-row diagram-indent2">
+      <div class="diagram-arrow">└──</div>
+      <div><div class="diagram-name">Anthropic MCP</div><div class="diagram-desc">Transport layer — agents connect to RAIA tools</div></div>
+      <span class="diagram-tag tag-transport">Transport</span>
+    </div>
+    <div style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border);">
+      <div class="diagram-label" style="margin-bottom:8px;">Trademark</div>
+      <div style="font-size:12px; color:var(--mid);">RAIA™ UK00003359082 · Classes 36 + 42<br>Registered 2018 · EstateAigents Ltd</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section class="capabilities" id="protocol">
+  <div class="section-eyebrow">Five capabilities</div>
+  <h2 class="section-title">What RAIA defines</h2>
+  <p class="section-desc">Each capability is independently implementable. Start with Discover. Add the rest when ready.</p>
+  <div class="cap-grid">
+    <div class="cap-card"><div class="cap-number">01</div><div class="cap-name">Discover</div><div class="cap-desc">AI agents find verified estate agents and their live portfolios via the RAIA registry.</div></div>
+    <div class="cap-card"><div class="cap-number">02</div><div class="cap-name">Query</div><div class="cap-desc">Structured property search — location, type, price, dates, tenure, amenities.</div></div>
+    <div class="cap-card"><div class="cap-number">03</div><div class="cap-name">Verify</div><div class="cap-desc">Agent identity, licence status, and jurisdiction compliance signals — no anonymous listings.</div></div>
+    <div class="cap-card"><div class="cap-number">04</div><div class="cap-name">Transact</div><div class="cap-desc">Viewing requests, offer management, fee splits — negotiated agent to agent.</div></div>
+    <div class="cap-card"><div class="cap-number">05</div><div class="cap-name">Trust</div><div class="cap-desc">Only licensed, verified agents list on the protocol. Jurisdiction compliance enforced per market.</div></div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section class="built-on" id="built-on">
+  <div class="built-on-inner">
+    <div>
+      <div class="section-eyebrow">Open infrastructure</div>
+      <h2 class="section-title">Built on top of existing standards</h2>
+      <p class="section-desc" style="margin-bottom:32px;">RAIA is not a new transport layer. It is a vertical implementation of two existing open standards — adding a property schema and trust layer on top.</p>
+      <div class="protocol-cards">
+        <a href="https://github.com/google-a2a/A2A" target="_blank" class="protocol-card">
+          <div class="protocol-icon icon-a2a">🔗</div>
+          <div><div class="protocol-name">Google A2A Protocol</div><div class="protocol-desc">Agent-to-agent communication, discovery, task routing</div></div>
+          <span class="protocol-arrow">↗</span>
+        </a>
+        <a href="https://github.com/modelcontextprotocol/servers" target="_blank" class="protocol-card">
+          <div class="protocol-icon icon-mcp">⚡</div>
+          <div><div class="protocol-name">Anthropic MCP</div><div class="protocol-desc">Model-to-tool connections, structured data access</div></div>
+          <span class="protocol-arrow">↗</span>
+        </a>
+        <a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="protocol-card" style="border-color:var(--accent);">
+          <div class="protocol-icon icon-raia">🏠</div>
+          <div><div class="protocol-name" style="color:var(--accent);">RAIA™ Protocol</div><div class="protocol-desc">Property schema + trust layer — built on both</div></div>
+          <span class="protocol-arrow" style="color:var(--accent);">↗</span>
+        </a>
+      </div>
+    </div>
+    <div>
+      <div class="diagram-label" style="margin-bottom:16px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--mid);">Example — search request</div>
+      <div class="code-block">
+        <span class="code-punct">{</span><br>
+        &nbsp;&nbsp;<span class="code-key">"raia_version"</span><span class="code-punct">:</span> <span class="code-str">"0.1"</span><span class="code-punct">,</span><br>
+        &nbsp;&nbsp;<span class="code-key">"request_type"</span><span class="code-punct">:</span> <span class="code-str">"property_search"</span><span class="code-punct">,</span><br>
+        &nbsp;&nbsp;<span class="code-key">"market"</span><span class="code-punct">:</span> <span class="code-str">"lettings"</span><span class="code-punct">,</span><br>
+        &nbsp;&nbsp;<span class="code-key">"requirements"</span><span class="code-punct">:</span> <span class="code-punct">{</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"un_locode"</span><span class="code-punct">:</span> <span class="code-str">"GBLON"</span><span class="code-punct">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"bedrooms_min"</span><span class="code-punct">:</span> <span class="code-num">2</span><span class="code-punct">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"rent_pcm_max"</span><span class="code-punct">:</span> <span class="code-num">2800</span><span class="code-punct">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"currency"</span><span class="code-punct">:</span> <span class="code-str">"GBP"</span><span class="code-punct">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"available_from"</span><span class="code-punct">:</span> <span class="code-str">"2026-06-01"</span><br>
+        &nbsp;&nbsp;<span class="code-punct">},</span><br>
+        &nbsp;&nbsp;<span class="code-key">"buyer_agent"</span><span class="code-punct">:</span> <span class="code-punct">{</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"agent_id"</span><span class="code-punct">:</span> <span class="code-str">"claude-assistant"</span><span class="code-punct">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// end-client identity never exposed</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"acting_for"</span><span class="code-punct">:</span> <span class="code-str">"anonymous"</span><br>
+        &nbsp;&nbsp;<span class="code-punct">}</span><br>
+        <span class="code-punct">}</span>
+      </div>
+      <p style="font-size:12px; color:var(--mid); margin-top:12px; font-family:'DM Mono',monospace;">Full JSON schemas publish with v1.0 · Q3 2026</p>
+    </div>
+  </div>
+</section>
+
+<section class="jurisdictions" id="jurisdictions">
+  <div class="section-eyebrow">Global standard</div>
+  <h2 class="section-title">Jurisdictional modules</h2>
+  <p class="section-desc">A global mechanical core with community-contributed legal adapters per market. Add your jurisdiction.</p>
+  <div class="juris-grid">
+    <div class="juris-card"><div class="juris-code">GB</div><div class="juris-name">United Kingdom</div><span class="juris-status status-draft">Draft</span></div>
+    <div class="juris-card"><div class="juris-code">TH</div><div class="juris-name">Thailand</div><span class="juris-status status-draft">Draft</span></div>
+    <div class="juris-card"><div class="juris-code">SG</div><div class="juris-name">Singapore</div><span class="juris-status status-planned">Planned</span></div>
+    <div class="juris-card"><div class="juris-code">US</div><div class="juris-name">United States</div><span class="juris-status status-planned">Planned</span></div>
+    <div class="juris-card"><div class="juris-code">EU</div><div class="juris-name">European Union</div><span class="juris-status status-planned">Planned</span></div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section class="reference">
+  <div class="reference-inner">
+    <div>
+      <div class="section-eyebrow">Reference implementation</div>
+      <h2 class="section-title">Built by the team behind EstateAigents.com</h2>
+      <p class="section-desc">RAIA Protocol is proven in production. EstateAigents.com is the reference marketplace — the only platform that has implemented the full protocol stack end to end.</p>
+      <div class="ref-stats">
+        <div><div class="ref-stat-num">5,000+</div><div class="ref-stat-label">Properties managed</div></div>
+        <div><div class="ref-stat-num">2</div><div class="ref-stat-label">Jurisdictions live</div></div>
+        <div><div class="ref-stat-num">2018</div><div class="ref-stat-label">Trademark registered</div></div>
+      </div>
+      <div class="ref-badges">
+        <span class="ref-badge">ARLA Licensed</span>
+        <span class="ref-badge">TPO Registered</span>
+        <span class="ref-badge">MyDeposits</span>
+        <span class="ref-badge">NRLA Member</span>
+        <span class="ref-badge">ICO Registered</span>
+      </div>
+    </div>
+    <div class="reference-cta">
+      <a href="https://estateaigents.com" target="_blank" class="btn-white">Visit EstateAigents.com ↗</a>
+      <a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="btn-ghost">
+        <svg class="icon-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="status-section">
+  <div>
+    <div class="section-eyebrow">Roadmap</div>
+    <h2 class="section-title" style="font-size:28px;">Status</h2>
+    <table class="version-table">
+      <thead><tr><th>Version</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>
+        <tr><td>v0.1</td><td class="td-draft">Draft — not for production</td><td>April 2026</td></tr>
+        <tr><td>v1.0</td><td class="td-planned">JSON schemas + MCP server</td><td>Q3 2026</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <div class="section-eyebrow">Open standard</div>
+    <h2 class="section-title" style="font-size:28px;">Contribute</h2>
+    <ul class="contribute-list">
+      <li><a href="https://github.com/estateaigents/raia-protocol/issues/new?labels=schema-working-group" target="_blank" class="contribute-item"><span class="contribute-icon">🔬</span><div><div class="contribute-title">Schema working group</div><div class="contribute-desc">Join v1.0 schema design before public release</div></div></a></li>
+      <li><a href="https://github.com/estateaigents/raia-protocol/tree/main/modules" target="_blank" class="contribute-item"><span class="contribute-icon">🌍</span><div><div class="contribute-title">Add a jurisdiction module</div><div class="contribute-desc">Contribute compliance rules for your market</div></div></a></li>
+      <li><a href="https://github.com/estateaigents/raia-protocol/issues" target="_blank" class="contribute-item"><span class="contribute-icon">💬</span><div><div class="contribute-title">Challenge the spec</div><div class="contribute-desc">Open an issue — gaps, ambiguities, edge cases</div></div></a></li>
+    </ul>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+<footer>
+  <div class="footer-left">
+    RAIA™ · <span style="color:var(--accent);font-weight:500;">estateaigents.org</span> · © 2026 <a href="https://estateaigents.com">EstateAigents Ltd</a><br>
+    Protocol specification MIT licensed · <a href="https://github.com/estateaigents/raia-protocol/blob/main/LICENSE">License</a> · <a href="https://github.com/estateaigents/raia-protocol/blob/main/GOVERNANCE.md">Governance</a>
+  </div>
+  <ul class="footer-links">
+    <li><a href="https://github.com/estateaigents/raia-protocol">GitHub</a></li>
+    <li><a href="https://github.com/estateaigents/raia-protocol/blob/main/SPEC.md">Spec</a></li>
+    <li><a href="https://estateaigents.com">Platform</a></li>
+    <li><a href="mailto:protocol@estateaigents.org">Contact</a></li>
+  </ul>
+</footer>
+
+<script>
+(function() {
+  var WINDOWS = [
+    {c:0,r:0},{c:1,r:0},
+    {c:0,r:1},{c:1,r:1},
+    {c:0,r:2},{c:1,r:2}
+  ];
+  var BG = '#111111', BLUE = '#4040ff', WIN_ON = '#4040ff', WIN_OFF = '#111111', GROUND = '#222266';
+  var SIZE = 26, S = SIZE / 32;
+
+  function randomState() {
+    var s;
+    do { s = WINDOWS.map(function() { return Math.random() > 0.5; }); }
+    while (s.filter(Boolean).length < 2);
+    return s;
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.lineTo(x+w-r, y);
+    ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+    ctx.lineTo(x+w, y+h-r);
+    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    ctx.lineTo(x+r, y+h);
+    ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+    ctx.lineTo(x, y+r);
+    ctx.quadraticCurveTo(x, y, x+r, y);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawFrame(ctx, states) {
+    ctx.clearRect(0, 0, SIZE, SIZE);
+    ctx.fillStyle = BG;
+    roundRect(ctx, 0, 0, SIZE, SIZE, 5*S);
+    ctx.fillStyle = BLUE;
+    ctx.fillRect(8*S, 5*S, 16*S, 22*S);
+    ctx.fillStyle = GROUND;
+    ctx.fillRect(4*S, 27*S, 24*S, 2*S);
+    var cols = [10, 18], rows = [8, 13, 18];
+    states.forEach(function(on, i) {
+      ctx.fillStyle = on ? WIN_ON : WIN_OFF;
+      ctx.fillRect(cols[WINDOWS[i].c]*S, rows[WINDOWS[i].r]*S, 4*S, 3*S);
+    });
+  }
+
+  var canvas = document.getElementById('building-icon');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var states = randomState();
+  drawFrame(ctx, states);
+
+  function flip() {
+    var lit = states.filter(Boolean).length;
+    var idx = Math.floor(Math.random() * 6);
+    if (!states[idx] && lit >= 5) { setTimeout(flip, 400 + Math.random()*1200); return; }
+    if (states[idx] && lit <= 1)  { setTimeout(flip, 400 + Math.random()*1200); return; }
+    states[idx] = !states[idx];
+    drawFrame(ctx, states);
+    setTimeout(flip, 500 + Math.random()*1500);
+  }
+  setTimeout(flip, Math.random() * 800);
+})();
+</script>
+<script>
+(function() {
+  var WINS = [
+    {c:0,r:0},{c:1,r:0},
+    {c:0,r:1},{c:1,r:1},
+    {c:0,r:2},{c:1,r:2}
+  ]
+  var BG      = '#111111'
+  var BLUE    = '#4040ff'
+  var WIN_ON  = '#4040ff'
+  var WIN_OFF = '#111111'
+  var GROUND  = '#222266'
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath()
+    ctx.moveTo(x+r, y)
+    ctx.lineTo(x+w-r, y)
+    ctx.quadraticCurveTo(x+w, y, x+w, y+r)
+    ctx.lineTo(x+w, y+h-r)
+    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h)
+    ctx.lineTo(x+r, y+h)
+    ctx.quadraticCurveTo(x, y+h, x, y+h-r)
+    ctx.lineTo(x, y+r)
+    ctx.quadraticCurveTo(x, y, x+r, y)
+    ctx.closePath()
+    ctx.fill()
+  }
+
+  function drawFrame(ctx, size, states) {
+    var s = size / 32
+    ctx.clearRect(0, 0, size, size)
+    ctx.fillStyle = BG
+    roundRect(ctx, 0, 0, size, size, 5*s)
+    ctx.fillStyle = BLUE
+    ctx.fillRect(8*s, 5*s, 16*s, 22*s)
+    ctx.fillStyle = GROUND
+    ctx.fillRect(4*s, 27*s, 24*s, 2*s)
+    var cols = [10, 18]
+    var rows = [8, 13, 18]
+    for (var i = 0; i < states.length; i++) {
+      ctx.fillStyle = states[i] ? WIN_ON : WIN_OFF
+      ctx.fillRect(cols[WINS[i].c]*s, rows[WINS[i].r]*s, 4*s, 3*s)
+    }
+  }
+
+  function randomState() {
+    var s
+    do {
+      s = WINS.map(function() { return Math.random() > 0.5 })
+    } while (s.filter(Boolean).length < 2)
+    return s
+  }
+
+  function animateIcon(canvasId, size) {
+    var canvas = document.getElementById(canvasId)
+    if (!canvas) return
+    var ctx = canvas.getContext('2d')
+    var states = randomState()
+
+    function render() {
+      ctx.clearRect(0, 0, size, size)
+      drawFrame(ctx, size, states)
+    }
+
+    function flip() {
+      var lit = states.filter(Boolean).length
+      var idx = Math.floor(Math.random() * 6)
+      var next = states.slice()
+      if (!next[idx] && lit >= 5) { setTimeout(flip, 400 + Math.random()*1200); return }
+      if (next[idx] && lit <= 1)  { setTimeout(flip, 400 + Math.random()*1200); return }
+      next[idx] = !next[idx]
+      states = next
+      render()
+      setTimeout(flip, 500 + Math.random()*1500)
+    }
+
+    render()
+    setTimeout(flip, Math.random() * 800)
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      animateIcon('org-nav-icon', 26)
+    })
+  } else {
+    animateIcon('org-nav-icon', 26)
+  }
+})()
+</script>
+</body>
+</html>
