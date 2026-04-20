@@ -184,7 +184,7 @@ Open an issue at **github.com/estateaigents/raia-protocol** with the label `sche
 
 RAIA is not a competitor to your product. It is the transport layer that makes your product interoperable with the AI ecosystem. The portal that implements RAIA first stops being a toll booth and starts being a node.
 
-Contact us at **protocol@estateaigents.org**.
+Contact us at **admin@estateaigents.org**.
 
 ### To AI developers
 
@@ -194,7 +194,7 @@ If your assistant speaks MCP, it can query any RAIA-compliant agent's portfolio.
 
 The protocol's jurisdictional module architecture was designed with regulatory compliance in mind. Every jurisdiction's compliance requirements are encoded in a separate module that plugs into the global core.
 
-We are actively seeking input from professional bodies and regulatory authorities in every market where RAIA is being implemented. Contact us at **protocol@estateaigents.org**.
+We are actively seeking input from professional bodies and regulatory authorities in every market where RAIA is being implemented. Contact us at **admin@estateaigents.org**.
 
 ### To the community
 
