@@ -707,7 +707,7 @@
 
 <nav>
   <a href="/" class="nav-logo" id="org-logo-link">
-    <canvas id="org-nav-icon" width="26" height="26" aria-label="EstateAigents building icon"></canvas>
+    <canvas id="org-nav-icon" width="26" height="26" aria-label="EstateAigents bot icon"></canvas>
     <span class="logo-text">Estate<span class="logo-accent">Aigents</span><span class="logo-tld">.org</span></span>
   </a>
   <ul class="nav-links">
@@ -989,90 +989,62 @@
 </script>
 <script>
 (function() {
-  var WINS = [
-    {c:0,r:0},{c:1,r:0},
-    {c:0,r:1},{c:1,r:1},
-    {c:0,r:2},{c:1,r:2}
-  ]
-  var BG      = '#ffffff'
-  var BLUE    = '#4040ff'
-  var WIN_ON  = '#ffffff'
-  var WIN_OFF = '#4040ff'
-  var GROUND  = '#2929aa'
+  var BG   = '#ffffff'
+  var BLUE = '#4040ff'
+  var DARK = '#2222aa'
+  var EYE  = '#ffffff'
 
-  function roundRect(ctx, x, y, w, h, r) {
-    ctx.beginPath()
-    ctx.moveTo(x+r, y)
-    ctx.lineTo(x+w-r, y)
-    ctx.quadraticCurveTo(x+w, y, x+w, y+r)
-    ctx.lineTo(x+w, y+h-r)
-    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h)
-    ctx.lineTo(x+r, y+h)
-    ctx.quadraticCurveTo(x, y+h, x, y+h-r)
-    ctx.lineTo(x, y+r)
-    ctx.quadraticCurveTo(x, y, x+r, y)
-    ctx.closePath()
-    ctx.fill()
-  }
-
-  function drawFrame(ctx, size, states) {
+  function drawBot(ctx, size, blink) {
     var s = size / 32
     ctx.clearRect(0, 0, size, size)
+    var r = 5*s
     ctx.fillStyle = BG
-    roundRect(ctx, 0, 0, size, size, 5*s)
+    ctx.beginPath()
+    ctx.moveTo(r, 0); ctx.lineTo(size-r, 0)
+    ctx.quadraticCurveTo(size, 0, size, r)
+    ctx.lineTo(size, size-r)
+    ctx.quadraticCurveTo(size, size, size-r, size)
+    ctx.lineTo(r, size)
+    ctx.quadraticCurveTo(0, size, 0, size-r)
+    ctx.lineTo(0, r)
+    ctx.quadraticCurveTo(0, 0, r, 0)
+    ctx.closePath(); ctx.fill()
     ctx.fillStyle = BLUE
-    ctx.fillRect(8*s, 5*s, 16*s, 22*s)
-    ctx.fillStyle = GROUND
-    ctx.fillRect(4*s, 27*s, 24*s, 2*s)
-    var cols = [10, 18]
-    var rows = [8, 13, 18]
-    for (var i = 0; i < states.length; i++) {
-      ctx.fillStyle = states[i] ? WIN_ON : WIN_OFF
-      ctx.fillRect(cols[WINS[i].c]*s, rows[WINS[i].r]*s, 4*s, 3*s)
+    ctx.fillRect(12*s, 1*s, 8*s, 4*s)
+    ctx.fillRect(14*s, 4*s, 4*s, 4*s)
+    ctx.fillRect(5*s,  7*s, 22*s, 18*s)
+    ctx.fillStyle = DARK
+    ctx.fillRect(8*s, 25*s, 16*s, 3*s)
+    ctx.fillStyle = EYE
+    if (blink) {
+      ctx.fillRect(9*s,  13*s, 5*s, 1*s)
+      ctx.fillRect(18*s, 13*s, 5*s, 1*s)
+    } else {
+      ctx.fillRect(9*s,  11*s, 5*s, 5*s)
+      ctx.fillRect(18*s, 11*s, 5*s, 5*s)
     }
   }
 
-  function randomState() {
-    var s
-    do {
-      s = WINS.map(function() { return Math.random() > 0.5 })
-    } while (s.filter(Boolean).length < 2)
-    return s
-  }
-
-  function animateIcon(canvasId, size) {
+  function animateBot(canvasId, size) {
     var canvas = document.getElementById(canvasId)
     if (!canvas) return
     var ctx = canvas.getContext('2d')
-    var states = randomState()
-
-    function render() {
-      ctx.clearRect(0, 0, size, size)
-      drawFrame(ctx, size, states)
+    var blinking = false
+    function render() { drawBot(ctx, size, blinking) }
+    function scheduleBlink() {
+      setTimeout(function() {
+        blinking = true; render()
+        setTimeout(function() { blinking = false; render(); scheduleBlink() }, 150)
+      }, 2000 + Math.random() * 3000)
     }
-
-    function flip() {
-      var lit = states.filter(Boolean).length
-      var idx = Math.floor(Math.random() * 6)
-      var next = states.slice()
-      if (!next[idx] && lit >= 5) { setTimeout(flip, 400 + Math.random()*1200); return }
-      if (next[idx] && lit <= 1)  { setTimeout(flip, 400 + Math.random()*1200); return }
-      next[idx] = !next[idx]
-      states = next
-      render()
-      setTimeout(flip, 500 + Math.random()*1500)
-    }
-
     render()
-    setTimeout(flip, Math.random() * 800)
+    scheduleBlink()
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      animateIcon('org-nav-icon', 26)
-    })
+    document.addEventListener('DOMContentLoaded', function() { animateBot('org-nav-icon', 26) })
   } else {
-    animateIcon('org-nav-icon', 26)
+    animateBot('org-nav-icon', 26)
   }
 })()
 </script>
