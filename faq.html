@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAIA Protocol — Frequently Asked Questions</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="shortcut icon" href="/favicon.svg">
+<meta name="description" content="Frequently asked questions about RAIA Protocol and RAIA OS — the open property AI operating system governed by Move Home Organisation CIC.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0d0d0d;
+    --white: #fafaf8;
+    --off-white: #f4f3ef;
+    --accent: #2563FF;
+    --accent-light: #e8eeff;
+    --mid: #6b6b6b;
+    --border: #e2e1dc;
+    --code-bg: #f0efe9;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(250,250,248,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    padding: 0 48px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    text-decoration: none;
+  }
+
+  .logo-text {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--black);
+  }
+
+  .logo-accent {
+    color: #4040ff;
+  }
+
+  .logo-tld {
+    color: #666666;
+    font-weight: 400;
+    font-size: 14px;
+    margin-left: 1px;
+  }
+
+  #org-nav-icon {
+    border-radius: 4px;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+    color: var(--mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--black); }
+  .nav-links a.active { color: var(--black); font-weight: 500; }
+
+  .nav-cta {
+    background: var(--black);
+    color: var(--white) !important;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 13px !important;
+    font-weight: 500;
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: #333 !important; }
+
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 10px 12px 10px 8px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .nav-hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--black);
+    border-radius: 2px;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 60px; left: 0; right: 0;
+    z-index: 99;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 24px 24px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+  .mobile-menu.open { display: block; }
+  .mobile-menu ul { list-style: none; display: flex; flex-direction: column; }
+  .mobile-menu ul li a {
+    display: block;
+    padding: 14px 0;
+    font-size: 15px;
+    color: var(--black);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+  }
+  .mobile-menu ul li a:hover { color: var(--accent); }
+  .mobile-menu ul li:last-child a { border-bottom: none; }
+  .mobile-cta {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    background: var(--black) !important;
+    color: var(--white) !important;
+    padding: 10px 20px !important;
+    border-radius: 6px;
+    font-size: 14px !important;
+    font-weight: 500;
+    margin-top: 8px;
+    border-bottom: none !important;
+  }
+  .mobile-cta:hover { background: #333 !important; }
+
+  /* FAQ-specific styles */
+
+  .faq-hero {
+    padding: 120px 48px 64px;
+    max-width: 860px;
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+    animation-delay: 0.1s;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 28px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  .faq-hero h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 44px;
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    color: var(--black);
+    margin-bottom: 20px;
+  }
+
+  .faq-hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .faq-hero-intro {
+    font-size: 17px;
+    color: #444;
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  /* Jump nav */
+  .jump-nav {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 48px 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+    animation-delay: 0.25s;
+  }
+
+  .jump-nav-inner {
+    background: var(--off-white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+  }
+
+  .jump-nav-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 14px;
+  }
+
+  .jump-nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+  }
+
+  .jump-nav-links a {
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    transition: border-color 0.2s, background 0.2s;
+    display: inline-block;
+  }
+
+  .jump-nav-links a:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  /* FAQ sections */
+  .faq-body {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 48px 80px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+    animation-delay: 0.4s;
+  }
+
+  .faq-section {
+    margin-bottom: 64px;
+    padding-top: 16px;
+    border-top: 2px solid var(--border);
+  }
+
+  .faq-section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .faq-section h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: var(--black);
+    margin-bottom: 32px;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 24px 0;
+  }
+
+  .faq-item:last-child {
+    border-bottom: none;
+  }
+
+  .faq-question {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  .faq-answer {
+    font-size: 15px;
+    color: #444;
+    line-height: 1.75;
+  }
+
+  .faq-answer p {
+    margin-bottom: 12px;
+  }
+
+  .faq-answer p:last-child {
+    margin-bottom: 0;
+  }
+
+  .faq-answer strong {
+    color: var(--black);
+  }
+
+  .faq-answer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .faq-answer a:hover {
+    text-decoration: underline;
+  }
+
+  /* CTA section */
+  .faq-cta {
+    background: var(--off-white);
+    border-top: 1px solid var(--border);
+    padding: 60px 48px;
+    text-align: center;
+  }
+
+  .faq-cta-inner {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .faq-cta h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: var(--black);
+    margin-bottom: 12px;
+  }
+
+  .faq-cta p {
+    font-size: 15px;
+    color: var(--mid);
+    margin-bottom: 28px;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--black);
+    color: var(--white);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-primary:hover { background: #222; transform: translateY(-1px); }
+
+  .icon-github { display: inline-block; width: 16px; height: 16px; vertical-align: -3px; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-left { font-size: 13px; color: var(--mid); line-height: 1.7; }
+  .footer-left a { color: var(--accent); text-decoration: none; }
+  .footer-left a:hover { text-decoration: underline; }
+
+  .footer-links { display: flex; gap: 24px; list-style: none; }
+  .footer-links a { font-size: 13px; color: var(--mid); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--black); }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 24px; }
+    .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+    .faq-hero { padding: 100px 24px 48px; }
+    .faq-hero h1 { font-size: 32px; }
+    .jump-nav { padding: 0 24px 36px; }
+    .faq-body { padding: 0 24px 60px; }
+    .faq-cta { padding: 48px 24px; }
+    footer { flex-direction: column; gap: 24px; align-items: flex-start; padding: 32px 24px; }
+    .footer-links { flex-wrap: wrap; gap: 14px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo" id="org-logo-link">
+    <canvas id="org-nav-icon" width="26" height="26" aria-label="EstateAigents building icon"></canvas>
+    <span class="logo-text">Estate<span class="logo-accent">Aigents</span><span class="logo-tld">.org</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/#protocol">Protocol</a></li>
+    <li><a href="/#built-on">Stack</a></li>
+    <li><a href="/#jurisdictions">Jurisdictions</a></li>
+    <li><a href="/faq.html" class="active">FAQ</a></li>
+    <li><a href="https://estateaigents.com" target="_blank">Platform →</a></li>
+    <li><a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="nav-cta">View on GitHub</a></li>
+  </ul>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <ul>
+    <li><a href="/#protocol">Protocol</a></li>
+    <li><a href="/#built-on">Stack</a></li>
+    <li><a href="/#jurisdictions">Jurisdictions</a></li>
+    <li><a href="/faq.html">FAQ</a></li>
+    <li><a href="https://estateaigents.com" target="_blank">Platform →</a></li>
+    <li><a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="mobile-cta">
+      <svg style="width:15px;height:15px;flex-shrink:0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      View on GitHub
+    </a></li>
+  </ul>
+</div>
+
+<!-- Hero -->
+<div class="faq-hero">
+  <div class="hero-badge">FAQ · RAIA Protocol</div>
+  <h1>RAIA Protocol — <em>Frequently Asked Questions</em></h1>
+  <p class="faq-hero-intro">Everything you want to know about RAIA as a protocol, an operating system, and a community.</p>
+</div>
+
+<!-- Jump nav -->
+<div class="jump-nav">
+  <div class="jump-nav-inner">
+    <div class="jump-nav-label">Jump to section</div>
+    <ul class="jump-nav-links">
+      <li><a href="#the-basics">The Basics</a></li>
+      <li><a href="#the-technology">The Technology</a></li>
+      <li><a href="#governance">Governance</a></li>
+      <li><a href="#for-estate-agents">For Estate Agents</a></li>
+      <li><a href="#for-developers">For Developers</a></li>
+      <li><a href="#the-vision">The Vision</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- FAQ body -->
+<div class="faq-body">
+
+  <!-- Section 1: The Basics -->
+  <div class="faq-section" id="the-basics">
+    <div class="faq-section-eyebrow">Section 1</div>
+    <h2>The Basics</h2>
+
+    <div class="faq-item">
+      <div class="faq-question">What is RAIA?</div>
+      <div class="faq-answer">
+        <p>RAIA stands for Real Estate Artificial Intelligence Agent. It is both an open protocol and an operating system for property AI.</p>
+        <p>As a protocol: RAIA defines how AI agents find each other, verify identity, query property data, and execute transactions — lettings, sales, and management — directly between agents.</p>
+        <p>As an operating system: RAIA coordinates all the workflows of an estate agency — viewings, compliance, listings, enquiries, rent collection — running on open infrastructure that no single actor controls.</p>
+        <p>Think of it like Android for mobile. Android is an OS built on an open protocol (Linux). RAIA is an OS built on open protocols (Google A2A and Anthropic MCP). The difference: RAIA is governed by a community interest company, not a corporation.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">What does RAIA stand for?</div>
+      <div class="faq-answer">
+        <p>Real Estate Artificial Intelligence Agent Protocol.</p>
+        <p>RAIA is also the name of the registered UK trademark (UK00003359082, Classes 36 and 42), held in trust by Move Home Organisation CIC for the benefit of the property industry.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">What problem does RAIA solve?</div>
+      <div class="faq-answer">
+        <p>Two problems simultaneously.</p>
+        <p>First: the portal toll. Agents worldwide pay an estimated $10 billion annually to portal platforms for the right to advertise properties they already own and manage. That cost flows through to landlords and ultimately to tenants in higher rents. RAIA removes the portal from the equation by enabling AI agents to find and transact property directly.</p>
+        <p>Second: the capture risk. AI infrastructure for property is being built right now. If it is built as closed, proprietary systems, the portal toll booth moves but does not disappear — it becomes an AI platform toll instead. RAIA ensures the infrastructure layer is an open commons, like HTTP, before any single actor can enclose it.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Is RAIA free to use?</div>
+      <div class="faq-answer">
+        <p>Yes. The RAIA Protocol specification is MIT licensed. Anyone can implement it, build on it, or fork it at no cost.</p>
+        <p>The RAIA trademark protects the name — not the idea. You can implement the protocol freely. To use the RAIA name and appear in the verified agent registry, you must meet published criteria (which are also free to read and contribute to).</p>
+        <p>MoveHome.org — the public portal built on RAIA — is permanently free to list on. No listing fees. No lead generation charges. Ever.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">How is RAIA different from Rightmove, Zoopla, or other portals?</div>
+      <div class="faq-answer">
+        <p>Portals are marketplaces that charge agents for access to their own market. RAIA is infrastructure — like HTTP is infrastructure for the web.</p>
+        <p>HTTP does not charge per web page. SMTP does not charge per email. RAIA does not charge for agent-to-agent communication.</p>
+        <p>Portals sit in the middle of every transaction and extract value. RAIA removes the middle. The saving flows to agents, landlords, and ultimately tenants.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: The Technology -->
+  <div class="faq-section" id="the-technology">
+    <div class="faq-section-eyebrow">Section 2</div>
+    <h2>The Technology</h2>
+
+    <div class="faq-item">
+      <div class="faq-question">What is RAIA built on?</div>
+      <div class="faq-answer">
+        <p>RAIA is built on two open infrastructure standards:</p>
+        <p><strong>Google A2A Protocol</strong> (donated to the Linux Foundation) — defines how AI agents find each other and communicate. RAIA uses A2A as the transport and discovery layer.</p>
+        <p><strong>Anthropic Model Context Protocol (MCP)</strong> — defines how AI agents connect to tools and data sources. RAIA publishes an MCP server that any AI assistant can query to search property portfolios.</p>
+        <p>RAIA adds the property-specific layer on top: the vocabulary, the trust signals, the compliance modules, the enquiry lifecycle, the agent card format for estate agents.</p>
+        <p>Stack: Your AI Assistant → MCP → RAIA Protocol → A2A → Agent's Portfolio</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">What is an Agent Card in RAIA?</div>
+      <div class="faq-answer">
+        <p>An Agent Card is a machine-readable file published at <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">/.well-known/raia-agent.json</code> on any RAIA-compliant agent's domain.</p>
+        <p>It tells other AI agents: who this agent is (name, jurisdiction, licence number); what they offer (lettings, sales, management); what compliance signals they carry (ARLA, CMP, Ombudsman scheme); how to query their portfolio (MCP endpoint); what languages and jurisdictions they support.</p>
+        <p>Any AI assistant that reads RAIA Agent Cards can discover every participating agent's portfolio without going through a portal.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">What is a jurisdictional module?</div>
+      <div class="faq-answer">
+        <p>Property law is hyperlocal. HMO licensing in England is different from condo quotas in Thailand, which is different from CEA regulations in Singapore.</p>
+        <p>RAIA handles this through jurisdictional modules — separate compliance packages that plug into the global protocol core.</p>
+        <p>Each module encodes: what constitutes a valid tenancy or sale in that jurisdiction; what compliance signals agents must carry; what disclosures are required before a transaction can proceed; what regulatory bodies govern the market.</p>
+        <p>Current modules: GB (Great Britain), TH (Thailand). In development: AE (UAE), SG (Singapore), AU (Australia).</p>
+        <p>Anyone can contribute a jurisdiction module. Open a GitHub issue labelled <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">jurisdiction-module-[country-code]</code> to start.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">How do AI assistants query RAIA?</div>
+      <div class="faq-answer">
+        <p>Via the RAIA MCP server at <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">mcp.estateaigents.com</code> (publishing Q3 2026).</p>
+        <p>Any AI assistant that supports MCP — including Claude, GPT, Gemini, and any custom agent — can connect to the RAIA MCP server and use these tools:</p>
+        <p><strong>raia_search</strong> — search available properties by location, type, requirements<br>
+        <strong>raia_agent_card</strong> — retrieve a specific agent's card and portfolio details<br>
+        <strong>raia_verify</strong> — check an agent's compliance signals for a jurisdiction<br>
+        <strong>raia_enquire</strong> — initiate an enquiry on a specific property</p>
+        <p>The MCP server routes queries to RAIA-compliant agents in real time. No portal. No intermediary. Direct agent-to-AI communication.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Is there an SDK?</div>
+      <div class="faq-answer">
+        <p>The reference MCP server and SDK publish with v1.0 in Q3 2026.</p>
+        <p>Pre-release access is available through the schema working group. Open an issue labelled <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">schema-working-group</code> at <a href="https://github.com/estateaigents/raia-protocol" target="_blank">github.com/estateaigents/raia-protocol</a> to join.</p>
+        <p>Current published materials: SPEC.md — the protocol specification; CHARTER.md — the founding governance document; docs/portal-market-research.md — the evidence base; modules/GB/ and modules/TH/ — jurisdiction modules.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Governance -->
+  <div class="faq-section" id="governance">
+    <div class="faq-section-eyebrow">Section 3</div>
+    <h2>Governance</h2>
+
+    <div class="faq-item">
+      <div class="faq-question">Who owns RAIA?</div>
+      <div class="faq-answer">
+        <p>Nobody owns RAIA in the commercial sense.</p>
+        <p>The RAIA trademark (UK00003359082) is held in trust by Move Home Organisation CIC — a UK Community Interest Company incorporated in April 2026. The CIC's legal structure prevents any single commercial actor from capturing or exclusively licensing the protocol.</p>
+        <p>EstateAigents Ltd is the founding contributor and reference implementer. It holds one seat on the CIC board — not a controlling seat.</p>
+        <p>The protocol specification is MIT licensed. Anyone can implement it. The community governs it.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">What is Move Home Organisation CIC?</div>
+      <div class="faq-answer">
+        <p>Move Home Organisation CIC is the UK Community Interest Company that holds the RAIA trademark and governs the protocol.</p>
+        <p>A CIC (Community Interest Company) is a legal structure that exists specifically to benefit a community rather than generate profit for shareholders. The community interest test is enforced by the UK CIC Regulator — it cannot be waived, restructured away, or circumvented.</p>
+        <p>The CIC also governs MoveHome.org — the free public property portal built on RAIA infrastructure.</p>
+        <p>Incorporated: April 2026. Community interest: the property industry, estate agents, tenants, buyers, landlords and the general public in the UK and globally.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">How are decisions about the protocol made?</div>
+      <div class="faq-answer">
+        <p>Through a two-committee structure under the CIC board.</p>
+        <p>The Protocol Committee governs schema evolution, registry criteria, jurisdictional modules, MCP server, and SDK releases. It is chaired by an independent technical maintainer.</p>
+        <p>Changes to the core schema require: a public proposal (GitHub issue); a 30-day community comment period (non-breaking changes); a 60-day deprecation period (breaking changes); Protocol Committee recommendation; CIC board ratification.</p>
+        <p>No private amendments. No commercial side-agreements. Every decision is logged publicly in the GitHub repository.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Can EstateAigents Ltd change the protocol unilaterally?</div>
+      <div class="faq-answer">
+        <p>No.</p>
+        <p>EstateAigents Ltd holds one seat on the CIC board. The board has five seats. No single seat has a casting vote. Constitutional changes require a 4/5 supermajority.</p>
+        <p>EstateAigents Ltd has no veto rights over protocol or portal decisions.</p>
+        <p>If EstateAigents Ltd ceases to exist, the protocol continues. The CIC holds the trademark. The GitHub repo is public. The schemas are MIT licensed. The protocol does not depend on any single company's survival.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">How is this different from OpenAI's claimed non-profit structure?</div>
+      <div class="faq-answer">
+        <p>The structural difference is the asset lock.</p>
+        <p>A UK CIC has a legally enforced asset lock — assets cannot flow to members, directors, or commercial entities. This is enforced by the CIC Regulator, not by internal policy. It cannot be removed by a board vote or corporate restructuring.</p>
+        <p>The RAIA trademark, once transferred to the CIC, cannot be exclusively licensed to any commercial entity including EstateAigents Ltd. That commitment is structurally enforced, not aspirationally stated.</p>
+        <p>We made this commitment before the protocol had commercial value. That is the only moment such a commitment is credible.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: For Estate Agents -->
+  <div class="faq-section" id="for-estate-agents">
+    <div class="faq-section-eyebrow">Section 4</div>
+    <h2>For Estate Agents</h2>
+
+    <div class="faq-item">
+      <div class="faq-question">What does RAIA mean for my agency?</div>
+      <div class="faq-answer">
+        <p>Three things:</p>
+        <p><strong>1. Free listings.</strong> Agents who implement RAIA get automatic free listings on MoveHome.org — the free public portal built on RAIA infrastructure.</p>
+        <p><strong>2. AI-queryable portfolio.</strong> Any AI assistant that speaks MCP can query your portfolio directly — without you paying a portal for the privilege. As AI-powered property search grows, your properties are discoverable without portal dependency.</p>
+        <p><strong>3. Reduced transaction cost.</strong> Every enquiry, viewing request, and compliance check that flows through RAIA rather than a portal subscription saves money that can be passed to landlords and tenants.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Do I have to leave Rightmove or Zoopla to use RAIA?</div>
+      <div class="faq-answer">
+        <p>No. RAIA is not a competitor to portals — it is an addition.</p>
+        <p>You continue listing on whichever portals make commercial sense for your market. RAIA adds an AI-native discovery layer on top.</p>
+        <p>The market will determine the pace of transition. As more AI assistants use RAIA to find properties, the commercial case for portal-only listing weakens naturally. RAIA does not require you to make that choice today.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">How do I implement RAIA?</div>
+      <div class="faq-answer">
+        <p>The simplest implementation is publishing an Agent Card at <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">/.well-known/raia-agent.json</code> on your website.</p>
+        <p>This tells AI agents who you are, what you offer, what jurisdictions you operate in, and how to query your portfolio.</p>
+        <p>For agents on EstateAigents.com, this is handled automatically. Your Agent Card is generated and maintained by the platform.</p>
+        <p>For technical implementation on your own systems, the specification is at <a href="https://github.com/estateaigents/raia-protocol" target="_blank">github.com/estateaigents/raia-protocol</a>. The SDK publishes Q3 2026.</p>
+        <p>To join the verified agent registry, open an issue at <a href="https://github.com/estateaigents/raia-protocol/issues" target="_blank">github.com/estateaigents/raia-protocol</a> labelled <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">registry-application</code>.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">What about data privacy? Who can see my portfolio data?</div>
+      <div class="faq-answer">
+        <p>RAIA enforces data minimisation at the schema level.</p>
+        <p>AI agents querying RAIA receive property information — location, type, availability, price, compliance signals. They do not receive landlord personal data, tenant details, or financial transaction records.</p>
+        <p>End-client identity is never exposed in protocol messages. Qualification signals are transmitted. Personal data is not.</p>
+        <p>Each jurisdiction module includes the applicable data protection requirements (GDPR for GB, PDPA for TH, etc.) as part of the compliance layer.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: For Developers -->
+  <div class="faq-section" id="for-developers">
+    <div class="faq-section-eyebrow">Section 5</div>
+    <h2>For Developers</h2>
+
+    <div class="faq-item">
+      <div class="faq-question">How do I contribute to RAIA Protocol?</div>
+      <div class="faq-answer">
+        <p>Four ways to contribute:</p>
+        <p><strong>1. Schema working group</strong> — help define v1.0 schemas for agent cards, property listings, and enquiry lifecycles. Open an issue labelled <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">schema-working-group</code>.</p>
+        <p><strong>2. Jurisdiction modules</strong> — contribute your market's compliance rules. Open an issue labelled <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">jurisdiction-module-[country-code]</code>. This is the highest-value contribution for international expansion.</p>
+        <p><strong>3. Reference implementations</strong> — build an SDK in your language of choice. Python, TypeScript, and Go are the priority languages.</p>
+        <p><strong>4. Protocol review</strong> — review open proposals, comment on schema changes during the public comment period, flag implementation issues.</p>
+        <p>All contributions are governed by the Protocol Committee process. Everything is public. Nothing is decided privately.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">What is the relationship between RAIA and Google A2A?</div>
+      <div class="faq-answer">
+        <p>A2A is the transport layer. RAIA is the property vocabulary on top.</p>
+        <p>A2A defines how agents find each other and exchange messages — the general-purpose infrastructure for AI-to-AI communication donated by Google to the Linux Foundation.</p>
+        <p>RAIA defines what property agents say to each other using that infrastructure — the property-specific schemas, the agent card format, the compliance signals, the enquiry lifecycle.</p>
+        <p>You can think of it like TCP/IP (transport) and HTTP (application layer). A2A is TCP/IP. RAIA is the property-specific HTTP.</p>
+        <p>RAIA is a conforming A2A implementation. Any A2A-compliant agent can communicate with any RAIA-compliant agent.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">What is the relationship between RAIA and Anthropic MCP?</div>
+      <div class="faq-answer">
+        <p>MCP is how AI assistants connect to tools and data. RAIA publishes an MCP server that any AI assistant can use to query property data.</p>
+        <p>If you are building an AI assistant of any kind — Claude, GPT, Gemini, or custom — and your users might want to find a property, rent a flat, or manage a tenancy, you connect to the RAIA MCP server.</p>
+        <p>The MCP server exposes: raia_search (find available properties); raia_agent_card (get agent details); raia_verify (check agent compliance); raia_enquire (initiate a transaction).</p>
+        <p>The MCP server publishes at <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">mcp.estateaigents.com</code> with v1.0 in Q3 2026.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Is there a test environment?</div>
+      <div class="faq-answer">
+        <p>A sandbox environment is planned for Q3 2026 alongside the v1.0 SDK release. It will include test agent cards, mock property portfolios, and simulated compliance checks across GB and TH jurisdictions.</p>
+        <p>To be notified when the sandbox is available, star the repo at <a href="https://github.com/estateaigents/raia-protocol" target="_blank">github.com/estateaigents/raia-protocol</a> and watch for releases.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: The Vision -->
+  <div class="faq-section" id="the-vision">
+    <div class="faq-section-eyebrow">Section 6</div>
+    <h2>The Vision</h2>
+
+    <div class="faq-item">
+      <div class="faq-question">Why does property AI need an open standard?</div>
+      <div class="faq-answer">
+        <p>Because the history of the internet is a history of open infrastructure being enclosed.</p>
+        <p>Email began as an open protocol — and was enclosed into surveillance advertising platforms. The web began as an open standard — and search was enclosed into a duopoly. Social connection began as an open idea — and was enclosed into data extraction machines.</p>
+        <p>Property AI is at that moment now. The protocol layer is being built. The question is whether it is built as a commons or as the next enclosure.</p>
+        <p>If the infrastructure layer of property AI is controlled by any single commercial actor, the portal toll booth moves but does not disappear — it becomes an AI platform toll instead.</p>
+        <p>RAIA is the attempt to build the commons before the enclosure happens. Like HTTP was a commons. Like Ethernet was a commons. Like Linux was a commons.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">What is the global ambition?</div>
+      <div class="faq-answer">
+        <p>Every market where portals have achieved dominant positions has the same structural problem: agents pay for access to their own market, that cost flows to tenants, and the infrastructure becomes extractive.</p>
+        <p>RAIA's jurisdictional module architecture means the protocol is globally applicable from day one. The mechanics are global — the same agent card format, the same MCP tools, the same A2A transport in every market. The compliance layer is local — contributed by agents and regulators in each jurisdiction.</p>
+        <p>Target markets for 2026: GB, TH, AE, SG, AU, DE, US. Any market can contribute a jurisdiction module and join the global registry. The ask is not "join the UK protocol" but "contribute your compliance module and become a founding member of the global standard."</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">How does RAIA relate to housing affordability?</div>
+      <div class="faq-answer">
+        <p>The mechanism is simple, if not guaranteed.</p>
+        <p>Portals charge agents. Agents absorb the cost into operating costs. Agents raise management fees to landlords. Landlords factor costs into asking rents. Tenants pay higher rents.</p>
+        <p>Remove the portal cost from the equation and the saving becomes available — to the agent, to the landlord, and ultimately to the tenant. The market determines what happens to that saving. RAIA removes the cost. What flows from that is a market decision, not a protocol promise.</p>
+        <p>RAIA is not housing policy. It is infrastructure. But infrastructure that removes a cost from one end of the chain does not make that cost disappear — it makes it available for redistribution. That is the mechanism. It is honest about what it can and cannot guarantee.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CTA -->
+<div class="faq-cta">
+  <div class="faq-cta-inner">
+    <h2>Still have questions?</h2>
+    <p>Open an issue on GitHub and the community will answer. Every question helps improve the protocol documentation.</p>
+    <a href="https://github.com/estateaigents/raia-protocol/issues/new" target="_blank" class="btn-primary">
+      <svg class="icon-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      Open an issue on GitHub →
+    </a>
+  </div>
+</div>
+
+<div style="border-top: 1px solid var(--border);"></div>
+<footer>
+  <div class="footer-left">
+    RAIA™ · <span style="color:var(--accent);font-weight:500;">estateaigents.org</span> · © 2026 <a href="https://estateaigents.com">EstateAigents Ltd</a><br>
+    Protocol specification MIT licensed · <a href="https://github.com/estateaigents/raia-protocol/blob/main/LICENSE">License</a> · <a href="https://github.com/estateaigents/raia-protocol/blob/main/GOVERNANCE.md">Governance</a>
+  </div>
+  <ul class="footer-links">
+    <li><a href="https://github.com/estateaigents/raia-protocol">GitHub</a></li>
+    <li><a href="https://github.com/estateaigents/raia-protocol/blob/main/SPEC.md">Spec</a></li>
+    <li><a href="/faq.html">FAQ</a></li>
+    <li><a href="https://estateaigents.com">Platform</a></li>
+    <li><a href="mailto:protocol@estateaigents.org">Contact</a></li>
+  </ul>
+</footer>
+
+<script>
+(function() {
+  var WINS = [
+    {c:0,r:0},{c:1,r:0},
+    {c:0,r:1},{c:1,r:1},
+    {c:0,r:2},{c:1,r:2}
+  ]
+  var BG      = '#ffffff'
+  var BLUE    = '#4040ff'
+  var WIN_ON  = '#ffffff'
+  var WIN_OFF = '#4040ff'
+  var GROUND  = '#2929aa'
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath()
+    ctx.moveTo(x+r, y)
+    ctx.lineTo(x+w-r, y)
+    ctx.quadraticCurveTo(x+w, y, x+w, y+r)
+    ctx.lineTo(x+w, y+h-r)
+    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h)
+    ctx.lineTo(x+r, y+h)
+    ctx.quadraticCurveTo(x, y+h, x, y+h-r)
+    ctx.lineTo(x, y+r)
+    ctx.quadraticCurveTo(x, y, x+r, y)
+    ctx.closePath()
+    ctx.fill()
+  }
+
+  function drawFrame(ctx, size, states) {
+    var s = size / 32
+    ctx.clearRect(0, 0, size, size)
+    ctx.fillStyle = BG
+    roundRect(ctx, 0, 0, size, size, 5*s)
+    ctx.fillStyle = BLUE
+    ctx.fillRect(8*s, 5*s, 16*s, 22*s)
+    ctx.fillStyle = GROUND
+    ctx.fillRect(4*s, 27*s, 24*s, 2*s)
+    var cols = [10, 18]
+    var rows = [8, 13, 18]
+    for (var i = 0; i < states.length; i++) {
+      ctx.fillStyle = states[i] ? WIN_ON : WIN_OFF
+      ctx.fillRect(cols[WINS[i].c]*s, rows[WINS[i].r]*s, 4*s, 3*s)
+    }
+  }
+
+  function randomState() {
+    var s
+    do {
+      s = WINS.map(function() { return Math.random() > 0.5 })
+    } while (s.filter(Boolean).length < 2)
+    return s
+  }
+
+  function animateIcon(canvasId, size) {
+    var canvas = document.getElementById(canvasId)
+    if (!canvas) return
+    var ctx = canvas.getContext('2d')
+    var states = randomState()
+
+    function render() {
+      ctx.clearRect(0, 0, size, size)
+      drawFrame(ctx, size, states)
+    }
+
+    function flip() {
+      var lit = states.filter(Boolean).length
+      var idx = Math.floor(Math.random() * 6)
+      var next = states.slice()
+      if (!next[idx] && lit >= 5) { setTimeout(flip, 400 + Math.random()*1200); return }
+      if (next[idx] && lit <= 1)  { setTimeout(flip, 400 + Math.random()*1200); return }
+      next[idx] = !next[idx]
+      states = next
+      render()
+      setTimeout(flip, 500 + Math.random()*1500)
+    }
+
+    render()
+    setTimeout(flip, Math.random() * 800)
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      animateIcon('org-nav-icon', 26)
+    })
+  } else {
+    animateIcon('org-nav-icon', 26)
+  }
+})()
+</script>
+<script>
+(function() {
+  var btn = document.getElementById('nav-hamburger');
+  var menu = document.getElementById('mobile-menu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function() {
+    var open = menu.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open);
+    menu.setAttribute('aria-hidden', !open);
+  });
+  menu.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      menu.classList.remove('open');
+      btn.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+      menu.setAttribute('aria-hidden', 'true');
+    });
+  });
+})();
+</script>
+</body>
+</html>
