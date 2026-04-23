@@ -1154,14 +1154,19 @@
   var cursorEl = document.getElementById('raia-cursor');
   var full = 'Real Estate Artificial Intelligence Agent Protocol';
 
-  var i = 0;
-  var t = setInterval(function() {
-    typeEl.textContent += full[i++];
-    if (i >= full.length) {
-      clearInterval(t);
-      setTimeout(function() { cursorEl.style.display = 'none'; }, 900);
-    }
-  }, 45);
+  function typeIt() {
+    typeEl.textContent = '';
+    var i = 0;
+    var t = setInterval(function() {
+      typeEl.textContent += full[i++];
+      if (i >= full.length) {
+        clearInterval(t);
+        setTimeout(typeIt, 3000);
+      }
+    }, 45);
+  }
+
+  typeIt();
 })();
 </script>
 </body>
