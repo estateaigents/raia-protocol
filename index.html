@@ -763,8 +763,8 @@
 <section class="hero" id="top">
   <div class="hero-left">
     <div class="hero-badge">v0.1 Draft · MIT Licensed</div>
-    <h1><span id="raia-type" class="raia-hero-word"></span><span id="raia-cursor" class="raia-cursor"></span><span id="raia-rest" style="opacity:0"> — The Property <em>AI Operating System</em></span></h1>
-    <p class="hero-subtitle">Real Estate Artificial Intelligence Agent Protocol</p>
+    <h1><span class="raia-hero-word">RAIA&#8482;</span> — The Property <em>AI Operating System</em></h1>
+    <p class="hero-subtitle"><span id="raia-type"></span><span id="raia-cursor" class="raia-cursor"></span></p>
     <p class="hero-desc">An open protocol for AI agents to discover, verify and transact property — directly between agents, without a portal in the middle.</p>
     <div class="hero-actions">
       <a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="btn-primary">
@@ -1152,29 +1152,16 @@
 (function() {
   var typeEl = document.getElementById('raia-type');
   var cursorEl = document.getElementById('raia-cursor');
-  var restEl = document.getElementById('raia-rest');
-  var full = 'RAIA™';
+  var full = 'Real Estate Artificial Intelligence Agent Protocol';
 
-  function typeIt() {
-    typeEl.textContent = '';
-    restEl.style.opacity = '0';
-    cursorEl.style.display = 'inline-block';
-    var i = 0;
-    var t = setInterval(function() {
-      typeEl.textContent += full[i++];
-      if (i >= full.length) {
-        clearInterval(t);
-        restEl.style.transition = 'opacity 0.3s';
-        restEl.style.opacity = '1';
-        setTimeout(function() {
-          cursorEl.style.display = 'none';
-          setTimeout(typeIt, 5000);
-        }, 800);
-      }
-    }, 80);
-  }
-
-  typeIt();
+  var i = 0;
+  var t = setInterval(function() {
+    typeEl.textContent += full[i++];
+    if (i >= full.length) {
+      clearInterval(t);
+      setTimeout(function() { cursorEl.style.display = 'none'; }, 900);
+    }
+  }, 45);
 })();
 </script>
 </body>
