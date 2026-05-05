@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12",
+  "$id": "https://estateaigents.org/schemas/property.json",
+  "title": "RAIA Property Card",
+  "description": "Public-facing property listing card for the RAIA Protocol marketplace. Address is always masked to district level. Served from snapshot_listing in tbl_asset_snapshots.",
+  "version": "0.1.0",
+  "type": "object",
+  "required": ["raia_id", "agent_card_url", "location", "headline", "letting_agent", "enquiry_endpoint"],
+  "properties": {
+    "raia_id": {
+      "type": "string",
+      "pattern": "^prop-[a-z]{2}-[a-z0-9]+-[0-9]+$",
+      "description": "External stable property identifier. Format: prop-{jurisdiction}-{org-slug}-{sequence}. Example: prop-gb-rlf-000031.",
+      "examples": ["prop-gb-rlf-000031", "prop-th-rbc-000001"]
+    },
+    "rebuilt_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when this card was last rebuilt."
+    },
+    "agent_card_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL of the listing agent's RAIA agent card (/.well-known/raia-agent.json)."
+    },
+    "location": {
+      "type": "object",
+      "required": ["district"],
+      "description": "Masked location. Full address is never included in this schema.",
+      "properties": {
+        "district": {
+          "type": ["string", "null"],
+          "description": "Neighbourhood or suburb name. e.g. 'Hammersmith', 'Sukhumvit'."
+        },
+        "un_locode": {
+          "type": ["string", "null"],
+          "pattern": "^[A-Z]{2}[A-Z0-9]{3}$",
+          "description": "UN/LOCODE for the city. e.g. 'GBLON', 'THBKK'."
+        },
+        "lat": {
+          "type": ["number", "null"],
+          "description": "Approximate latitude (district centroid — never plot-level)."
+        },
+        "lng": {
+          "type": ["number", "null"],
+          "description": "Approximate longitude (district centroid — never plot-level)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "headline": {
+      "type": "string",
+      "description": "Short human-readable label. e.g. '1-bed flat, Hammersmith W6'."
+    },
+    "bedrooms": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Number of bedrooms."
+    },
+    "bathrooms": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Number of bathrooms."
+    },
+    "floor_area_sqm": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Floor area in square metres."
+    },
+    "available_from": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "ISO 8601 date when the property becomes available. Null if occupied with no vacancy."
+    },
+    "asking_rent_pcm": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Asking rent per calendar month in the jurisdiction's default currency. Null if not currently listed."
+    },
+    "currency": {
+      "type": ["string", "null"],
+      "pattern": "^[A-Z]{3}$",
+      "description": "ISO 4217 currency code. e.g. 'GBP', 'THB'. Null defaults to jurisdiction default."
+    },
+    "features": {
+      "type": "array",
+      "items": { "type": "string" },
+      "maxItems": 10,
+      "description": "Up to 10 notable features. e.g. ['Balcony', 'Porter', 'Permit parking']."
+    },
+    "letting_agent": {
+      "type": "object",
+      "required": ["name", "raia_id", "verified"],
+      "description": "The estate agency managing this property.",
+      "properties": {
+        "name":     { "type": "string" },
+        "raia_id":  {
+          "type": "string",
+          "pattern": "^org-[a-z]{2}-[a-z0-9]+$",
+          "description": "Agent's RAIA org identifier. e.g. 'org-gb-rlf'."
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "True if the agent is verified in the estateaigents.org registry."
+        }
+      },
+      "additionalProperties": false
+    },
+    "enquiry_endpoint": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to POST an enquiry to. Initiates the RAIA Protocol session state machine."
+    },
+    "session_ttl_hours": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Session TTL in hours. 24 for lettings, 720 for sales."
+    }
+  },
+  "additionalProperties": false,
+
+  "x-raia-notes": {
+    "address_masking": "Full address is NEVER included in this schema. District + postcode prefix only. Full address is transmitted once per enquiry session when session state reaches COMMITTED (human-approved viewing).",
+    "authentication": "Anonymous requests return this public card. Bearer delegation tokens (scope: snapshot:tenant or snapshot:landlord) served via /api/raia/property/{raia_id} return role-gated narrative tiers. See ADR-211.",
+    "source_of_truth": "snapshot_listing column in tbl_asset_snapshots. Rebuilt on asset/amenity/listing change. Zero LLM cost — template fill only.",
+    "reference_implementation": "RentLondonFlat on estateaigents.com — agent card at https://app.estateaigents.com/.well-known/raia-agent.json"
+  }
+}
