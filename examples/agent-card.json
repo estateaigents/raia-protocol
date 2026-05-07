@@ -1,0 +1,25 @@
+{
+  "schema_version": "0.2",
+  "agent_id": "org-gb-small-london-lettings",
+  "name": "Small London Lettings Ltd",
+  "display_name": "Small London Lettings",
+  "description": "Independent lettings agency covering Hampstead, Belsize Park and Primrose Hill. Long-let only — no short-term, no sales.",
+  "logo_url": "https://smalllondonlettings.co.uk/logo.svg",
+  "endpoints": {
+    "search": "https://smalllondonlettings.co.uk/api/raia/search",
+    "property": "https://smalllondonlettings.co.uk/api/raia/property/{raia_id}",
+    "enquire": "https://smalllondonlettings.co.uk/api/raia/enquire"
+  },
+  "jurisdictions": ["GBLON"],
+  "contact": {
+    "email": "hello@smalllondonlettings.co.uk",
+    "phone": "+442074311234",
+    "address": "12 Heath Street, Hampstead, London NW3 6TE"
+  },
+  "companies_house_number": "12345678",
+  "verification": {
+    "method": "domain_dns_txt",
+    "token": "raia-verify-9f7b2c1e4a8d"
+  },
+  "capabilities": ["search", "property", "enquire"]
+}

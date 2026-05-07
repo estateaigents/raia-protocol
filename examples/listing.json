@@ -1,0 +1,67 @@
+{
+  "raia_id": "prop-gb-small-london-lettings-000017",
+  "agent_id": "org-gb-small-london-lettings",
+  "agent_card_url": "https://smalllondonlettings.co.uk/.well-known/raia-agent.json",
+  "headline": "2-bed flat, Bethnal Green E2",
+  "marketing_description": "Bright second-floor flat in a quiet Victorian conversion, two minutes from Bethnal Green Underground. Original sash windows, refurbished kitchen, and a south-facing reception room. Communal garden to the rear.\n\nGas central heating, double glazing throughout, and a long lease. Ideal for a couple or sharers.",
+  "location": { "lat": 51.5269, "lon": -0.0554 },
+  "postcode_full": "E2 0AB",
+  "postcode_district": "E2",
+  "street_name": "Old Bethnal Green Road",
+  "building_number": "32B",
+  "suburb": "Bethnal Green",
+  "un_locode": "GBLON",
+  "property_type": "flat",
+  "service_type": "long_term",
+  "bedrooms": 2,
+  "bathrooms": 1,
+  "floor_area_sqm": 64.5,
+  "floor": 2,
+  "total_floors": 3,
+  "furnishing": "furnished",
+  "is_new_build": false,
+  "rent_pcm": 2450,
+  "currency": "GBP",
+  "available_from": "2026-06-01",
+  "listing_status": "available",
+  "features": [
+    "sash_windows",
+    "communal_garden",
+    "near_tube",
+    "permit_parking",
+    "double_glazing",
+    "gas_central_heating"
+  ],
+  "media": {
+    "featured_image_url": "https://res.cloudinary.com/sll/image/upload/v1/listings/000017/hero.jpg",
+    "photos": [
+      { "url": "https://res.cloudinary.com/sll/image/upload/v1/listings/000017/01.jpg", "caption": "Reception room", "order": 0 },
+      { "url": "https://res.cloudinary.com/sll/image/upload/v1/listings/000017/02.jpg", "caption": "Kitchen", "order": 1 },
+      { "url": "https://res.cloudinary.com/sll/image/upload/v1/listings/000017/03.jpg", "caption": "Master bedroom", "order": 2 },
+      { "url": "https://res.cloudinary.com/sll/image/upload/v1/listings/000017/04.jpg", "caption": "Bathroom", "order": 3 },
+      { "url": "https://res.cloudinary.com/sll/image/upload/v1/listings/000017/05.jpg", "caption": "Communal garden", "order": 4 }
+    ],
+    "floor_plan_url": "https://res.cloudinary.com/sll/image/upload/v1/listings/000017/floorplan.jpg",
+    "tour_360_url": "https://my.matterport.com/show/?m=example000017"
+  },
+  "enquiry_endpoint": "https://smalllondonlettings.co.uk/api/raia/enquire",
+  "visibility": "public",
+  "publish_from": "2026-05-07T08:00:00Z",
+  "snapshot_version": 3,
+  "synced_at": "2026-05-07T09:14:00Z",
+  "provenance": {
+    "agent_id": "org-gb-small-london-lettings",
+    "received_at": "2026-05-07T09:14:02Z"
+  },
+  "jurisdiction_extensions": {
+    "gb": {
+      "tenure": "leasehold",
+      "lease_years_remaining": 112,
+      "service_charge_pa": 1850,
+      "ground_rent_pa": 0,
+      "council_tax_band": "C",
+      "epc_rating": "C",
+      "epc_register_url": "https://find-energy-certificate.service.gov.uk/energy-certificate/0123-4567-8901-2345-6789"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "enquiry_id": "0d8b57ee-58a4-4bbf-9c2c-19c67d3f7c12",
+  "raia_id": "prop-gb-small-london-lettings-000017",
+  "enquirer": {
+    "name": "Aria Patel",
+    "email": "aria.patel@example.com",
+    "phone": "+447700900123",
+    "preferred_contact": "whatsapp"
+  },
+  "message": "Hi — I'm relocating from Manchester for a role in Shoreditch in late June. Couple, no pets, both employed (combined household income ~£95k). Could we view this on a weekday evening? Happy to provide references.",
+  "viewing_request": {
+    "preferred_dates": [
+      "2026-06-03T18:30:00+01:00",
+      "2026-06-04T18:30:00+01:00",
+      "2026-06-05T18:00:00+01:00"
+    ],
+    "party_size": 2
+  },
+  "source": {
+    "origin": "movehome.org",
+    "user_id_hash": "f3d4a8c2b1e0974f5d6a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e",
+    "ip_country": "GB"
+  },
+  "submitted_at": "2026-05-07T11:42:18Z"
+}
