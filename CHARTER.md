@@ -210,6 +210,8 @@ We commit to the following, publicly and permanently:
 
 **1.** The protocol will be governed by a multi-stakeholder community foundation. MoveHome Foundation CIC holds the trademark. EstateAigents Ltd has one seat on the board — not a controlling seat.
 
+MoveHome Foundation CIC was incorporated on 6 May 2026 (Co. 17202438, England and Wales).
+
 **2.** The RAIA™ trademark will be held by MoveHome Foundation CIC in trust for the property industry. It will not be exclusively licensed to any commercial entity.
 
 **3.** The registry criteria will be published and enforced transparently. Admission will not be at the discretion of any single commercial actor.
@@ -234,7 +236,7 @@ This Charter is the beginning of that conversation.
 
 *RAIA™ is a registered UK trademark (UK00003359082, Classes 36 + 42, registered 2018).*
 *Protocol specification MIT licensed.*
-*MoveHome Foundation CIC — in formation, April 2026.*
+*MoveHome Foundation CIC — incorporated 6 May 2026 (Co. 17202438).*
 *Founding contributor: EstateAigents Ltd.*
 
 *github.com/estateaigents/raia-protocol · estateaigents.org · movehome.org*

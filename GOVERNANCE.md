@@ -47,7 +47,7 @@ MoveHome Foundation CIC is in formation as of April 2026. During the transitiona
 | Registry governance | EstateAigents Ltd | MoveHome Foundation CIC |
 | Protocol maintainer | EstateAigents Ltd | MoveHome Foundation CIC (board + committees) |
 
-All transfers complete within 90 days of CIC incorporation.
+All transfers complete target: August 2026.
 
 ---
 
@@ -163,7 +163,7 @@ Board applications: open once CIC is constituted
 
 ---
 
-*MoveHome Foundation CIC — in formation, April 2026*
+*MoveHome Foundation CIC — incorporated 6 May 2026 (Co. 17202438)*
 *Founding contributor: EstateAigents Ltd*
 *RAIA™ UK00003359082 · MIT licensed protocol specification*
 *github.com/estateaigents/raia-protocol · estateaigents.org · movehome.org*
