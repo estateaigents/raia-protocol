@@ -3,1171 +3,1211 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAIA — The Property AI Operating System</title>
+<title>RAIA™ — The Open Protocol for Property AI</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="shortcut icon" href="/favicon.svg">
-<meta name="description" content="Open protocol and operating system for property AI. Built on A2A and MCP. Governed by Move Home Organisation CIC. No single actor controls it.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta name="description" content="An open language for AI agents to discover, verify and transact property. Built on Google A2A and Anthropic MCP. Governed by Move Home Organisation CIC.">
+<!-- OpenGraph / Twitter -->
+<meta property="og:title" content="RAIA™ — The Open Protocol for Property AI">
+<meta property="og:description" content="An open language for AI agents to discover, verify and transact property. Built on Google A2A and Anthropic MCP. Governed by Move Home Organisation CIC.">
+<meta property="og:image" content="https://estateaigents.org/assets/og-image.png">
+<meta property="og:url" content="https://estateaigents.org">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RAIA™ — The Open Protocol for Property AI">
+<meta name="twitter:description" content="An open language for AI agents to discover, verify and transact property.">
+<meta name="twitter:image" content="https://estateaigents.org/assets/og-image.png">
 <style>
+  /* ============================================
+     RAIA Design Tokens
+     Black + Blue + White (current brand)
+     Imagery & spatial language inspired by ai.google.dev
+     ============================================ */
   :root {
-    --black: #0d0d0d;
-    --white: #fafaf8;
-    --off-white: #f4f3ef;
-    --accent: #2563FF;
-    --accent-light: #e8eeff;
-    --mid: #6b6b6b;
-    --border: #e2e1dc;
-    --code-bg: #f0efe9;
+    --bg: #000000;
+    --bg-elev: #0a0a0f;
+    --bg-card: #0f1219;
+    --bg-card-hover: #161a24;
+    --border: #1f2330;
+    --border-bright: #2a3142;
+    --text: #ffffff;
+    --text-dim: #9ca3b5;
+    --text-faint: #5a6175;
+    --blue: #4285f4;
+    --blue-bright: #69a0ff;
+    --blue-deep: #1a73e8;
+    --blue-glow: rgba(66, 133, 244, 0.18);
+    --success: #34a853;
+
+    --font-display: 'Inter', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Menlo', monospace;
+
+    --container: 1200px;
+    --gutter: clamp(1.25rem, 4vw, 2.5rem);
+    --radius: 12px;
+    --radius-sm: 8px;
   }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-
   body {
-    background: var(--white);
-    color: var(--black);
-    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
     font-size: 16px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
+  a { color: inherit; text-decoration: none; }
+  img, svg { max-width: 100%; display: block; }
 
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    background: rgba(250,250,248,0.92);
-    backdrop-filter: blur(12px);
+  .container {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+
+  /* NAV */
+  nav.top {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
-    border-top: 3px solid var(--accent);
-    padding: 0 48px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  }
+  nav.top .inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem var(--gutter);
+    max-width: var(--container); margin: 0 auto;
+  }
+  nav.top .logo { font-weight: 600; font-size: 1rem; letter-spacing: -0.01em; }
+  nav.top .logo .mark { color: var(--blue); }
+  nav.top ul { display: flex; gap: 2rem; list-style: none; align-items: center; }
+  nav.top ul a { font-size: 0.9rem; color: var(--text-dim); font-weight: 500; transition: color 0.15s; }
+  nav.top ul a:hover { color: var(--text); }
+  nav.top .cta {
+    background: var(--blue); color: white;
+    padding: 0.5rem 1rem; border-radius: 100px;
+    font-size: 0.875rem; font-weight: 500;
+  }
+  nav.top .cta:hover { background: var(--blue-bright); color: white; }
+  @media (max-width: 720px) {
+    nav.top ul li:not(:last-child) { display: none; }
   }
 
-  .nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--black);
-    text-decoration: none;
+  /* SECTION TABS */
+  .section-tabs { border-bottom: 1px solid var(--border); background: var(--bg); }
+  .section-tabs .inner {
+    display: flex; gap: 0;
+    max-width: var(--container); margin: 0 auto;
+    padding: 0 var(--gutter); overflow-x: auto;
   }
-
-  .logo-text {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--black);
+  .tab-btn {
+    background: none; border: none; color: var(--text-dim);
+    font-family: var(--font-body); font-size: 0.875rem; font-weight: 500;
+    padding: 1.25rem 1.5rem; cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s; white-space: nowrap;
   }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
 
-  .logo-accent {
-    color: #4040ff;
-  }
-
-  .logo-tld {
-    color: #666666;
-    font-weight: 400;
-    font-size: 14px;
-    margin-left: 1px;
-  }
-
-  #org-nav-icon {
-    border-radius: 4px;
-    display: block;
-    flex-shrink: 0;
-  }
-
-  .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-size: 14px;
-    color: var(--mid);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--black); }
-
-  .nav-cta {
-    background: var(--black);
-    color: var(--white) !important;
-    padding: 8px 18px;
-    border-radius: 6px;
-    font-size: 13px !important;
-    font-weight: 500;
-    transition: background 0.2s !important;
-  }
-
-  .nav-cta:hover { background: #333 !important; }
-
+  /* HERO */
   .hero {
-    padding: 140px 48px 100px;
-    max-width: 1100px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-    opacity: 0;
-    animation: fadeUp 0.8s ease forwards;
-    animation-delay: 0.1s;
+    position: relative; padding: 6rem 0 5rem;
+    overflow: hidden; border-bottom: 1px solid var(--border);
   }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+  .hero-glow {
+    position: absolute; top: -200px; right: -200px;
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, var(--blue-glow), transparent 60%);
+    pointer-events: none; z-index: 0;
   }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--accent-light);
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 500;
-    padding: 5px 12px;
-    border-radius: 20px;
-    margin-bottom: 28px;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.02em;
+  .hero-inner {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: 1.1fr 0.9fr;
+    gap: 4rem; align-items: center;
   }
-
-  .hero-badge::before {
-    content: '';
-    width: 6px; height: 6px;
-    background: var(--accent);
-    border-radius: 50%;
+  @media (max-width: 900px) { .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; } }
+  .hero .pill {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(66, 133, 244, 0.1);
+    border: 1px solid rgba(66, 133, 244, 0.3);
+    padding: 0.4rem 0.9rem; border-radius: 100px;
+    font-size: 0.8rem; color: var(--blue-bright);
+    font-weight: 500; margin-bottom: 1.75rem;
   }
-
-  h1 {
-    font-family: 'Inter', sans-serif;
-    font-size: 52px;
-    font-weight: 900;
-    line-height: 1.05;
-    letter-spacing: -0.04em;
-    color: var(--black);
-    margin-bottom: 8px;
+  .hero .pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--blue-bright);
+    box-shadow: 0 0 8px var(--blue-bright);
   }
-
-  .raia-hero-word {
-    font-size: 1.35em;
-    letter-spacing: -0.05em;
-    color: var(--black);
+  .hero h1 {
+    font-size: clamp(2.25rem, 5.5vw, 4rem);
+    line-height: 1.05; font-weight: 600;
+    letter-spacing: -0.03em; margin-bottom: 1.5rem;
   }
-
-  .raia-cursor {
-    display: inline-block;
-    width: 3px;
-    background: var(--accent);
-    margin-left: 2px;
-    animation: blink-cursor 0.6s step-end infinite;
-    vertical-align: baseline;
-    height: 0.85em;
-    position: relative;
-    top: 0.05em;
+  .hero h1 .blue { color: var(--blue); }
+  .hero .lede {
+    font-size: 1.15rem; color: var(--text-dim);
+    margin-bottom: 2rem; line-height: 1.5; max-width: 540px;
   }
+  .hero-ctas { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
-  @keyframes blink-cursor {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.85rem 1.5rem; border-radius: 100px;
+    font-size: 0.9rem; font-weight: 500;
+    transition: all 0.15s; cursor: pointer;
+    border: 1px solid transparent;
   }
-
-  h1 em {
-    font-style: normal;
-    color: var(--accent);
-  }
-
-  .hero-subtitle {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--mid);
-    margin-bottom: 24px;
-  }
-
-  .hero-desc {
-    font-size: 17px;
-    color: #444;
-    line-height: 1.7;
-    margin-bottom: 36px;
-    max-width: 440px;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--black);
-    color: var(--white);
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: background 0.2s, transform 0.15s;
-  }
-
-  .btn-primary:hover { background: #222; transform: translateY(-1px); }
-
+  .btn-primary { background: var(--blue); color: white; }
+  .btn-primary:hover { background: var(--blue-bright); }
   .btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: transparent;
-    color: var(--black);
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    text-decoration: none;
-    border: 1.5px solid var(--border);
-    transition: border-color 0.2s, transform 0.15s;
+    background: transparent; color: var(--text);
+    border-color: var(--border-bright);
+  }
+  .btn-secondary:hover { border-color: var(--blue); color: var(--blue-bright); }
+
+  .hero-visual { position: relative; aspect-ratio: 1 / 1; max-width: 480px; margin-left: auto; }
+
+  /* SECTION SHELL */
+  section.block { padding: 6rem 0; border-bottom: 1px solid var(--border); position: relative; }
+  .eyebrow {
+    display: inline-block; font-size: 0.8rem; color: var(--blue);
+    font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; margin-bottom: 1rem;
+  }
+  .block h2 {
+    font-size: clamp(1.875rem, 3.5vw, 2.75rem);
+    line-height: 1.1; font-weight: 600;
+    letter-spacing: -0.02em; margin-bottom: 1rem; max-width: 720px;
+  }
+  .block h2 .blue { color: var(--blue); }
+  .block .intro {
+    color: var(--text-dim); max-width: 640px;
+    margin-bottom: 3rem; font-size: 1.05rem;
   }
 
-  .btn-secondary:hover { border-color: #aaa; transform: translateY(-1px); }
-
-  .hero-right {
-    background: var(--off-white);
+  /* PROBLEM / SOLUTION */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 720px) { .compare { grid-template-columns: 1fr; } }
+  .compare-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 2rem; border-radius: var(--radius);
+    position: relative; overflow: hidden;
+  }
+  .compare-card.good {
+    border-color: rgba(66, 133, 244, 0.4);
+    background: linear-gradient(135deg, rgba(66, 133, 244, 0.08), var(--bg-card) 60%);
+  }
+  .compare-card .label {
+    display: inline-block; font-size: 0.75rem; font-weight: 600;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 0.3rem 0.7rem; border-radius: 100px; margin-bottom: 1.25rem;
+  }
+  .compare-card.bad .label { background: rgba(234, 67, 53, 0.15); color: #f08e85; }
+  .compare-card.good .label { background: rgba(66, 133, 244, 0.15); color: var(--blue-bright); }
+  .compare-card h3 { font-size: 1.25rem; margin-bottom: 0.75rem; font-weight: 600; }
+  .compare-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1.5rem; }
+  .flow {
+    background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 32px;
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease forwards;
-    animation-delay: 0.3s;
+    padding: 1rem; border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 0.85rem;
+    color: var(--text); line-height: 1.8;
   }
+  .flow .arrow { color: var(--blue); margin: 0 0.4rem; }
+  .flow .blocked { color: #f08e85; }
+  .flow .ok { color: var(--blue-bright); font-weight: 600; }
 
-  .diagram-label {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--mid);
-    margin-bottom: 20px;
-  }
-
-  .diagram-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .diagram-row:last-child { border-bottom: none; }
-  .diagram-indent { padding-left: 20px; }
-  .diagram-indent2 { padding-left: 40px; }
-  .diagram-arrow { color: var(--mid); flex-shrink: 0; }
-
-  .diagram-name { font-weight: 500; color: var(--black); }
-  .diagram-name.accent { color: var(--accent); }
-  .diagram-desc { font-size: 11px; color: var(--mid); margin-top: 2px; }
-
-  .diagram-tag {
-    margin-left: auto;
-    font-size: 10px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    flex-shrink: 0;
-  }
-
-  .tag-open { background: #e8f5e9; color: #2e7d32; }
-  .tag-vertical { background: var(--accent-light); color: var(--accent); }
-  .tag-transport { background: #fff3e0; color: #e65100; }
-
-  .section-divider {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 48px;
-    border-top: 1px solid var(--border);
-  }
-
-  .capabilities {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 80px 48px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease forwards;
-    animation-delay: 0.5s;
-  }
-
-  .section-eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 16px;
-  }
-
-  .section-title {
-    font-family: 'Inter', sans-serif;
-    font-size: 36px;
-    font-weight: 900;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
-    margin-bottom: 12px;
-  }
-
-  .section-desc {
-    font-size: 16px;
-    color: var(--mid);
-    max-width: 500px;
-    margin-bottom: 48px;
-  }
-
-  .cap-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
+  /* VIDEO */
+  .video-wrap {
+    aspect-ratio: 16 / 9;
+    background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .cap-card {
-    background: var(--white);
-    padding: 28px 24px;
-    transition: background 0.2s;
-  }
-
-  .cap-card:hover { background: var(--off-white); }
-
-  .cap-number {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--mid);
-    margin-bottom: 12px;
-  }
-
-  .cap-name {
-    font-family: 'Inter', sans-serif;
-    font-size: 18px;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    color: var(--black);
-    margin-bottom: 8px;
-  }
-
-  .cap-desc { font-size: 13px; color: var(--mid); line-height: 1.6; }
-
-  .built-on {
-    background: var(--off-white);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 80px 48px;
-  }
-
-  .built-on-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: start;
-  }
-
-  .protocol-cards { display: flex; flex-direction: column; gap: 12px; }
-
-  .protocol-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px 24px;
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.2s, transform 0.15s;
-  }
-
-  .protocol-card:hover { border-color: var(--accent); transform: translateX(4px); }
-
-  .protocol-icon {
-    width: 36px; height: 36px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-
-  .icon-a2a { background: #e8f5e9; }
-  .icon-mcp { background: #fff3e0; }
-  .icon-raia { background: var(--accent-light); }
-
-  .protocol-name { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
-  .protocol-desc { font-size: 13px; color: var(--mid); }
-  .protocol-arrow { margin-left: auto; color: var(--mid); font-size: 18px; align-self: center; }
-
-  .code-block {
-    background: var(--black);
-    border-radius: 10px;
-    padding: 24px 28px;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    line-height: 1.8;
-    overflow-x: auto;
-  }
-
-  .code-comment { color: #666; }
-  .code-key { color: #7dd3fc; }
-  .code-str { color: #86efac; }
-  .code-num { color: #fbbf24; }
-  .code-punct { color: #888; }
-
-  .jurisdictions {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 80px 48px;
-  }
-
-  .juris-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
-    margin-top: 40px;
-  }
-
-  .juris-card {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
-    text-align: center;
+    border-radius: var(--radius);
+    overflow: hidden; position: relative;
+    cursor: pointer; max-width: 880px;
     transition: border-color 0.2s;
   }
-
-  .juris-card:hover { border-color: var(--accent); }
-
-  .juris-code {
-    font-family: 'Inter', sans-serif;
-    font-size: 20px;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    color: var(--black);
-    margin-bottom: 6px;
+  .video-wrap:hover { border-color: var(--blue); }
+  .video-wrap .placeholder {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: radial-gradient(circle at center, var(--bg-card), var(--bg-elev));
   }
-
-  .juris-name { font-size: 12px; color: var(--mid); margin-bottom: 10px; }
-
-  .juris-status {
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    display: inline-block;
+  .video-wrap .play {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 32px var(--blue-glow);
+    transition: transform 0.2s;
   }
-
-  .status-draft { background: var(--accent-light); color: var(--accent); }
-  .status-planned { background: var(--off-white); color: var(--mid); border: 1px solid var(--border); }
-
-  .reference { background: var(--black); padding: 80px 48px; }
-
-  .reference-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 60px;
-    align-items: center;
+  .video-wrap:hover .play { transform: scale(1.1); }
+  .video-wrap .play::before {
+    content: '';
+    border-left: 16px solid white;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    margin-left: 4px;
   }
+  .video-wrap .label { font-size: 0.85rem; color: var(--text-dim); font-weight: 500; }
 
-  .reference .section-eyebrow { color: #60a5fa; }
-  .reference .section-title { color: var(--white); }
-  .reference .section-desc { color: #888; max-width: 600px; margin-bottom: 32px; }
-
-  .ref-stats { display: flex; gap: 40px; margin-bottom: 36px; }
-
-  .ref-stat-num {
-    font-family: 'Inter', sans-serif;
-    font-size: 36px;
-    font-weight: 900;
-    letter-spacing: -0.03em;
-    color: var(--white);
-    line-height: 1;
-    margin-bottom: 4px;
+  /* STACK CARDS */
+  .stack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 720px) { .stack-grid { grid-template-columns: 1fr; } }
+  .stack-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    transition: all 0.2s;
   }
-
-  .ref-stat-label { font-size: 13px; color: #888; }
-
-  .ref-badges { display: flex; gap: 8px; flex-wrap: wrap; }
-
-  .ref-badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 4px;
-    background: #1a1a1a;
-    color: #aaa;
-    border: 1px solid #333;
-  }
-
-  .reference-cta { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
-
-  .btn-white {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--white);
-    color: var(--black);
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: background 0.2s;
-  }
-
-  .btn-white:hover { background: #eee; }
-
-  .btn-ghost {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: transparent;
-    color: #888;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 400;
-    text-decoration: none;
-    white-space: nowrap;
-    border: 1px solid #333;
-    transition: border-color 0.2s, color 0.2s;
-  }
-
-  .btn-ghost:hover { border-color: #666; color: #ccc; }
-
-  .status-section {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 80px 48px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-  }
-
-  .version-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 24px; }
-
-  .version-table th {
-    text-align: left;
-    padding: 10px 16px;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--mid);
-    background: var(--off-white);
+  .stack-card:hover { border-color: var(--blue); background: var(--bg-card-hover); }
+  .stack-card .visual {
+    aspect-ratio: 16 / 9;
+    background: var(--bg-elev);
     border-bottom: 1px solid var(--border);
+    position: relative; overflow: hidden;
   }
-
-  .version-table td {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
-    color: #444;
-  }
-
-  .version-table td:first-child {
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    color: var(--black);
-    font-weight: 500;
-  }
-
-  .td-draft { color: #d97706 !important; font-weight: 500; }
-  .td-planned { color: var(--mid) !important; }
-
-  .contribute-list { list-style: none; margin-top: 24px; display: flex; flex-direction: column; gap: 12px; }
-
-  .contribute-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 16px 20px;
-    background: var(--off-white);
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.2s;
-  }
-
-  .contribute-item:hover { border-color: var(--accent); }
-  .contribute-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-  .contribute-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
-  .contribute-desc { font-size: 13px; color: var(--mid); }
-
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 40px 48px;
-    max-width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .footer-left { font-size: 13px; color: var(--mid); line-height: 1.7; }
-  .footer-left a { color: var(--accent); text-decoration: none; }
-  .footer-left a:hover { text-decoration: underline; }
-
-  .footer-links { display: flex; gap: 24px; list-style: none; }
-  .footer-links a { font-size: 13px; color: var(--mid); text-decoration: none; transition: color 0.2s; }
-  .footer-links a:hover { color: var(--black); }
-
-  .icon-github { display: inline-block; width: 16px; height: 16px; vertical-align: -3px; }
-
-  .nav-hamburger {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
+  .stack-card .visual-placeholder {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
     cursor: pointer;
-    background: none;
-    border: none;
-    padding: 10px 12px 10px 8px;
-    min-width: 44px;
-    min-height: 44px;
   }
-  .nav-hamburger span {
-    display: block;
-    width: 22px;
-    height: 2px;
-    background: var(--black);
-    border-radius: 2px;
-    transition: transform 0.2s, opacity 0.2s;
+  .stack-card .visual-placeholder .play-sm {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 24px var(--blue-glow);
+    margin-bottom: 0.75rem;
   }
-  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
-  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .stack-card .visual-placeholder .play-sm::before {
+    content: '';
+    border-left: 12px solid white;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    margin-left: 3px;
+  }
+  .stack-card .visual-placeholder span { font-size: 0.8rem; color: var(--text-dim); font-weight: 500; }
+  .stack-card .body { padding: 1.75rem; }
+  .stack-card .sub {
+    font-size: 0.75rem; color: var(--blue);
+    font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .stack-card h4 { font-size: 1.4rem; font-weight: 600; margin-bottom: 0.75rem; letter-spacing: -0.01em; }
+  .stack-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1.25rem; }
+  .stack-card .links { display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.875rem; }
+  .stack-card .links a { color: var(--blue-bright); font-weight: 500; }
+  .stack-card .links a:hover { color: var(--blue); }
 
-  .mobile-menu {
-    display: none;
-    position: fixed;
-    top: 60px; left: 0; right: 0;
-    z-index: 99;
-    background: var(--white);
-    border-bottom: 1px solid var(--border);
-    padding: 8px 24px 24px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  /* STACK DIAGRAM */
+  .stack-diagram {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 2rem; margin-top: 2.5rem;
   }
-  .mobile-menu.open { display: block; }
-  .mobile-menu ul { list-style: none; display: flex; flex-direction: column; }
-  .mobile-menu ul li a {
-    display: block;
-    padding: 14px 0;
-    font-size: 15px;
-    color: var(--black);
-    text-decoration: none;
-    border-bottom: 1px solid var(--border);
-    transition: color 0.2s;
+  .stack-layer {
+    display: flex; align-items: center; gap: 1.5rem;
+    padding: 1.25rem 1.5rem; margin-bottom: 0.75rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-elev); transition: all 0.2s;
   }
-  .mobile-menu ul li a:hover { color: var(--accent); }
-  .mobile-menu ul li:last-child a { border-bottom: none; }
-  .mobile-cta {
-    display: inline-flex !important;
-    align-items: center;
-    gap: 8px;
-    background: var(--black) !important;
-    color: var(--white) !important;
-    padding: 10px 20px !important;
+  .stack-layer:last-child { margin-bottom: 0; }
+  .stack-layer.featured {
+    background: linear-gradient(90deg, rgba(66, 133, 244, 0.15), rgba(66, 133, 244, 0.03));
+    border-color: var(--blue);
+  }
+  .stack-layer .num {
+    font-family: var(--font-mono); font-size: 0.75rem;
+    color: var(--text-faint); min-width: 40px; font-weight: 500;
+  }
+  .stack-layer .label { font-size: 1.1rem; font-weight: 600; flex: 1; }
+  .stack-layer .desc { font-size: 0.875rem; color: var(--text-dim); flex: 2; }
+  @media (max-width: 720px) {
+    .stack-layer { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+  }
+
+  /* AUDIENCE CARDS */
+  .audience { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  @media (max-width: 900px) { .audience { grid-template-columns: 1fr; } }
+  .audience-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .audience-card:hover { border-color: var(--blue); transform: translateY(-4px); }
+  .audience-card .visual {
+    aspect-ratio: 16 / 10;
+    background: linear-gradient(135deg, var(--bg-elev), var(--bg-card));
+    border-bottom: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  .audience-card .body { padding: 1.75rem; }
+  .audience-card h4 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .audience-card p { color: var(--text-dim); font-size: 0.925rem; margin-bottom: 1.25rem; }
+  .audience-card .link {
+    color: var(--blue-bright); font-size: 0.875rem; font-weight: 500;
+  }
+
+  /* CAPABILITIES */
+  .capability-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  @media (max-width: 900px) { .capability-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .capability-grid { grid-template-columns: 1fr; } }
+  .cap {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 1.75rem; border-radius: var(--radius);
+    transition: all 0.2s;
+  }
+  .cap:hover { border-color: var(--blue); background: var(--bg-card-hover); }
+  .cap .num {
+    font-family: var(--font-mono); font-size: 0.8rem;
+    color: var(--blue); margin-bottom: 0.5rem; font-weight: 600;
+  }
+  .cap h5 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .cap p { font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: #0a0d14; border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.75rem;
+    margin: 2rem 0; overflow-x: auto;
+    font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.7;
+  }
+  .code-block .key { color: var(--blue-bright); }
+  .code-block .str { color: #81c995; }
+  .code-block .numv { color: #fbbc04; }
+  .code-block .comment { color: var(--text-faint); font-style: italic; }
+  .code-block .punct { color: var(--text-dim); }
+
+  /* OS NOTICE */
+  .os-notice {
+    background: linear-gradient(135deg, rgba(66, 133, 244, 0.08), transparent);
+    border: 1px solid var(--border-bright);
+    border-left: 3px solid var(--blue);
+    padding: 2rem; border-radius: var(--radius);
+  }
+  .os-notice h4 {
+    font-size: 1.3rem; font-weight: 600;
+    margin-bottom: 1rem; color: var(--blue-bright);
+  }
+  .os-notice p { color: var(--text); margin-bottom: 0.875rem; font-size: 0.975rem; line-height: 1.65; }
+  .os-notice p:last-child { margin-bottom: 0; }
+  .os-notice .tagline {
+    margin-top: 1.25rem; padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.85rem; color: var(--text-dim);
+  }
+
+  /* CIC */
+  .cic-story { display: grid; grid-template-columns: 1.3fr 1fr; gap: 4rem; align-items: start; }
+  @media (max-width: 900px) { .cic-story { grid-template-columns: 1fr; gap: 2.5rem; } }
+  .cic-story .narrative p {
+    font-size: 1.05rem; color: var(--text);
+    margin-bottom: 1.25rem; line-height: 1.65;
+  }
+  .cic-story .narrative .lift {
+    font-size: 1.6rem; color: var(--blue-bright);
+    line-height: 1.4; font-weight: 500;
+    margin: 2rem 0; padding-left: 1.5rem;
+    border-left: 3px solid var(--blue);
+    letter-spacing: -0.01em;
+  }
+  .cic-facts {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 2rem; border-radius: var(--radius);
+    position: sticky; top: 100px;
+  }
+  .cic-facts h4 {
+    font-size: 0.8rem; color: var(--blue);
+    font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; margin-bottom: 1.5rem;
+  }
+  .cic-fact { padding: 1rem 0; border-bottom: 1px solid var(--border); }
+  .cic-fact:last-child { border-bottom: none; padding-bottom: 0; }
+  .cic-fact .term {
+    font-size: 0.875rem; color: var(--blue-bright);
+    font-weight: 600; margin-bottom: 0.35rem;
+  }
+  .cic-fact p { font-size: 0.875rem; color: var(--text-dim); line-height: 1.5; }
+
+  /* STATS */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 2rem; }
+  @media (max-width: 720px) { .stats { grid-template-columns: 1fr; } }
+  .stat {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 2rem; border-radius: var(--radius); text-align: center;
+  }
+  .stat .num-big {
+    font-size: 2.75rem; font-weight: 600;
+    color: var(--blue); line-height: 1;
+    margin-bottom: 0.5rem; letter-spacing: -0.03em;
+  }
+  .stat .label { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* FOOTER */
+  footer { padding: 4rem 0 3rem; background: var(--bg); }
+  footer .inner { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.5rem; }
+  @media (max-width: 720px) { footer .inner { grid-template-columns: 1fr 1fr; } }
+  footer h6 {
+    font-size: 0.8rem; color: var(--text-faint);
+    letter-spacing: 0.05em; text-transform: uppercase;
+    margin-bottom: 1rem; font-weight: 600;
+  }
+  footer ul { list-style: none; }
+  footer li { margin-bottom: 0.625rem; }
+  footer a { color: var(--text-dim); font-size: 0.9rem; }
+  footer a:hover { color: var(--blue-bright); }
+  .footer-brand { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .footer-brand .mark { color: var(--blue); }
+  .footer-meta {
+    margin-top: 2.5rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem; color: var(--text-faint);
+    font-family: var(--font-mono);
+  }
+
+
+  /* LOGO */
+  .raia-mark {
+    width: 32px; height: 32px;
     border-radius: 6px;
-    font-size: 14px !important;
-    font-weight: 500;
-    margin-top: 8px;
-    border-bottom: none !important;
+    flex-shrink: 0;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
   }
-  .mobile-cta:hover { background: #333 !important; }
+  nav.top .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+  .footer-brand .raia-mark { width: 40px; height: 40px; border-radius: 8px; }
 
-  @media (max-width: 768px) {
-    nav { padding: 0 24px; }
-    .nav-links { display: none; }
-    .nav-hamburger { display: flex; }
-    .hero { grid-template-columns: 1fr; padding: 120px 24px 60px; gap: 40px; }
-    h1 { font-size: 38px; }
-    .section-title { font-size: 28px; overflow-wrap: break-word; word-break: break-word; }
-    .cap-grid { grid-template-columns: 1fr 1fr; }
-    .built-on-inner { grid-template-columns: 1fr; }
-    .juris-grid { grid-template-columns: repeat(2, 1fr); }
-    .reference-inner { grid-template-columns: 1fr; }
-    .reference-cta { align-items: stretch; flex-direction: row; flex-wrap: wrap; gap: 10px; }
-    .reference-cta a { flex: 1 1 auto; justify-content: center; }
-    .ref-stats { gap: 20px; flex-wrap: wrap; }
-    .ref-stat-num { font-size: 28px; }
-    .status-section { grid-template-columns: 1fr; }
-    footer { flex-direction: column; gap: 24px; align-items: flex-start; padding: 32px 24px; }
-    .footer-left { font-size: 13px; }
-    .footer-links { flex-wrap: wrap; gap: 14px 20px; }
-    .capabilities, .jurisdictions, .status-section { padding: 60px 24px; }
-    .built-on, .reference { padding: 60px 24px; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
   }
+  .pulse-node { animation: pulse 3s ease-in-out infinite; transform-origin: center; }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<nav>
-  <a href="/" class="nav-logo" id="org-logo-link">
-    <canvas id="org-nav-icon" width="26" height="26" aria-label="EstateAigents bot icon"></canvas>
-    <span class="logo-text">Estate<span class="logo-accent">Aigents</span><span class="logo-tld">.org</span></span>
-  </a>
-  <ul class="nav-links">
-    <li><a href="#protocol">Protocol</a></li>
-    <li><a href="#built-on">Stack</a></li>
-    <li><a href="#jurisdictions">Jurisdictions</a></li>
-    <li><a href="/faq.html">FAQ</a></li>
-    <li><a href="https://estateaigents.com" target="_blank">Platform →</a></li>
-    <li><a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="nav-cta">View on GitHub</a></li>
-  </ul>
-  <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
-
-<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
-  <ul>
-    <li><a href="#protocol">Protocol</a></li>
-    <li><a href="#built-on">Stack</a></li>
-    <li><a href="#jurisdictions">Jurisdictions</a></li>
-    <li><a href="/faq.html">FAQ</a></li>
-    <li><a href="https://estateaigents.com" target="_blank">Platform →</a></li>
-    <li><a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="mobile-cta">
-      <svg style="width:15px;height:15px;flex-shrink:0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-      View on GitHub
-    </a></li>
-  </ul>
-</div>
-
-<section class="hero" id="top">
-  <div class="hero-left">
-    <div class="hero-badge">v0.1 Draft · MIT Licensed</div>
-    <h1><span class="raia-hero-word">RAIA&#8482;</span> — The Property <em>AI Operating System</em></h1>
-    <p class="hero-subtitle"><span id="raia-type"></span><span id="raia-cursor" class="raia-cursor"></span></p>
-    <p class="hero-desc">An open protocol for AI agents to discover, verify and transact property — directly between agents, without a portal in the middle.</p>
-    <div class="hero-actions">
-      <a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="btn-primary">
-        <svg class="icon-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-        View on GitHub
-      </a>
-      <a href="https://github.com/estateaigents/raia-protocol/issues/new?labels=schema-working-group" target="_blank" class="btn-secondary">Join working group</a>
-    </div>
-  </div>
-
-  <div class="hero-right">
-    <div class="diagram-label">Protocol stack</div>
-    <div class="diagram-row">
-      <div><div class="diagram-name accent">RAIA™ Protocol</div><div class="diagram-desc">Property vertical — estate agents + personal AI</div></div>
-      <span class="diagram-tag tag-vertical">Vertical</span>
-    </div>
-    <div class="diagram-row diagram-indent">
-      <div class="diagram-arrow">├──</div>
-      <div><div class="diagram-name">Google A2A</div><div class="diagram-desc">Agent-to-agent communication + discovery</div></div>
-      <span class="diagram-tag tag-open">Open</span>
-    </div>
-    <div class="diagram-row diagram-indent">
-      <div class="diagram-arrow">└──</div>
-      <div><div class="diagram-name">Anthropic MCP</div><div class="diagram-desc">Transport layer — agents connect to RAIA tools</div></div>
-      <span class="diagram-tag tag-transport">Transport</span>
-    </div>
-    <div style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border);">
-      <div class="diagram-label" style="margin-bottom:8px;">Trademark</div>
-      <div style="font-size:12px; color:var(--mid);">RAIA™ UK00003359082 · Classes 36 + 42<br>Registered 2018 · EstateAigents Ltd</div>
-    </div>
-  </div>
-</section>
-
-<!-- RAIA explainer -->
-<section style="padding: 4rem 0; background: var(--white); border-top: 1px solid var(--border);">
-  <div style="max-width: 56rem; margin: 0 auto; padding: 0 3rem;">
-    <p style="font-size: 1.125rem; color: #374151; margin-bottom: 1.5rem; line-height: 1.75;">
-      Like Android for mobile, RAIA&#8482; is open infrastructure that no single
-      actor controls. Any agent can run on it. Any AI assistant can query it.
-      Any developer can build on it.
-    </p>
-    <p style="font-size: 1.125rem; color: #374151; margin-bottom: 1.5rem; line-height: 1.75;">
-      The difference from Android: RAIA is governed by Move Home Organisation
-      CIC — a UK community interest company. Not a corporation. The protocol
-      belongs to the community.
-    </p>
-    <p style="font-size: 1.125rem; color: #374151; margin-bottom: 1rem; font-weight: 600;">
-      RAIA has two expressions:
-    </p>
-    <div style="margin-left: 1.5rem; margin-bottom: 1.5rem;">
-      <p style="margin-bottom: 0.75rem;">
-        <strong style="color: var(--accent);">RAIA Protocol</strong>
-        <span style="color: #374151;"> — the open standard. MIT licensed. What developers implement. What AI agents speak.</span>
-      </p>
-      <p>
-        <strong style="color: var(--accent);">RAIA OS</strong>
-        <span style="color: #374151;"> — the operating system for your agency. Viewings, compliance, listings, enquiries, rent collection. All coordinated. All on open infrastructure.</span>
-      </p>
-    </div>
-    <p style="color: #6b7280; margin-bottom: 0.5rem;">EstateAigents.com is the reference implementation.</p>
-    <p style="color: #6b7280;">MoveHome.org is the free public portal built on the same rails.</p>
-  </div>
-</section>
-
-<!-- Stack diagram -->
-<section style="padding: 3rem 0; background: var(--off-white); border-top: 1px solid var(--border);">
-  <div style="max-width: 40rem; margin: 0 auto; padding: 0 3rem;">
-    <div style="border: 1px solid var(--border); border-radius: 0.5rem; overflow: hidden; font-family: 'DM Mono', monospace; font-size: 0.875rem;">
-      <div style="display: flex; border-bottom: 1px solid var(--border);">
-        <div style="flex: 1; padding: 0.75rem; background: var(--accent-light); text-align: center; color: #374151; border-right: 1px solid var(--border);">Your AI Assistant</div>
-        <div style="flex: 1; padding: 0.75rem; background: var(--accent-light); text-align: center; color: #374151; border-right: 1px solid var(--border);">EstateAigents</div>
-        <div style="flex: 1; padding: 0.75rem; background: var(--accent-light); text-align: center; color: #374151;">Any Agent App</div>
-      </div>
-      <div style="padding: 0.75rem; background: #dbeafe; text-align: center; font-weight: 600; color: #1e40af; border-bottom: 1px solid var(--border);">
-        RAIA OS <span style="font-weight: normal; color: var(--accent); margin-left: 0.5rem;">← What you experience</span>
-      </div>
-      <div style="padding: 0.75rem; background: var(--accent-light); text-align: center; font-weight: 600; color: var(--accent); border-bottom: 1px solid var(--border);">
-        RAIA Protocol <span style="font-weight: normal; color: #60a5fa; margin-left: 0.5rem;">← What developers implement</span>
-      </div>
-      <div style="padding: 0.75rem; background: var(--white); text-align: center; color: #6b7280;">
-        Google A2A + MCP <span style="color: #9ca3af; margin-left: 0.5rem;">← Open transport layer</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="section-divider"></div>
-
-<section class="capabilities" id="protocol">
-  <div class="section-eyebrow">Six capabilities</div>
-  <h2 class="section-title">What RAIA defines</h2>
-  <p class="section-desc">Each capability is independently implementable. Start with Discover. Add the rest when ready.</p>
-  <div class="cap-grid">
-    <div class="cap-card"><div class="cap-number">01</div><div class="cap-name">Discover</div><div class="cap-desc">AI agents find verified estate agents and their live portfolios via the RAIA registry.</div></div>
-    <div class="cap-card"><div class="cap-number">02</div><div class="cap-name">Query</div><div class="cap-desc">Structured property search — location, type, price, dates, tenure, amenities.</div></div>
-    <div class="cap-card"><div class="cap-number">03</div><div class="cap-name">Verify</div><div class="cap-desc">Agent identity, licence status, and jurisdiction compliance signals — no anonymous listings.</div></div>
-    <div class="cap-card"><div class="cap-number">04</div><div class="cap-name">Transact</div><div class="cap-desc">Viewing requests, offer management, fee splits — negotiated agent to agent.</div></div>
-    <div class="cap-card"><div class="cap-number">05</div><div class="cap-name">Trust</div><div class="cap-desc">Only licensed, verified agents list on the protocol. Jurisdiction compliance enforced per market.</div></div>
-    <div class="cap-card"><div class="cap-number">06</div><div class="cap-name">Portability</div><div class="cap-desc">Your Aigent tracks qualifications, CPD records, memberships and career history — portable across every agency you work with, verifiable by any counterparty.</div></div>
-  </div>
-</section>
-
-<div class="section-divider"></div>
-
-<section class="built-on" id="built-on">
-  <div class="built-on-inner">
-    <div>
-      <div class="section-eyebrow">Open infrastructure</div>
-      <h2 class="section-title">Built on top of existing standards</h2>
-      <p class="section-desc" style="margin-bottom:32px;">RAIA is not a new transport layer. It is a vertical implementation of two existing open standards — adding a property schema and trust layer on top.</p>
-      <div class="protocol-cards">
-        <a href="https://github.com/google-a2a/A2A" target="_blank" class="protocol-card">
-          <div class="protocol-icon icon-a2a">🔗</div>
-          <div><div class="protocol-name">Google A2A Protocol</div><div class="protocol-desc">Agent-to-agent communication, discovery, task routing</div></div>
-          <span class="protocol-arrow">↗</span>
-        </a>
-        <a href="https://github.com/modelcontextprotocol/servers" target="_blank" class="protocol-card">
-          <div class="protocol-icon icon-mcp">⚡</div>
-          <div><div class="protocol-name">Anthropic MCP</div><div class="protocol-desc">Model-to-tool connections, structured data access</div></div>
-          <span class="protocol-arrow">↗</span>
-        </a>
-        <a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="protocol-card" style="border-color:var(--accent);">
-          <div class="protocol-icon icon-raia">🏠</div>
-          <div><div class="protocol-name" style="color:var(--accent);">RAIA™ Protocol</div><div class="protocol-desc">Property schema + trust layer — built on both</div></div>
-          <span class="protocol-arrow" style="color:var(--accent);">↗</span>
-        </a>
-      </div>
-    </div>
-    <div>
-      <div class="diagram-label" style="margin-bottom:16px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--mid);">Example — search request</div>
-      <div class="code-block">
-        <span class="code-punct">{</span><br>
-        &nbsp;&nbsp;<span class="code-key">"raia_version"</span><span class="code-punct">:</span> <span class="code-str">"0.1"</span><span class="code-punct">,</span><br>
-        &nbsp;&nbsp;<span class="code-key">"request_type"</span><span class="code-punct">:</span> <span class="code-str">"property_search"</span><span class="code-punct">,</span><br>
-        &nbsp;&nbsp;<span class="code-key">"market"</span><span class="code-punct">:</span> <span class="code-str">"lettings"</span><span class="code-punct">,</span><br>
-        &nbsp;&nbsp;<span class="code-key">"requirements"</span><span class="code-punct">:</span> <span class="code-punct">{</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"un_locode"</span><span class="code-punct">:</span> <span class="code-str">"GBLON"</span><span class="code-punct">,</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"bedrooms_min"</span><span class="code-punct">:</span> <span class="code-num">2</span><span class="code-punct">,</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"rent_pcm_max"</span><span class="code-punct">:</span> <span class="code-num">2800</span><span class="code-punct">,</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"currency"</span><span class="code-punct">:</span> <span class="code-str">"GBP"</span><span class="code-punct">,</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"available_from"</span><span class="code-punct">:</span> <span class="code-str">"2026-06-01"</span><br>
-        &nbsp;&nbsp;<span class="code-punct">},</span><br>
-        &nbsp;&nbsp;<span class="code-key">"buyer_agent"</span><span class="code-punct">:</span> <span class="code-punct">{</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"agent_id"</span><span class="code-punct">:</span> <span class="code-str">"claude-assistant"</span><span class="code-punct">,</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// end-client identity never exposed</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"acting_for"</span><span class="code-punct">:</span> <span class="code-str">"anonymous"</span><br>
-        &nbsp;&nbsp;<span class="code-punct">}</span><br>
-        <span class="code-punct">}</span>
-      </div>
-      <p style="font-size:12px; color:var(--mid); margin-top:12px; font-family:'DM Mono',monospace;">Full JSON schemas publish with v1.0 · Q3 2026</p>
-    </div>
-  </div>
-</section>
-
-<section class="jurisdictions" id="jurisdictions">
-  <div class="section-eyebrow">Global standard</div>
-  <h2 class="section-title">Jurisdictional modules</h2>
-  <p class="section-desc">A global mechanical core with community-contributed legal adapters per market. Add your jurisdiction.</p>
-  <div class="juris-grid">
-    <div class="juris-card"><div class="juris-code">GB</div><div class="juris-name">United Kingdom</div><span class="juris-status status-draft">Draft</span></div>
-    <div class="juris-card"><div class="juris-code">TH</div><div class="juris-name">Thailand</div><span class="juris-status status-draft">Draft</span></div>
-    <div class="juris-card"><div class="juris-code">SG</div><div class="juris-name">Singapore</div><span class="juris-status status-planned">Planned</span></div>
-    <div class="juris-card"><div class="juris-code">US</div><div class="juris-name">United States</div><span class="juris-status status-planned">Planned</span></div>
-    <div class="juris-card"><div class="juris-code">EU</div><div class="juris-name">European Union</div><span class="juris-status status-planned">Planned</span></div>
-  </div>
-</section>
-
-<div class="section-divider"></div>
-
-<section class="reference">
-  <div class="reference-inner">
-    <div>
-      <div class="section-eyebrow">Reference implementation</div>
-      <h2 class="section-title">Built by the team behind EstateAigents.com</h2>
-      <p class="section-desc">RAIA Protocol is proven in production. EstateAigents.com is the reference marketplace — the only platform that has implemented the full protocol stack end to end.</p>
-      <div class="ref-stats">
-        <div><div class="ref-stat-num">5,000+</div><div class="ref-stat-label">Properties managed</div></div>
-        <div><div class="ref-stat-num">2</div><div class="ref-stat-label">Jurisdictions live</div></div>
-        <div><div class="ref-stat-num">2018</div><div class="ref-stat-label">Trademark registered</div></div>
-      </div>
-      <div class="ref-badges">
-        <span class="ref-badge">ARLA Licensed</span>
-        <span class="ref-badge">TPO Registered</span>
-        <span class="ref-badge">MyDeposits</span>
-        <span class="ref-badge">NRLA Member</span>
-        <span class="ref-badge">ICO Registered</span>
-      </div>
-    </div>
-    <div class="reference-cta">
-      <a href="https://estateaigents.com" target="_blank" class="btn-white">Visit EstateAigents.com ↗</a>
-      <a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="btn-ghost">
-        <svg class="icon-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-        View on GitHub
-      </a>
-    </div>
-  </div>
-</section>
-
-<section class="status-section">
-  <div>
-    <div class="section-eyebrow">Roadmap</div>
-    <h2 class="section-title" style="font-size:28px;">Status</h2>
-    <table class="version-table">
-      <thead><tr><th>Version</th><th>Status</th><th>Date</th></tr></thead>
-      <tbody>
-        <tr><td>v0.1</td><td class="td-draft">Draft — not for production</td><td>April 2026</td></tr>
-        <tr><td>v1.0</td><td class="td-planned">JSON schemas + MCP server</td><td>Q3 2026</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div>
-    <div class="section-eyebrow">Open standard</div>
-    <h2 class="section-title" style="font-size:28px;">Contribute</h2>
-    <ul class="contribute-list">
-      <li><a href="https://github.com/estateaigents/raia-protocol/issues/new?labels=schema-working-group" target="_blank" class="contribute-item"><span class="contribute-icon">🔬</span><div><div class="contribute-title">Schema working group</div><div class="contribute-desc">Join v1.0 schema design before public release</div></div></a></li>
-      <li><a href="https://github.com/estateaigents/raia-protocol/tree/main/modules" target="_blank" class="contribute-item"><span class="contribute-icon">🌍</span><div><div class="contribute-title">Add a jurisdiction module</div><div class="contribute-desc">Contribute compliance rules for your market</div></div></a></li>
-      <li><a href="https://github.com/estateaigents/raia-protocol/issues" target="_blank" class="contribute-item"><span class="contribute-icon">💬</span><div><div class="contribute-title">Challenge the spec</div><div class="contribute-desc">Open an issue — gaps, ambiguities, edge cases</div></div></a></li>
+<!-- NAV -->
+<nav class="top">
+  <div class="inner">
+    <a href="#" class="logo"><img src="/assets/raia-logo.png" alt="RAIA" class="raia-mark"><span>RAIA<span class="mark">™</span> · estateaigents.org</span></a>
+    <ul>
+      <li><a href="#home" data-tab="home">Home</a></li>
+      <li><a href="#developers" data-tab="developers">Developers</a></li>
+      <li><a href="#about" data-tab="about">About</a></li>
+      <li><a href="https://www.estateaigents.org/faq.html">FAQ</a></li>
+      <li><a href="https://github.com/estateaigents/raia-protocol" class="cta">GitHub ↗</a></li>
     </ul>
   </div>
-</section>
+</nav>
 
-<div class="section-divider"></div>
-<footer>
-  <div class="footer-left">
-    RAIA™ · <span style="color:var(--accent);font-weight:500;">estateaigents.org</span> · © 2026 <a href="https://estateaigents.com">EstateAigents Ltd</a><br>
-    Protocol specification MIT licensed · <a href="https://github.com/estateaigents/raia-protocol/blob/main/LICENSE">License</a> · <a href="https://github.com/estateaigents/raia-protocol/blob/main/GOVERNANCE.md">Governance</a>
+<!-- SECTION TABS -->
+<div class="section-tabs">
+  <div class="inner">
+    <button class="tab-btn active" data-tab="home">Home</button>
+    <button class="tab-btn" data-tab="developers">Developers</button>
+    <button class="tab-btn" data-tab="about">About</button>
   </div>
-  <ul class="footer-links">
-    <li><a href="https://github.com/estateaigents/raia-protocol">GitHub</a></li>
-    <li><a href="https://github.com/estateaigents/raia-protocol/blob/main/SPEC.md">Spec</a></li>
-    <li><a href="/faq.html">FAQ</a></li>
-    <li><a href="https://estateaigents.com">Platform</a></li>
-    <li><a href="mailto:protocol@estateaigents.org">Contact</a></li>
-  </ul>
+</div>
+
+<!-- HOME -->
+<div class="tab-content active" id="home">
+
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="container">
+      <div class="hero-inner">
+        <div>
+          <div class="pill"><span class="dot"></span> v0.1 Draft · MIT Licensed · Open Protocol</div>
+          <h1>The open language that lets <span class="blue">AI agents</span> buy, sell, and rent property — directly.</h1>
+          <p class="lede">RAIA is a free, open protocol. Like email (SMTP) or the web (HTTP) — but for AI agents transacting property on your behalf.</p>
+          <div class="hero-ctas">
+            <a href="#explainer" class="btn btn-primary">▶ Watch 2-min explainer</a>
+            <a href="#developers" class="btn btn-secondary" data-tab="developers">For developers →</a>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+            <defs>
+              <radialGradient id="centerGlow" cx="50%" cy="50%">
+                <stop offset="0%" stop-color="#4285f4" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#4285f4" stop-opacity="0"/>
+              </radialGradient>
+              <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#4285f4" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#4285f4" stop-opacity="0.1"/>
+              </linearGradient>
+            </defs>
+            <circle cx="200" cy="200" r="180" fill="url(#centerGlow)"/>
+            <circle cx="200" cy="200" r="150" fill="none" stroke="#1f2330" stroke-width="1" stroke-dasharray="2 4"/>
+            <circle cx="200" cy="200" r="100" fill="none" stroke="#1f2330" stroke-width="1" stroke-dasharray="2 4"/>
+            <line x1="200" y1="200" x2="200" y2="50" stroke="url(#lineGrad)" stroke-width="1.5"/>
+            <line x1="200" y1="200" x2="350" y2="280" stroke="url(#lineGrad)" stroke-width="1.5"/>
+            <line x1="200" y1="200" x2="50" y2="280" stroke="url(#lineGrad)" stroke-width="1.5"/>
+            <line x1="200" y1="200" x2="100" y2="100" stroke="url(#lineGrad)" stroke-width="1.5"/>
+            <line x1="200" y1="200" x2="300" y2="100" stroke="url(#lineGrad)" stroke-width="1.5"/>
+            <g class="pulse-node">
+              <circle cx="200" cy="50" r="22" fill="#0f1219" stroke="#4285f4" stroke-width="1.5"/>
+              <text x="200" y="55" text-anchor="middle" fill="#ffffff" font-size="11" font-family="Inter" font-weight="600">User AI</text>
+            </g>
+            <g>
+              <circle cx="350" cy="280" r="22" fill="#0f1219" stroke="#4285f4" stroke-width="1.5"/>
+              <text x="350" y="285" text-anchor="middle" fill="#ffffff" font-size="11" font-family="Inter" font-weight="600">Agent</text>
+            </g>
+            <g>
+              <circle cx="50" cy="280" r="22" fill="#0f1219" stroke="#4285f4" stroke-width="1.5"/>
+              <text x="50" y="285" text-anchor="middle" fill="#ffffff" font-size="11" font-family="Inter" font-weight="600">Portal</text>
+            </g>
+            <g>
+              <circle cx="100" cy="100" r="22" fill="#0f1219" stroke="#4285f4" stroke-width="1.5"/>
+              <text x="100" y="105" text-anchor="middle" fill="#ffffff" font-size="11" font-family="Inter" font-weight="600">Verify</text>
+            </g>
+            <g>
+              <circle cx="300" cy="100" r="22" fill="#0f1219" stroke="#4285f4" stroke-width="1.5"/>
+              <text x="300" y="105" text-anchor="middle" fill="#ffffff" font-size="11" font-family="Inter" font-weight="600">Lender</text>
+            </g>
+            <circle cx="200" cy="200" r="44" fill="#4285f4" filter="drop-shadow(0 0 20px #4285f4)"/>
+            <text x="200" y="195" text-anchor="middle" fill="#ffffff" font-size="14" font-family="Inter" font-weight="700">RAIA</text>
+            <text x="200" y="212" text-anchor="middle" fill="#ffffff" font-size="9" font-family="Inter" font-weight="500" opacity="0.9">PROTOCOL</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="eyebrow">The Problem</div>
+      <h2>Your AI assistant can search for a flat. <span class="blue">It can't rent one.</span></h2>
+      <p class="intro">Today's property portals are walled gardens. Your AI can read listings, but it can't talk to the agent, book a viewing, or submit an offer. Every transaction still ends with a human filling out a form.</p>
+
+      <div class="compare">
+        <div class="compare-card bad">
+          <span class="label">Today</span>
+          <h3>Walls everywhere.</h3>
+          <p>Your AI hits a wall at every portal. No agent-to-agent communication. No structured offers. No verified identities.</p>
+          <div class="flow">You <span class="arrow">→</span> Your AI <span class="arrow">→</span> <span class="blocked">[ wall ]</span> <span class="arrow">→</span> Agent</div>
+        </div>
+        <div class="compare-card good">
+          <span class="label">With RAIA</span>
+          <h3>Open rails.</h3>
+          <p>Your AI speaks directly to the agent's AI in a shared language. Verified, structured, accountable.</p>
+          <div class="flow">You <span class="arrow">→</span> Your AI <span class="arrow">↔</span> <span class="ok">RAIA</span> <span class="arrow">↔</span> Agent's AI <span class="arrow">→</span> Done</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="explainer">
+    <div class="container">
+      <div class="eyebrow">How it works · 2 minutes</div>
+      <h2>What is <span class="blue">RAIA</span>?</h2>
+      <p class="intro">A plain-English explainer of the protocol, who it's for, and why we built it on open infrastructure.</p>
+      <div class="video-wrap">
+        <div class="placeholder">
+          <div class="play"></div>
+          <div class="label">RAIA in 2 minutes — coming soon</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="eyebrow">Built on open standards</div>
+      <h2>RAIA doesn't reinvent the wheel. <span class="blue">It builds on two.</span></h2>
+      <p class="intro">RAIA sits on top of two open protocols from Google and Anthropic — adding a property-specific schema and a trust layer for verified agents.</p>
+
+      <div class="stack-grid">
+        <div class="stack-card">
+          <div class="visual">
+            <div class="visual-placeholder">
+              <div class="play-sm"></div>
+              <span>Google A2A — official intro</span>
+            </div>
+          </div>
+          <div class="body">
+            <div class="sub">Google · Open Standard</div>
+            <h4>Agent-to-Agent (A2A)</h4>
+            <p>How AI agents find and talk to each other. Like TCP/IP for AI — handles routing, discovery, and task handoff between any two agents.</p>
+            <div class="links">
+              <a href="https://github.com/google-a2a/A2A" target="_blank">GitHub →</a>
+              <a href="https://google.github.io/A2A" target="_blank">Documentation →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack-card">
+          <div class="visual">
+            <div class="visual-placeholder">
+              <div class="play-sm"></div>
+              <span>Anthropic MCP — official intro</span>
+            </div>
+          </div>
+          <div class="body">
+            <div class="sub">Anthropic · Open Standard</div>
+            <h4>Model Context Protocol (MCP)</h4>
+            <p>How AI agents connect to tools and data sources. The plug that lets an agent call a property search, a compliance checker, a viewings API.</p>
+            <div class="links">
+              <a href="https://github.com/modelcontextprotocol/servers" target="_blank">GitHub →</a>
+              <a href="https://modelcontextprotocol.io" target="_blank">Documentation →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack-diagram">
+        <div class="eyebrow" style="margin-bottom: 1.5rem;">The full stack</div>
+        <div class="stack-layer featured">
+          <div class="num">L3</div>
+          <div class="label">RAIA™ Protocol</div>
+          <div class="desc">Property schema + verified agent registry + trust layer. The vertical implementation.</div>
+        </div>
+        <div class="stack-layer">
+          <div class="num">L2</div>
+          <div class="label">Google A2A</div>
+          <div class="desc">Agent discovery and communication.</div>
+        </div>
+        <div class="stack-layer">
+          <div class="num">L1</div>
+          <div class="label">Anthropic MCP</div>
+          <div class="desc">Agent-to-tool connections.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="eyebrow">Who it's for</div>
+      <h2>Three audiences. <span class="blue">One protocol.</span></h2>
+
+      <div class="audience">
+        <div class="audience-card">
+          <div class="visual">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#4285f4" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#4285f4" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <rect width="400" height="250" fill="url(#g1)"/>
+              <g transform="translate(200, 125)">
+                <path d="M -60 10 L 0 -50 L 60 10 L 60 60 L -60 60 Z" fill="none" stroke="#4285f4" stroke-width="2"/>
+                <rect x="-15" y="20" width="30" height="40" fill="none" stroke="#4285f4" stroke-width="2"/>
+                <line x1="-60" y1="60" x2="60" y2="60" stroke="#4285f4" stroke-width="2"/>
+              </g>
+            </svg>
+          </div>
+          <div class="body">
+            <h4>Estate agents</h4>
+            <p>Reach the next generation of AI-powered buyers and renters. Your listings become discoverable by any AI assistant.</p>
+            <a href="https://estateaigents.com" class="link">Visit EstateAigents.com →</a>
+          </div>
+        </div>
+
+        <div class="audience-card">
+          <div class="visual">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#4285f4" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#4285f4" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <rect width="400" height="250" fill="url(#g2)"/>
+              <g transform="translate(200, 125)">
+                <path d="M -55 -35 L 55 -35 Q 70 -35 70 -20 L 70 15 Q 70 30 55 30 L 10 30 L -5 50 L -5 30 L -55 30 Q -70 30 -70 15 L -70 -20 Q -70 -35 -55 -35 Z" fill="none" stroke="#4285f4" stroke-width="2"/>
+                <circle cx="-30" cy="-3" r="3" fill="#4285f4"/>
+                <circle cx="0" cy="-3" r="3" fill="#4285f4"/>
+                <circle cx="30" cy="-3" r="3" fill="#4285f4"/>
+              </g>
+            </svg>
+          </div>
+          <div class="body">
+            <h4>Renters &amp; buyers</h4>
+            <p>Your AI assistant doesn't just search — it negotiates, books viewings, and submits offers on your behalf.</p>
+            <a href="https://movehome.org" class="link">Visit MoveHome.org →</a>
+          </div>
+        </div>
+
+        <div class="audience-card">
+          <div class="visual">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#4285f4" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#4285f4" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <rect width="400" height="250" fill="url(#g3)"/>
+              <g transform="translate(200, 125)">
+                <path d="M -40 -30 L -70 0 L -40 30" fill="none" stroke="#4285f4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M 40 -30 L 70 0 L 40 30" fill="none" stroke="#4285f4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="20" y1="-35" x2="-20" y2="35" stroke="#4285f4" stroke-width="3" stroke-linecap="round"/>
+              </g>
+            </svg>
+          </div>
+          <div class="body">
+            <h4>Developers</h4>
+            <p>Build on open rails. Implement the protocol, contribute schemas, or add your jurisdiction module.</p>
+            <a href="#developers" class="link" data-tab="developers">Read the docs →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- DEVELOPERS -->
+<div class="tab-content" id="developers">
+
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="container">
+      <div class="hero-inner">
+        <div>
+          <div class="pill"><span class="dot"></span> For Developers · MIT Licensed</div>
+          <h1>Implement the <span class="blue">property layer</span> of the agentic web.</h1>
+          <p class="lede">Open JSON schemas. Reference MCP server. Jurisdictional compliance modules. Build property-aware AI agents that interoperate by default.</p>
+          <div class="hero-ctas">
+            <a href="https://github.com/estateaigents/raia-protocol" class="btn btn-primary">View on GitHub ↗</a>
+            <a href="https://github.com/estateaigents/raia-protocol/blob/main/SPEC.md" class="btn btn-secondary">Read the spec →</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
+            <defs>
+              <radialGradient id="codeGlow" cx="50%" cy="50%">
+                <stop offset="0%" stop-color="#4285f4" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#4285f4" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <circle cx="200" cy="200" r="180" fill="url(#codeGlow)"/>
+            <rect x="60" y="80" width="280" height="240" rx="12" fill="#0a0d14" stroke="#2a3142" stroke-width="1"/>
+            <circle cx="80" cy="100" r="4" fill="#ea4335"/>
+            <circle cx="95" cy="100" r="4" fill="#fbbc04"/>
+            <circle cx="110" cy="100" r="4" fill="#34a853"/>
+            <line x1="60" y1="120" x2="340" y2="120" stroke="#1f2330"/>
+            <text x="80" y="150" fill="#69a0ff" font-family="JetBrains Mono" font-size="11">{</text>
+            <text x="95" y="170" fill="#69a0ff" font-family="JetBrains Mono" font-size="11">"raia_version":</text>
+            <text x="220" y="170" fill="#81c995" font-family="JetBrains Mono" font-size="11">"0.1"</text>
+            <text x="95" y="190" fill="#69a0ff" font-family="JetBrains Mono" font-size="11">"market":</text>
+            <text x="170" y="190" fill="#81c995" font-family="JetBrains Mono" font-size="11">"lettings"</text>
+            <text x="95" y="210" fill="#69a0ff" font-family="JetBrains Mono" font-size="11">"un_locode":</text>
+            <text x="195" y="210" fill="#81c995" font-family="JetBrains Mono" font-size="11">"GBLON"</text>
+            <text x="95" y="230" fill="#69a0ff" font-family="JetBrains Mono" font-size="11">"bedrooms_min":</text>
+            <text x="220" y="230" fill="#fbbc04" font-family="JetBrains Mono" font-size="11">2</text>
+            <text x="95" y="250" fill="#69a0ff" font-family="JetBrains Mono" font-size="11">"rent_pcm_max":</text>
+            <text x="220" y="250" fill="#fbbc04" font-family="JetBrains Mono" font-size="11">2800</text>
+            <text x="95" y="270" fill="#5a6175" font-family="JetBrains Mono" font-size="11">// MCP-ready</text>
+            <text x="80" y="295" fill="#69a0ff" font-family="JetBrains Mono" font-size="11">}</text>
+            <rect x="155" y="285" width="2" height="14" fill="#4285f4">
+              <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+            </rect>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="eyebrow">Six capabilities</div>
+      <h2>What RAIA <span class="blue">defines</span>.</h2>
+      <p class="intro">Each capability is independently implementable. Start with Discover. Add the rest as you grow.</p>
+
+      <div class="capability-grid">
+        <div class="cap"><div class="num">01</div><h5>Discover</h5><p>AI agents find verified estate agents and their live portfolios via the RAIA registry.</p></div>
+        <div class="cap"><div class="num">02</div><h5>Query</h5><p>Structured property search — location, type, price, dates, tenure, amenities.</p></div>
+        <div class="cap"><div class="num">03</div><h5>Verify</h5><p>Agent identity, licence status, and jurisdiction compliance signals — no anonymous listings.</p></div>
+        <div class="cap"><div class="num">04</div><h5>Transact</h5><p>Viewing requests, offer management, fee splits — negotiated agent to agent.</p></div>
+        <div class="cap"><div class="num">05</div><h5>Trust</h5><p>Only licensed, verified agents list on the protocol. Jurisdiction compliance enforced per market.</p></div>
+        <div class="cap"><div class="num">06</div><h5>Portability</h5><p>Your Aigent tracks qualifications, CPD records, memberships — portable across every agency.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="eyebrow">Example — property search request</div>
+      <h2>Speak <span class="blue">RAIA</span>.</h2>
+      <pre class="code-block">{
+  <span class="key">"raia_version"</span><span class="punct">:</span> <span class="str">"0.1"</span><span class="punct">,</span>
+  <span class="key">"request_type"</span><span class="punct">:</span> <span class="str">"property_search"</span><span class="punct">,</span>
+  <span class="key">"market"</span><span class="punct">:</span> <span class="str">"lettings"</span><span class="punct">,</span>
+  <span class="key">"requirements"</span><span class="punct">:</span> {
+    <span class="key">"un_locode"</span><span class="punct">:</span> <span class="str">"GBLON"</span><span class="punct">,</span>
+    <span class="key">"bedrooms_min"</span><span class="punct">:</span> <span class="numv">2</span><span class="punct">,</span>
+    <span class="key">"rent_pcm_max"</span><span class="punct">:</span> <span class="numv">2800</span><span class="punct">,</span>
+    <span class="key">"currency"</span><span class="punct">:</span> <span class="str">"GBP"</span><span class="punct">,</span>
+    <span class="key">"available_from"</span><span class="punct">:</span> <span class="str">"2026-06-01"</span>
+  }<span class="punct">,</span>
+  <span class="key">"buyer_agent"</span><span class="punct">:</span> {
+    <span class="key">"agent_id"</span><span class="punct">:</span> <span class="str">"claude-assistant"</span><span class="punct">,</span>
+    <span class="comment">// end-client identity never exposed</span>
+    <span class="key">"acting_for"</span><span class="punct">:</span> <span class="str">"anonymous"</span>
+  }
+}</pre>
+      <p style="color: var(--text-dim); font-size: 0.9rem;">Full JSON schemas publish with v1.0 · Q3 2026</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="eyebrow">A note on RAIA OS</div>
+      <h2>The protocol is open. <span class="blue">The reference OS is in production hardening.</span></h2>
+
+      <div class="os-notice">
+        <h4>RAIA OS — currently private, road-testing in production</h4>
+        <p>RAIA OS is the full operating system layer — viewings, compliance, listings, enquiries, rent collection, agency workflows. It's being developed at <a href="https://estateaigents.com" style="color: var(--blue-bright); border-bottom: 1px solid var(--blue);">EstateAigents.com</a> as the reference implementation of the protocol.</p>
+        <p>We're road-testing the OS in production across UK and Thailand markets before locking the spec. As the <strong style="color: white;">protocol matures and adoption grows</strong>, we're committed to open-sourcing components of the OS that benefit the ecosystem — starting with the <strong style="color: white;">reference MCP server</strong> and <strong style="color: white;">jurisdiction compliance modules</strong>.</p>
+        <div class="tagline">→ Protocol: open from day one. OS: open when it's ready to be open well.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="eyebrow">Global standard · Local modules</div>
+      <h2>Jurisdictional <span class="blue">compliance</span>, modularised.</h2>
+      <p class="intro">A global mechanical core with community-contributed legal adapters per market. Add your jurisdiction.</p>
+
+      <div class="capability-grid">
+        <div class="cap"><div class="num">GB · DRAFT</div><h5>United Kingdom</h5><p>ARLA, TPO, MyDeposits, NRLA-aligned. Reference market.</p></div>
+        <div class="cap"><div class="num">TH · DRAFT</div><h5>Thailand</h5><p>SE Asia first market. Partner: Beyond 360 Co., Ltd.</p></div>
+        <div class="cap"><div class="num">SG · PLANNED</div><h5>Singapore</h5><p>CEA-aligned compliance module.</p></div>
+        <div class="cap"><div class="num">US · PLANNED</div><h5>United States</h5><p>State-level adapters. NAR-aware.</p></div>
+        <div class="cap"><div class="num">EU · PLANNED</div><h5>European Union</h5><p>Country-specific modules. GDPR-native.</p></div>
+        <div class="cap"><div class="num">+ NEW</div><h5>Your market</h5><p>Open a PR with your jurisdiction module.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="eyebrow">Open standard</div>
+      <h2>Contribute.</h2>
+      <div class="audience">
+        <div class="audience-card">
+          <div class="visual">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;" preserveAspectRatio="xMidYMid slice">
+              <rect width="400" height="250" fill="url(#g1)"/>
+              <g transform="translate(200, 125)">
+                <circle cx="-25" cy="0" r="18" fill="none" stroke="#4285f4" stroke-width="2"/>
+                <circle cx="25" cy="0" r="18" fill="none" stroke="#4285f4" stroke-width="2"/>
+                <circle cx="0" cy="-30" r="18" fill="none" stroke="#4285f4" stroke-width="2"/>
+                <line x1="-12" y1="0" x2="12" y2="0" stroke="#4285f4" stroke-width="2"/>
+                <line x1="-15" y1="-15" x2="-3" y2="-18" stroke="#4285f4" stroke-width="2"/>
+                <line x1="15" y1="-15" x2="3" y2="-18" stroke="#4285f4" stroke-width="2"/>
+              </g>
+            </svg>
+          </div>
+          <div class="body">
+            <h4>Schema working group</h4>
+            <p>Join the v1.0 schema design before public release.</p>
+            <a href="https://github.com/estateaigents/raia-protocol/issues/new?labels=schema-working-group" class="link">Join the WG →</a>
+          </div>
+        </div>
+        <div class="audience-card">
+          <div class="visual">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;" preserveAspectRatio="xMidYMid slice">
+              <rect width="400" height="250" fill="url(#g2)"/>
+              <g transform="translate(200, 125)">
+                <circle cx="0" cy="0" r="50" fill="none" stroke="#4285f4" stroke-width="2"/>
+                <ellipse cx="0" cy="0" rx="20" ry="50" fill="none" stroke="#4285f4" stroke-width="2"/>
+                <line x1="-50" y1="0" x2="50" y2="0" stroke="#4285f4" stroke-width="2"/>
+              </g>
+            </svg>
+          </div>
+          <div class="body">
+            <h4>Add a jurisdiction</h4>
+            <p>Contribute compliance rules for your market.</p>
+            <a href="https://github.com/estateaigents/raia-protocol/tree/main/modules" class="link">Submit a module →</a>
+          </div>
+        </div>
+        <div class="audience-card">
+          <div class="visual">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;" preserveAspectRatio="xMidYMid slice">
+              <rect width="400" height="250" fill="url(#g3)"/>
+              <g transform="translate(200, 125)">
+                <rect x="-40" y="-25" width="80" height="50" rx="6" fill="none" stroke="#4285f4" stroke-width="2"/>
+                <circle cx="-20" cy="0" r="3" fill="#4285f4"/>
+                <line x1="-10" y1="0" x2="25" y2="0" stroke="#4285f4" stroke-width="2"/>
+                <line x1="-20" y1="10" x2="20" y2="10" stroke="#4285f4" stroke-width="1.5" opacity="0.5"/>
+                <line x1="-20" y1="-10" x2="15" y2="-10" stroke="#4285f4" stroke-width="1.5" opacity="0.5"/>
+              </g>
+            </svg>
+          </div>
+          <div class="body">
+            <h4>Challenge the spec</h4>
+            <p>Open an issue — gaps, ambiguities, edge cases.</p>
+            <a href="https://github.com/estateaigents/raia-protocol/issues" class="link">Open an issue →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ABOUT -->
+<div class="tab-content" id="about">
+
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="container">
+      <div class="hero-inner">
+        <div>
+          <div class="pill"><span class="dot"></span> Move Home Organisation CIC · Co. No. 17202438</div>
+          <h1>Why the protocol is owned by a <span class="blue">non-profit</span>.</h1>
+          <p class="lede">RAIA is governed by Move Home Organisation CIC — a UK Community Interest Company. Not a corporation. The protocol belongs to the community it serves.</p>
+        </div>
+        <div class="hero-visual">
+          <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
+            <defs>
+              <radialGradient id="aboutGlow" cx="50%" cy="50%">
+                <stop offset="0%" stop-color="#4285f4" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#4285f4" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <circle cx="200" cy="200" r="180" fill="url(#aboutGlow)"/>
+            <path d="M 200 80 L 280 120 L 280 220 Q 280 280 200 320 Q 120 280 120 220 L 120 120 Z" fill="#0f1219" stroke="#4285f4" stroke-width="2"/>
+            <circle cx="200" cy="200" r="50" fill="none" stroke="#4285f4" stroke-width="1.5" opacity="0.5"/>
+            <image href="/assets/raia-logo.png" x="175" y="170" width="50" height="50" style="image-rendering: pixelated; opacity: 0.95;"/>
+            <text x="200" y="240" text-anchor="middle" fill="#4285f4" font-family="Inter" font-size="11" font-weight="700">CIC REGULATED</text>
+            <g transform="translate(200, 140)">
+              <rect x="-10" y="-5" width="20" height="15" rx="2" fill="#4285f4"/>
+              <path d="M -7 -5 L -7 -12 Q -7 -18 0 -18 Q 7 -18 7 -12 L 7 -5" fill="none" stroke="#4285f4" stroke-width="2"/>
+            </g>
+            <text x="200" y="265" text-anchor="middle" fill="#ffffff" font-family="Inter" font-size="11" font-weight="600">ASSET-LOCKED</text>
+            <text x="200" y="282" text-anchor="middle" fill="#9ca3b5" font-family="Inter" font-size="9">Mission-bound</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="cic-story">
+        <div class="narrative">
+          <div class="eyebrow">Our mission</div>
+          <p>Moving home is one of life's most stressful events. It's also one of the most expensive — clogged with fees, friction, paperwork, and fraud.</p>
+          <p>AI can fix this. But only if the rails are open.</p>
+          <p>If one company owned the protocol, the property industry would just be trading one walled garden for another. So we did the opposite: we put RAIA inside a non-profit, asset-locked entity whose only job is to steward the protocol on behalf of the community.</p>
+          <p class="lift">Reduce the cost and friction of moving home through AI for Good.</p>
+          <p>That's the mission of Move Home Organisation CIC. The protocol is the means. The reference implementations — EstateAigents.com, MoveHome.org — are early proof points. Anyone can build on the same rails.</p>
+          <p>We don't believe one company should own how property is transacted. We believe the rails should be open, the implementations should compete, and the community should govern.</p>
+        </div>
+
+        <aside class="cic-facts">
+          <h4>Registered credentials</h4>
+          <div class="cic-fact">
+            <div class="term">Move Home Organisation CIC</div>
+            <p>Company No. <strong style="color: var(--text);">17202438</strong> · Incorporated 6 May 2026 · England &amp; Wales</p>
+          </div>
+          <div class="cic-fact">
+            <div class="term">Company type</div>
+            <p>Private company limited by guarantee, without share capital — Community Interest Company.</p>
+          </div>
+          <div class="cic-fact">
+            <div class="term">Registered office</div>
+            <p>Unit 13 Freeland Park, Wareham Road, Lytchett Matravers, Poole, BH16 6FA, England.</p>
+          </div>
+          <div class="cic-fact">
+            <div class="term">Nature of business</div>
+            <p>SIC 63120 Web portals · SIC 68310 Real estate agencies.</p>
+          </div>
+          <div class="cic-fact">
+            <div class="term">Public record</div>
+            <p><a href="https://find-and-update.company-information.service.gov.uk/company/17202438" target="_blank" style="color: var(--blue-bright);">View on Companies House ↗</a></p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="eyebrow">What CIC status means</div>
+      <h2>Four guarantees, <span class="blue">enforced by UK law</span>.</h2>
+      <p class="intro">A Community Interest Company is a UK legal structure regulated by the Office of the CIC Regulator. It is purpose-built for organisations that exist to serve a community, not shareholders.</p>
+
+      <div class="capability-grid">
+        <div class="cap"><div class="num">01</div><h5>Asset-locked</h5><p>The protocol and its IP cannot be sold or transferred to a private entity. Statutory lock under the Companies Act.</p></div>
+        <div class="cap"><div class="num">02</div><h5>Mission-locked</h5><p>The CIC must act in the community interest. Any pivot requires CIC Regulator approval.</p></div>
+        <div class="cap"><div class="num">03</div><h5>Transparent</h5><p>Annual Community Interest Reports filed publicly at Companies House. Governance on GitHub.</p></div>
+        <div class="cap"><div class="num">04</div><h5>Independent</h5><p>Operates separately from EstateAigents.com Ltd, even though founding team members overlap.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="eyebrow">Reference implementation</div>
+      <h2>Proven in <span class="blue">production</span>.</h2>
+      <p class="intro">RAIA is not a paper standard. The protocol is implemented and battle-tested by EstateAigents.com — managing real properties, real tenancies, real money, across two jurisdictions.</p>
+
+      <div class="stats">
+        <div class="stat"><div class="num-big">5,000+</div><div class="label">Properties managed</div></div>
+        <div class="stat"><div class="num-big">2</div><div class="label">Jurisdictions live</div></div>
+        <div class="stat"><div class="num-big">2018</div><div class="label">RAIA™ Trademark registered</div></div>
+      </div>
+
+      <p style="margin-top: 2rem; color: var(--text-dim); font-size: 0.875rem; text-align: center;">
+        ARLA Licensed · TPO Registered · MyDeposits · NRLA Member · ICO Registered (Z2884909)
+      </p>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="eyebrow">Governance</div>
+      <h2>How decisions <span class="blue">get made</span>.</h2>
+      <div class="audience">
+        <div class="audience-card">
+          <div class="visual">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;" preserveAspectRatio="xMidYMid slice">
+              <rect width="400" height="250" fill="url(#g1)"/>
+              <g transform="translate(200, 125)">
+                <rect x="-30" y="-40" width="60" height="80" rx="4" fill="none" stroke="#4285f4" stroke-width="2"/>
+                <line x1="-20" y1="-25" x2="20" y2="-25" stroke="#4285f4" stroke-width="1.5"/>
+                <line x1="-20" y1="-10" x2="20" y2="-10" stroke="#4285f4" stroke-width="1.5"/>
+                <line x1="-20" y1="5" x2="10" y2="5" stroke="#4285f4" stroke-width="1.5"/>
+                <line x1="-20" y1="20" x2="15" y2="20" stroke="#4285f4" stroke-width="1.5"/>
+              </g>
+            </svg>
+          </div>
+          <div class="body">
+            <h4>Constitution</h4>
+            <p>Read the governance document on GitHub — covers asset lock, mission, board structure.</p>
+            <a href="https://github.com/estateaigents/raia-protocol/blob/main/GOVERNANCE.md" class="link">View GOVERNANCE.md →</a>
+          </div>
+        </div>
+        <div class="audience-card">
+          <div class="visual">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;" preserveAspectRatio="xMidYMid slice">
+              <rect width="400" height="250" fill="url(#g2)"/>
+              <g transform="translate(200, 125)">
+                <circle cx="0" cy="0" r="35" fill="none" stroke="#4285f4" stroke-width="2"/>
+                <path d="M -15 0 L -3 12 L 18 -10" fill="none" stroke="#4285f4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              </g>
+            </svg>
+          </div>
+          <div class="body">
+            <h4>RFC process</h4>
+            <p>Substantive protocol changes go through a public Request For Comments.</p>
+            <a href="https://github.com/estateaigents/raia-protocol/issues" class="link">Open an RFC →</a>
+          </div>
+        </div>
+        <div class="audience-card">
+          <div class="visual">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;" preserveAspectRatio="xMidYMid slice">
+              <rect width="400" height="250" fill="url(#g3)"/>
+              <g transform="translate(200, 125)">
+                <line x1="-40" y1="30" x2="-40" y2="-20" stroke="#4285f4" stroke-width="3" stroke-linecap="round"/>
+                <line x1="-15" y1="30" x2="-15" y2="-35" stroke="#4285f4" stroke-width="3" stroke-linecap="round"/>
+                <line x1="10" y1="30" x2="10" y2="-10" stroke="#4285f4" stroke-width="3" stroke-linecap="round"/>
+                <line x1="35" y1="30" x2="35" y2="-40" stroke="#4285f4" stroke-width="3" stroke-linecap="round"/>
+                <line x1="-55" y1="30" x2="50" y2="30" stroke="#4285f4" stroke-width="2"/>
+              </g>
+            </svg>
+          </div>
+          <div class="body">
+            <h4>Annual report</h4>
+            <p>The CIC publishes its annual Community Interest Report. First report: 2026.</p>
+            <a href="mailto:protocol@estateaigents.org" class="link">Get notified →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="inner">
+      <div>
+        <div class="footer-brand"><img src="/assets/raia-logo.png" alt="RAIA" class="raia-mark"><span>RAIA<span class="mark">™</span></span></div>
+        <p style="color: var(--text-dim); font-size: 0.9rem; max-width: 320px; line-height: 1.55;">The open protocol for property AI. Governed by Move Home Organisation CIC. No single actor controls it.</p>
+      </div>
+      <div>
+        <h6>Protocol</h6>
+        <ul>
+          <li><a href="https://github.com/estateaigents/raia-protocol">GitHub</a></li>
+          <li><a href="https://github.com/estateaigents/raia-protocol/blob/main/SPEC.md">Spec</a></li>
+          <li><a href="https://github.com/estateaigents/raia-protocol/blob/main/LICENSE">License (MIT)</a></li>
+          <li><a href="https://github.com/estateaigents/raia-protocol/blob/main/GOVERNANCE.md">Governance</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6>Implementations</h6>
+        <ul>
+          <li><a href="https://estateaigents.com">EstateAigents.com</a></li>
+          <li><a href="https://movehome.org">MoveHome.org</a></li>
+          <li><a href="https://rentlondonflat.com">RentLondonFlat.com</a></li>
+          <li><a href="https://rentbangkokcondo.com">RentBangkokCondo.com</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6>Connect</h6>
+        <ul>
+          <li><a href="https://www.estateaigents.org/faq.html">FAQ</a></li>
+          <li><a href="mailto:protocol@estateaigents.org">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-meta">
+      RAIA™ UK00003359082 · Classes 36 + 42 · Registered 2018 · EstateAigents Ltd<br>
+      Protocol governed by Move Home Organisation CIC · Company No. 17202438 · Registered in England &amp; Wales<br>
+      © 2026 · Protocol specification MIT licensed
+    </div>
+  </div>
 </footer>
 
 <script>
-(function() {
-  var WINDOWS = [
-    {c:0,r:0},{c:1,r:0},
-    {c:0,r:1},{c:1,r:1},
-    {c:0,r:2},{c:1,r:2}
-  ];
-  var BG = '#111111', BLUE = '#4040ff', WIN_ON = '#4040ff', WIN_OFF = '#111111', GROUND = '#222266';
-  var SIZE = 26, S = SIZE / 32;
+  const tabButtons = document.querySelectorAll('[data-tab]');
+  const tabContents = document.querySelectorAll('.tab-content');
 
-  function randomState() {
-    var s;
-    do { s = WINDOWS.map(function() { return Math.random() > 0.5; }); }
-    while (s.filter(Boolean).length < 2);
-    return s;
-  }
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const target = btn.getAttribute('data-tab');
+      if (!target) return;
+      e.preventDefault();
 
-  function roundRect(ctx, x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x+r, y);
-    ctx.lineTo(x+w-r, y);
-    ctx.quadraticCurveTo(x+w, y, x+w, y+r);
-    ctx.lineTo(x+w, y+h-r);
-    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-    ctx.lineTo(x+r, y+h);
-    ctx.quadraticCurveTo(x, y+h, x, y+h-r);
-    ctx.lineTo(x, y+r);
-    ctx.quadraticCurveTo(x, y, x+r, y);
-    ctx.closePath();
-    ctx.fill();
-  }
+      tabContents.forEach(tc => tc.classList.toggle('active', tc.id === target));
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-tab') === target);
+      });
 
-  function drawFrame(ctx, states) {
-    ctx.clearRect(0, 0, SIZE, SIZE);
-    ctx.fillStyle = BG;
-    roundRect(ctx, 0, 0, SIZE, SIZE, 5*S);
-    ctx.fillStyle = BLUE;
-    ctx.fillRect(8*S, 5*S, 16*S, 22*S);
-    ctx.fillStyle = GROUND;
-    ctx.fillRect(4*S, 27*S, 24*S, 2*S);
-    var cols = [10, 18], rows = [8, 13, 18];
-    states.forEach(function(on, i) {
-      ctx.fillStyle = on ? WIN_ON : WIN_OFF;
-      ctx.fillRect(cols[WINDOWS[i].c]*S, rows[WINDOWS[i].r]*S, 4*S, 3*S);
-    });
-  }
-
-  var canvas = document.getElementById('building-icon');
-  if (!canvas) return;
-  var ctx = canvas.getContext('2d');
-  var states = randomState();
-  drawFrame(ctx, states);
-
-  function flip() {
-    var lit = states.filter(Boolean).length;
-    var idx = Math.floor(Math.random() * 6);
-    if (!states[idx] && lit >= 5) { setTimeout(flip, 400 + Math.random()*1200); return; }
-    if (states[idx] && lit <= 1)  { setTimeout(flip, 400 + Math.random()*1200); return; }
-    states[idx] = !states[idx];
-    drawFrame(ctx, states);
-    setTimeout(flip, 500 + Math.random()*1500);
-  }
-  setTimeout(flip, Math.random() * 800);
-})();
-</script>
-<script>
-(function() {
-  var BG   = '#ffffff'
-  var BLUE = '#4040ff'
-  var DARK = '#2222aa'
-  var EYE  = '#ffffff'
-
-  function drawBot(ctx, size, blink) {
-    var s = size / 32
-    ctx.clearRect(0, 0, size, size)
-    var r = 5*s
-    ctx.fillStyle = BG
-    ctx.beginPath()
-    ctx.moveTo(r, 0); ctx.lineTo(size-r, 0)
-    ctx.quadraticCurveTo(size, 0, size, r)
-    ctx.lineTo(size, size-r)
-    ctx.quadraticCurveTo(size, size, size-r, size)
-    ctx.lineTo(r, size)
-    ctx.quadraticCurveTo(0, size, 0, size-r)
-    ctx.lineTo(0, r)
-    ctx.quadraticCurveTo(0, 0, r, 0)
-    ctx.closePath(); ctx.fill()
-    ctx.fillStyle = BLUE
-    ctx.fillRect(12*s, 1*s, 8*s, 4*s)
-    ctx.fillRect(14*s, 4*s, 4*s, 4*s)
-    ctx.fillRect(5*s,  7*s, 22*s, 18*s)
-    ctx.fillStyle = DARK
-    ctx.fillRect(8*s, 25*s, 16*s, 3*s)
-    ctx.fillStyle = EYE
-    if (blink) {
-      ctx.fillRect(9*s,  13*s, 5*s, 1*s)
-      ctx.fillRect(18*s, 13*s, 5*s, 1*s)
-    } else {
-      ctx.fillRect(9*s,  11*s, 5*s, 5*s)
-      ctx.fillRect(18*s, 11*s, 5*s, 5*s)
-    }
-  }
-
-  function animateBot(canvasId, size) {
-    var canvas = document.getElementById(canvasId)
-    if (!canvas) return
-    var ctx = canvas.getContext('2d')
-    var blinking = false
-    function render() { drawBot(ctx, size, blinking) }
-    function scheduleBlink() {
-      setTimeout(function() {
-        blinking = true; render()
-        setTimeout(function() { blinking = false; render(); scheduleBlink() }, 150)
-      }, 2000 + Math.random() * 3000)
-    }
-    render()
-    scheduleBlink()
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() { animateBot('org-nav-icon', 26) })
-  } else {
-    animateBot('org-nav-icon', 26)
-  }
-})()
-</script>
-<script>
-(function() {
-  var btn = document.getElementById('nav-hamburger');
-  var menu = document.getElementById('mobile-menu');
-  if (!btn || !menu) return;
-  btn.addEventListener('click', function() {
-    var open = menu.classList.toggle('open');
-    btn.classList.toggle('open', open);
-    btn.setAttribute('aria-expanded', open);
-    menu.setAttribute('aria-hidden', !open);
-  });
-  menu.querySelectorAll('a').forEach(function(a) {
-    a.addEventListener('click', function() {
-      menu.classList.remove('open');
-      btn.classList.remove('open');
-      btn.setAttribute('aria-expanded', 'false');
-      menu.setAttribute('aria-hidden', 'true');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
-})();
 </script>
-<script>
-(function() {
-  var typeEl = document.getElementById('raia-type');
-  var cursorEl = document.getElementById('raia-cursor');
-  var full = 'Real Estate Artificial Intelligence Agent Protocol';
 
-  function typeIt() {
-    typeEl.textContent = '';
-    var i = 0;
-    var t = setInterval(function() {
-      typeEl.textContent += full[i++];
-      if (i >= full.length) {
-        clearInterval(t);
-        setTimeout(typeIt, 3000);
-      }
-    }, 45);
-  }
-
-  typeIt();
-})();
-</script>
 </body>
 </html>
