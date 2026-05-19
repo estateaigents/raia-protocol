@@ -98,23 +98,6 @@
     nav.top .inner { padding: 0.75rem var(--gutter); }
   }
 
-  /* SECTION TABS */
-  .section-tabs { border-bottom: 1px solid var(--border); background: var(--bg); }
-  .section-tabs .inner {
-    display: flex; gap: 0;
-    max-width: var(--container); margin: 0 auto;
-    padding: 0 var(--gutter); overflow-x: auto;
-  }
-  .tab-btn {
-    background: none; border: none; color: var(--text-dim);
-    font-family: var(--font-body); font-size: 0.875rem; font-weight: 500;
-    padding: 1.25rem 1.5rem; cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.15s; white-space: nowrap;
-  }
-  .tab-btn:hover { color: var(--text); }
-  .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
-
   /* HERO */
   .hero {
     position: relative; padding: 6rem 0 5rem;
@@ -604,15 +587,6 @@
     </ul>
   </div>
 </nav>
-
-<!-- SECTION TABS -->
-<div class="section-tabs">
-  <div class="inner">
-    <button class="tab-btn active" data-tab="home">Home</button>
-    <button class="tab-btn" data-tab="developers">Developers</button>
-    <button class="tab-btn" data-tab="about">About</button>
-  </div>
-</div>
 
 <!-- HOME -->
 <div class="tab-content active" id="home">
@@ -1344,9 +1318,6 @@
       e.preventDefault();
 
       tabContents.forEach(tc => tc.classList.toggle('active', tc.id === target));
-      document.querySelectorAll('.tab-btn').forEach(b => {
-        b.classList.toggle('active', b.getAttribute('data-tab') === target);
-      });
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
