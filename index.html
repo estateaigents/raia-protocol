@@ -371,6 +371,24 @@
   .cap h5 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
   .cap p { font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; }
 
+  /* DATA TIER CARDS */
+  .tier-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 2rem 0; }
+  @media (max-width: 900px) { .tier-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .tier-grid { grid-template-columns: 1fr; } }
+  .tier { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color 0.2s; }
+  .tier:hover { border-color: var(--blue); }
+  .tier-badge { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; padding: 0.4rem 1rem; letter-spacing: 0.08em; }
+  .tier-0 .tier-badge { background: #1a2a1a; color: #4caf50; }
+  .tier-1 .tier-badge { background: #1a1f2e; color: #4285f4; }
+  .tier-2 .tier-badge { background: #2a1f12; color: #ff9800; }
+  .tier-3 .tier-badge { background: #2a1218; color: #f44336; }
+  .tier-body { padding: 1.25rem 1.5rem 1.5rem; }
+  .tier-body h5 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .tier-body p { font-size: 0.875rem; color: var(--text-dim); line-height: 1.55; margin-bottom: 1rem; }
+  .tier-tag { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); opacity: 0.7; }
+  .tier-note { background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--blue); border-radius: var(--radius); padding: 1.5rem 2rem; margin-top: 1.5rem; }
+  .tier-note p { font-size: 0.9rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 0.75rem; }
+
   /* CODE BLOCK */
   .code-block {
     background: #0a0d14; border: 1px solid var(--border);
@@ -874,6 +892,60 @@
   }
 }</pre>
       <p style="color: var(--text-dim); font-size: 0.9rem;">Full JSON schemas publish with v1.0 · Q3 2026</p>
+    </div>
+  </section>
+
+  <!-- DATA TIERS -->
+  <section class="block" id="data-tiers">
+    <div class="container">
+      <div class="eyebrow">Security Architecture</div>
+      <h2>One schema. <span class="blue">Four data levels.</span></h2>
+      <p class="intro">Public listing data, enquiry contact details, full KYC, and transactional records are modular — independently encrypted, independently consented, independently erasable. An agent with L0 access cannot infer that L1–L3 exist.</p>
+
+      <div class="tier-grid">
+
+        <div class="tier tier-0">
+          <div class="tier-badge">L0</div>
+          <div class="tier-body">
+            <h5>Public</h5>
+            <p>Listing details, photos, price, availability, agent card. No PII. Freely queryable — the same JSON a portal publishes is what agents read.</p>
+            <div class="tier-tag">No compliance obligation</div>
+          </div>
+        </div>
+
+        <div class="tier tier-1">
+          <div class="tier-badge">L1</div>
+          <div class="tier-body">
+            <h5>Enquiry</h5>
+            <p>Name, email, phone. A tenant or landlord makes first contact. Data minimisation applies — nothing beyond what the enquiry requires.</p>
+            <div class="tier-tag">UK GDPR Art. 6</div>
+          </div>
+        </div>
+
+        <div class="tier tier-2">
+          <div class="tier-badge">L2</div>
+          <div class="tier-body">
+            <h5>Identity &amp; KYC</h5>
+            <p>Passport/ID, current and previous address, employment, proof of income, AML check result. Carried as verifier assertions — raw documents never transit the protocol.</p>
+            <div class="tier-tag">UK GDPR Art. 9 · MLR 2017 · Right to Rent</div>
+          </div>
+        </div>
+
+        <div class="tier tier-3">
+          <div class="tier-badge">L3</div>
+          <div class="tier-body">
+            <h5>Transactional</h5>
+            <p>Tenancy agreements, deposit records, signed contracts, payment instruction references. Bank details never stored in plaintext — resolved inside a regulated Open Banking rail only.</p>
+            <div class="tier-tag">FCA · TDS · Contract law</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="tier-note">
+        <p>Every L1+ exchange requires a cryptographically scoped <strong>consent token</strong> issued by the data subject — bound to a specific purpose, property, and set of field scopes. Tokens are non-transferable and non-upgradeable. Implementations add levels incrementally: start with L0, add L1–L3 as your compliance infrastructure matures.</p>
+        <a href="https://github.com/estateaigents/raia-protocol/blob/master/SECURITY.md" class="link" target="_blank" rel="noopener">Read the full security spec →</a>
+      </div>
     </div>
   </section>
 
