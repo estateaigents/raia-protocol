@@ -520,6 +520,67 @@
     50% { opacity: 1; transform: scale(1.05); }
   }
   .pulse-node { animation: pulse 3s ease-in-out infinite; transform-origin: center; }
+
+  /* CIC Why-We-Built callout */
+  .cic-why-band {
+    background: #f4f3ef;
+    border-top: 1px solid #e2e1dc;
+    border-bottom: 1px solid #e2e1dc;
+    padding: 48px 0;
+  }
+  .cic-why-outer {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+  .cic-why-card {
+    border-left: 3px solid #2563FF;
+    padding-left: 28px;
+  }
+  .cic-why-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #2563FF;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .cic-why-headline {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 900;
+    color: #000000;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+  .cic-why-body {
+    font-size: 15px;
+    color: #444444;
+    line-height: 1.75;
+    margin-bottom: 24px;
+    max-width: 740px;
+  }
+  .cic-why-links {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .cic-why-links .cic-link-primary {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2563FF;
+    text-decoration: none;
+  }
+  .cic-why-links .cic-link-primary:hover { text-decoration: underline; }
+  .cic-why-links .cic-link-secondary {
+    font-size: 14px;
+    color: #666666;
+    text-decoration: none;
+  }
+  .cic-why-links .cic-link-secondary:hover { color: #000000; text-decoration: underline; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -535,6 +596,7 @@
       <li><a href="#home" data-tab="home">Home</a></li>
       <li><a href="#developers" data-tab="developers">Developers</a></li>
       <li><a href="#about" data-tab="about">About</a></li>
+      <li><a href="/charter.html">Charter</a></li>
       <li><a href="https://www.estateaigents.org/faq.html">FAQ</a></li>
       <li><a href="https://github.com/estateaigents/raia-protocol" class="cta">GitHub ↗</a></li>
     </ul>
@@ -653,7 +715,7 @@
     </div>
   </section>
 
-  <section class="block">
+  <section class="block" id="built-on">
     <div class="container">
       <div class="eyebrow">Built on open standards</div>
       <h2>RAIA doesn't reinvent the wheel. <span class="blue">It builds on two.</span></h2>
@@ -717,6 +779,20 @@
       </div>
     </div>
   </section>
+
+  <div class="cic-why-band">
+    <div class="cic-why-outer">
+      <div class="cic-why-card">
+        <div class="cic-why-eyebrow">Not for profit · Open standard</div>
+        <div class="cic-why-headline">We watched what happened to OpenAI.<br>Then we built a structure that can't be undone.</div>
+        <p class="cic-why-body">In May 2026, OpenAI's defence against Elon Musk's lawsuit wasn't "we didn't do it." It was "you noticed too late." RAIA Protocol is governed by MoveHome Foundation CIC — a UK Community Interest Company whose asset lock is enforced by the CIC Regulator, not by policy. We locked the structure before the protocol had commercial value. That's the only moment the commitment is credible.</p>
+        <div class="cic-why-links">
+          <a href="/charter.html" class="cic-link-primary">Read the Charter →</a>
+          <a href="https://www.reddit.com/r/singularity/comments/1tgung8/elon_musk_loses_court_battle_against_sam_altman/" target="_blank" rel="noopener" class="cic-link-secondary">View on Reddit ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <section class="block">
     <div class="container">
