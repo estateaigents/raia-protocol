@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The RAIA Charter — An Open Standard for Property AI</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="shortcut icon" href="/favicon.svg">
+<meta name="description" content="The founding document of RAIA Protocol. An open standard for property AI, governed by MoveHome Foundation CIC.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0d0d0d;
+    --white: #fafaf8;
+    --off-white: #f4f3ef;
+    --accent: #2563FF;
+    --accent-light: #e8eeff;
+    --mid: #6b6b6b;
+    --border: #e2e1dc;
+    --code-bg: #f0efe9;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(250,250,248,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    padding: 0 48px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    text-decoration: none;
+  }
+
+  .logo-text { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; color: var(--black); }
+  .logo-accent { color: #4040ff; }
+  .logo-tld { color: #666666; font-weight: 400; font-size: 14px; margin-left: 1px; }
+
+  #org-nav-icon { border-radius: 4px; display: block; flex-shrink: 0; }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+    color: var(--mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--black); }
+  .nav-links a.active { color: var(--black); font-weight: 500; }
+
+  .nav-cta {
+    background: var(--black);
+    color: var(--white) !important;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 13px !important;
+    font-weight: 500;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: #333 !important; }
+
+  .nav-cta-secondary {
+    border: 1px solid var(--border);
+    color: var(--black) !important;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 13px !important;
+    font-weight: 500;
+    transition: all 0.2s !important;
+  }
+  .nav-cta-secondary:hover {
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+  }
+
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 10px 12px 10px 8px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .nav-hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--black);
+    border-radius: 2px;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 60px; left: 0; right: 0;
+    z-index: 99;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 24px 24px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+  .mobile-menu.open { display: block; }
+  .mobile-menu ul { list-style: none; display: flex; flex-direction: column; }
+  .mobile-menu ul li a {
+    display: block;
+    padding: 14px 0;
+    font-size: 15px;
+    color: var(--black);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+  }
+  .mobile-menu ul li a:hover { color: var(--accent); }
+  .mobile-menu ul li:last-child a { border-bottom: none; }
+  .mobile-cta {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    background: var(--black) !important;
+    color: var(--white) !important;
+    padding: 10px 20px !important;
+    border-radius: 6px;
+    font-size: 14px !important;
+    font-weight: 500;
+    margin-top: 8px;
+    border-bottom: none !important;
+  }
+  .mobile-cta:hover { background: #333 !important; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 28px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  .charter-hero {
+    padding: 120px 48px 64px;
+    max-width: 860px;
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+    animation-delay: 0.1s;
+  }
+
+  .charter-hero h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    color: var(--black);
+    margin-bottom: 16px;
+  }
+
+  .charter-hero-subtitle {
+    font-size: 20px;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .charter-hero-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--mid);
+    line-height: 1.7;
+    margin-top: 20px;
+  }
+
+  .jump-nav {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 48px 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+    animation-delay: 0.25s;
+  }
+
+  .jump-nav-inner {
+    background: var(--off-white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+  }
+
+  .jump-nav-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 14px;
+  }
+
+  .jump-nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+  }
+
+  .jump-nav-links a {
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    transition: border-color 0.2s, background 0.2s;
+    display: inline-block;
+  }
+  .jump-nav-links a:hover { border-color: var(--accent); background: var(--accent-light); }
+
+  .charter-body {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 48px 80px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+    animation-delay: 0.4s;
+  }
+
+  .charter-section {
+    margin-bottom: 64px;
+    padding-top: 32px;
+    border-top: 2px solid var(--border);
+  }
+
+  .charter-section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .charter-section h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: var(--black);
+    margin-bottom: 28px;
+  }
+
+  .charter-section h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--black);
+    margin: 32px 0 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .charter-prose p {
+    font-size: 15px;
+    color: #444;
+    line-height: 1.75;
+    margin-bottom: 16px;
+  }
+
+  .charter-prose p:last-child { margin-bottom: 0; }
+  .charter-prose strong { color: var(--black); font-weight: 600; }
+
+  .charter-prose a { color: var(--accent); text-decoration: none; }
+  .charter-prose a:hover { text-decoration: underline; }
+
+  .charter-prose em { font-style: italic; }
+
+  .charter-prose blockquote {
+    border-left: 3px solid var(--accent);
+    padding: 12px 0 12px 20px;
+    margin: 20px 0;
+    color: #555;
+  }
+  .charter-prose blockquote p {
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+  .charter-prose blockquote p:last-child { margin-bottom: 0; }
+  .charter-prose blockquote cite {
+    display: block;
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    color: var(--mid);
+    font-style: normal;
+    margin-top: 8px;
+  }
+
+  .charter-prose pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 16px 0;
+    color: var(--black);
+  }
+
+  .charter-prose ul, .charter-prose ol {
+    padding-left: 24px;
+    margin-bottom: 16px;
+  }
+  .charter-prose li {
+    font-size: 15px;
+    color: #444;
+    line-height: 1.75;
+    margin-bottom: 6px;
+  }
+  .charter-prose li strong { color: var(--black); }
+
+  .charter-prose hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  .cic-rationale-callout {
+    background: var(--accent-light);
+    border: 1px solid rgba(37, 99, 255, 0.25);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin: 24px 0;
+  }
+  .cic-rationale-callout p {
+    color: #1a1a3e !important;
+    margin-bottom: 10px;
+  }
+  .cic-rationale-callout p:last-child { margin-bottom: 0 !important; }
+
+  .charter-refs {
+    font-size: 13px;
+    color: var(--mid);
+    margin-top: 28px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    font-family: 'DM Mono', monospace;
+    line-height: 1.8;
+  }
+  .charter-refs strong {
+    color: var(--black);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .charter-refs a { color: var(--accent); }
+
+  .principles-list { list-style: none; padding: 0; }
+  .principles-list li {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .principles-list li:last-child { border-bottom: none; }
+  .principle-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+    flex-shrink: 0;
+    min-width: 28px;
+    padding-top: 2px;
+  }
+  .principle-content strong {
+    display: block;
+    font-size: 15px;
+    color: var(--black);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .principle-content p {
+    margin-bottom: 0 !important;
+  }
+
+  .charter-footer-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--mid);
+    background: var(--off-white);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 48px;
+    max-width: 100%;
+    line-height: 1.8;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-left { font-size: 13px; color: var(--mid); line-height: 1.7; }
+  .footer-left a { color: var(--accent); text-decoration: none; }
+  .footer-left a:hover { text-decoration: underline; }
+
+  .footer-links { display: flex; gap: 24px; list-style: none; }
+  .footer-links a { font-size: 13px; color: var(--mid); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--black); }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 24px; }
+    .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+    .charter-hero { padding: 100px 24px 48px; }
+    .charter-hero h1 { font-size: 36px; }
+    .jump-nav { padding: 0 24px 36px; }
+    .charter-body { padding: 0 24px 60px; }
+    .charter-footer-meta { padding: 20px 24px; }
+    footer { flex-direction: column; gap: 24px; align-items: flex-start; padding: 32px 24px; }
+    .footer-links { flex-wrap: wrap; gap: 14px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo" id="org-logo-link">
+    <canvas id="org-nav-icon" width="26" height="26" aria-label="EstateAigents building icon"></canvas>
+    <span class="logo-text">Estate<span class="logo-accent">Aigents</span><span class="logo-tld">.org</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/#protocol">Protocol</a></li>
+    <li><a href="/#built-on">Stack</a></li>
+    <li><a href="/#jurisdictions">Jurisdictions</a></li>
+    <li><a href="/charter.html" class="active">Charter</a></li>
+    <li><a href="/faq.html">FAQ</a></li>
+    <li><a href="https://estateaigents.com" target="_blank">Platform →</a></li>
+    <li><a href="https://github.com/estateaigents/raia-protocol/blob/main/CHARTER.md" target="_blank" class="nav-cta-secondary">Read on GitHub</a></li>
+    <li><a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="nav-cta">View on GitHub</a></li>
+  </ul>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <ul>
+    <li><a href="/#protocol">Protocol</a></li>
+    <li><a href="/#built-on">Stack</a></li>
+    <li><a href="/#jurisdictions">Jurisdictions</a></li>
+    <li><a href="/charter.html">Charter</a></li>
+    <li><a href="/faq.html">FAQ</a></li>
+    <li><a href="https://estateaigents.com" target="_blank">Platform →</a></li>
+    <li><a href="https://github.com/estateaigents/raia-protocol/blob/main/CHARTER.md" target="_blank">Read Charter on GitHub</a></li>
+    <li><a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="mobile-cta">
+      <svg style="width:15px;height:15px;flex-shrink:0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      View on GitHub
+    </a></li>
+  </ul>
+</div>
+
+<!-- Hero -->
+<div class="charter-hero">
+  <div class="hero-badge">Founding Document · April 2026</div>
+  <h1>The RAIA Charter</h1>
+  <div class="charter-hero-subtitle">An Open Standard for Property AI</div>
+  <div class="charter-hero-meta">
+    Published April 2026 · Version 1.0 · estateaigents.org · RAIA™ Protocol<br>
+    Governed by MoveHome Foundation CIC · Co. 17202438 · MIT Licensed
+  </div>
+</div>
+
+<!-- Jump nav -->
+<div class="jump-nav">
+  <div class="jump-nav-inner">
+    <div class="jump-nav-label">Contents</div>
+    <ul class="jump-nav-links">
+      <li><a href="#preamble">Preamble</a></li>
+      <li><a href="#the-problem">I. The Problem</a></li>
+      <li><a href="#the-response">II. The Response</a></li>
+      <li><a href="#the-principles">III. The Principles</a></li>
+      <li><a href="#historical-context">IV. Historical Context</a></li>
+      <li><a href="#cic-rationale">IV-A. Why a CIC</a></li>
+      <li><a href="#the-invitation">V. The Invitation</a></li>
+      <li><a href="#the-commitment">VI. The Commitment</a></li>
+      <li><a href="#what-we-ask">VII. What We Ask</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- Charter body -->
+<div class="charter-body">
+
+  <!-- Preamble -->
+  <div class="charter-section" id="preamble">
+    <div class="charter-section-eyebrow">Preamble</div>
+    <h2>Why this exists.</h2>
+    <div class="charter-prose">
+      <p>Property is shelter. Shelter is not a commodity. And yet the infrastructure through which people find homes — portals, platforms, databases — has been built to extract value from the transaction rather than to serve the people in it.</p>
+      <p>This Charter establishes the principles, the governance, and the invitation behind RAIA Protocol — the open standard for AI agents to transact property — and MoveHome.org, its public expression. Together they form a single argument: that the infrastructure of property transactions should be a commons, not a toll road.</p>
+      <p>We publish this now — before the protocol has commercial value — because that is the only moment such a commitment is credible.</p>
+    </div>
+  </div>
+
+  <!-- Section I -->
+  <div class="charter-section" id="the-problem">
+    <div class="charter-section-eyebrow">Section I</div>
+    <h2>The Problem</h2>
+
+    <div class="charter-prose">
+      <h3>The portal toll — a global phenomenon</h3>
+      <p>In every country where residential property portals operate, the same dynamic plays out.</p>
+      <p>Portals aggregate listings from estate agents, landlords and developers. They charge agents — and increasingly, consumers — for access to that aggregated inventory. The fees compound across every branch, every market, every month.</p>
+      <p>Based on the publicly reported annual revenues of the world's largest listed property portal companies, we can credibly reason that <strong>agents worldwide pay in excess of $10 billion annually to portal platforms</strong> for the right to advertise properties they themselves own or manage.</p>
+      <p>That figure does not include the additional costs agents absorb from CRM systems, listing tools, compliance platforms, and social media management — all of which have grown up around the portal ecosystem and bill accordingly.</p>
+      <p>In 2025–26, a £1.5 billion class action lawsuit was filed at the UK Competition Appeal Tribunal against the UK's largest residential property portal — a matter of public record and the clearest legal articulation yet of what agents and consumers have experienced for years: that portal pricing has become systematically extractive.</p>
+      <p>The UK lawsuit is not an isolated event. It is the visible tip of a structural problem that exists in every market where portals have achieved dominant positions — Australia, the United States, Germany, France, Spain, the UAE, Southeast Asia, and beyond.</p>
+      <p>For the full evidence base and citations, see: <a href="https://github.com/estateaigents/raia-protocol/blob/main/docs/portal-market-research.md" target="_blank">docs/portal-market-research.md</a></p>
+
+      <h3>How the cost reaches tenants and buyers</h3>
+      <p>The portal fee does not stay with the agent. It cannot. It flows through the transaction:</p>
+      <pre>Portal charges agent → agent absorbs into operating costs
+        ↓
+Agent raises management fees to landlord
+        ↓
+Landlord factors cost into asking rent or sale price
+        ↓
+Tenant pays higher rent. Buyer pays more.</pre>
+      <p>This is not a guarantee or a precise calculation. Markets are complex. But the mechanism is clear: <strong>a cost that enters the transaction at the agent level does not disappear — it propagates upward through the price chain.</strong></p>
+      <p>Remove that cost from the equation and the saving becomes available — to the agent, to the landlord, and ultimately to the tenant or buyer. The market determines what happens to that saving. The protocol removes the cost. What flows from that is a market decision, not a protocol promise.</p>
+
+      <h3>The AI inflection</h3>
+      <p>AI agents are now capable of finding a home, qualifying requirements, checking availability, requesting a viewing, and managing a transaction — without human intervention at each step. This is already happening. It is happening via web scraping, via fragile proprietary integrations, via informal workarounds.</p>
+      <p>The absence of a protocol is not preventing AI property transactions. It is making them slow, unverified, legally exposed — and creating the conditions for a new form of capture: not by portals, but by the AI platforms that will process property transactions at scale if no open standard exists.</p>
+      <p><strong>If the infrastructure layer of property AI is controlled by any single commercial actor, the toll booth moves but does not disappear.</strong></p>
+
+      <h3>The capture risk</h3>
+      <p>The history of the internet is a history of open infrastructure being enclosed.</p>
+      <p>Email began as an open protocol — and was enclosed into surveillance advertising platforms. The web began as an open standard — and search was enclosed into a duopoly. Social connection began as an open idea — and was enclosed into data extraction machines.</p>
+      <p>In every case, the enclosure happened at the infrastructure layer — the protocol, the index, the identity system — before the community recognised what was being lost.</p>
+      <p>Property AI is at that moment now. The protocol layer is being built. The question is whether it is built as a commons or as the next enclosure.</p>
+    </div>
+  </div>
+
+  <!-- Section II -->
+  <div class="charter-section" id="the-response">
+    <div class="charter-section-eyebrow">Section II</div>
+    <h2>The Response — Two Layers</h2>
+
+    <div class="charter-prose">
+      <h3>RAIA Protocol — the machine layer</h3>
+      <p>RAIA (Real Estate Artificial Intelligence Agent Protocol) is the open standard for AI agents to discover, verify, and transact property — lettings, sales, and management — directly between agents, without a portal in the middle.</p>
+      <p>Built on Google's A2A Protocol (donated to the Linux Foundation) and Anthropic's Model Context Protocol (MCP), RAIA adds the property-specific vocabulary and trust layer that general AI infrastructure does not provide.</p>
+      <pre>Google A2A    →  How agents find and talk to each other
+RAIA Protocol →  What property agents say — property vocabulary and trust
+Anthropic MCP →  How agents connect to property data tools</pre>
+      <p>Any AI assistant that speaks MCP can query any RAIA-compliant agent's portfolio. Any AI agent that speaks A2A can transact with any other RAIA participant. No portal required. No proprietary integration required. No monthly fee to a listing aggregator required.</p>
+      <p>The protocol is MIT licensed. Anyone can implement it. The schemas, the agent card format, the enquiry lifecycle — all open, all free.</p>
+
+      <h3>MoveHome.org — the human layer</h3>
+      <p>RAIA Protocol enables AI-to-AI property transactions. MoveHome.org is the human face of the same infrastructure.</p>
+      <p>MoveHome.org is a free, not-for-profit property listings portal — for tenants looking for homes, buyers searching for properties, landlords marketing their portfolio, and agents publishing their listings. No listing fees. No lead generation charges. No subscription tiers.</p>
+      <p>Agents who implement RAIA Protocol receive automatic free listings on MoveHome.org. The portal is funded by the community it serves — not by charging agents for access to their own market.</p>
+      <p>Together, RAIA Protocol and MoveHome.org form a complete response to the portal problem:</p>
+      <ul>
+        <li><strong>RAIA</strong> handles AI-to-AI transactions — the future of how property is found</li>
+        <li><strong>MoveHome</strong> handles human search — the present, made free</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section III -->
+  <div class="charter-section" id="the-principles">
+    <div class="charter-section-eyebrow">Section III</div>
+    <h2>The Principles</h2>
+
+    <div class="charter-prose">
+      <ul class="principles-list">
+        <li>
+          <span class="principle-num">1.</span>
+          <div class="principle-content">
+            <strong>The protocol is infrastructure, not a product</strong>
+            <p>RAIA Protocol is not a marketplace. It is not a portal. It is infrastructure — like HTTP, like SMTP, like Ethernet — that enables other things to be built on top of it. Infrastructure that works does not charge for its existence.</p>
+          </div>
+        </li>
+        <li>
+          <span class="principle-num">2.</span>
+          <div class="principle-content">
+            <strong>No single actor controls it</strong>
+            <p>No company, no individual, no government body holds a controlling position in RAIA Protocol governance. This is not a policy preference. It is a structural requirement encoded in the governance of MoveHome Foundation CIC, the entity that holds the protocol in trust.</p>
+          </div>
+        </li>
+        <li>
+          <span class="principle-num">3.</span>
+          <div class="principle-content">
+            <strong>The community it serves governs it</strong>
+            <p>Estate agents, PropTech developers, tenants, buyers, and regulators all have a stake in how property transactions work. All have a seat in how this protocol evolves. Governance is multi-stakeholder by design.</p>
+          </div>
+        </li>
+        <li>
+          <span class="principle-num">4.</span>
+          <div class="principle-content">
+            <strong>Compliance is local, mechanics are global</strong>
+            <p>Property law is hyperlocal. The protocol's mechanics — how agents find each other, query data, verify identity, and execute transactions — are globally uniform. The compliance layer is locally defined and community-contributed through jurisdictional modules. No jurisdiction is subordinate to any other.</p>
+          </div>
+        </li>
+        <li>
+          <span class="principle-num">5.</span>
+          <div class="principle-content">
+            <strong>Transparency is non-negotiable</strong>
+            <p>Every governance decision is made in public and logged permanently. No private sessions. No commercial side-agreements that affect the protocol's behaviour.</p>
+          </div>
+        </li>
+        <li>
+          <span class="principle-num">6.</span>
+          <div class="principle-content">
+            <strong>The end client is always protected</strong>
+            <p>AI agents transacting property on behalf of buyers and tenants never expose end-client identity in protocol messages. Qualification signals are transmitted. Personal data is not. The protocol enforces data minimisation at the schema level.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section IV -->
+  <div class="charter-section" id="historical-context">
+    <div class="charter-section-eyebrow">Section IV</div>
+    <h2>The Historical Context</h2>
+
+    <div class="charter-prose">
+      <p>Every protocol that became infrastructure followed the same path: published openly, adopted freely, governed collectively, and eventually so embedded that no single actor could capture it.</p>
+      <p><strong>SMTP (1982)</strong> — Jon Postel published RFC 821. No company owns email. Every company uses it.</p>
+      <p><strong>HTTP (1991)</strong> — Tim Berners-Lee published the web proposal at CERN. The W3C — a multi-stakeholder body — governs its evolution. No company owns the web.</p>
+      <p><strong>TCP/IP (1974)</strong> — Cerf and Kahn published the protocol. It became the internet.</p>
+      <p><strong>Bitcoin (2008)</strong> — Published without institutional backing. No company owns it. The protocol survives because there is no single point of capture.</p>
+      <p><strong>Linux (1991)</strong> — Torvalds started it. The Linux Foundation governs it. Hundreds of companies contribute. None controls it.</p>
+      <p>In each case, the founding decision — to publish openly, to govern collectively, to refuse enclosure — determined everything that followed.</p>
+
+      <h3>Why previous property protocol attempts failed</h3>
+      <p>Four serious attempts have been made to create open property data standards. All failed for the same structural reasons: designed for one market's legal model, built for portal syndication not agent-to-agent transactions, and governed by bodies with conflicting commercial interests that converged on the lowest common denominator — the status quo.</p>
+      <p>RAIA is not governed by a working group of incumbents. It is governed by a community interest company whose legal structure prevents any single commercial actor from capturing it.</p>
+
+      <h3>Why now</h3>
+      <p>Two things changed between 2024 and 2026 that make this possible for the first time.</p>
+      <p><strong>The transport layer now exists.</strong> Google's A2A Protocol and Anthropic's MCP provide the infrastructure for AI agents to find each other and communicate. RAIA only needs to define what property agents say to each other on top of existing open infrastructure.</p>
+      <p><strong>The demand is real and growing.</strong> AI assistants are already attempting property transactions. The scraping, the workarounds, the bespoke integrations are the market signalling that a standard is needed.</p>
+    </div>
+  </div>
+
+  <!-- Section IV-A -->
+  <div class="charter-section" id="cic-rationale">
+    <div class="charter-section-eyebrow">Section IV-A</div>
+    <h2>Why we structured this as a CIC before the protocol had commercial value</h2>
+
+    <div class="charter-prose">
+      <p>In May 2026, a federal jury in Oakland dismissed Elon Musk's lawsuit against OpenAI and Sam Altman in under two hours.</p>
+      <p>The case was not decided on the merits. It was dismissed because Musk had waited too long to sue — statute of limitations.</p>
+      <p>Notably, OpenAI's defence was not "we didn't do it."</p>
+      <p>It was: <strong>"You noticed too late."</strong></p>
+      <p>That defence only works when a nonprofit mission is held in place by policy, culture, and the goodwill of whoever happens to be in charge. By the time anyone notices the mission has drifted, the clock has run. The structure has already changed. The legal window is closed.</p>
+      <p>After the verdict, Musk posted on X:</p>
+
+      <blockquote>
+        <p>"The judge &amp; jury never actually ruled on the merits of the case, just on a calendar technicality. There is no question to anyone following the case in detail that Altman &amp; Brockman did in fact enrich themselves by stealing a charity. The only question is WHEN they did it. I will be filing an appeal with the Ninth Circuit, because creating a precedent to loot charities is incredibly destructive to charitable giving in America. OpenAI was founded to benefit all of humanity."</p>
+        <cite>— Elon Musk (@elonmusk), 18 May 2026</cite>
+      </blockquote>
+
+      <p>Whether Musk is correct on the merits is not the point. The point is that <strong>"you noticed too late" is a viable legal defence</strong> when governance rests on intent rather than structure.</p>
+      <p>We drew the obvious conclusion.</p>
+
+      <div class="cic-rationale-callout">
+        <p><strong>RAIA Protocol is a not-for-profit open standard.</strong> It is governed by MoveHome Foundation CIC (Co. 17202438, incorporated 6 May 2026) — a UK Community Interest Company. The CIC holds the RAIA trademark in trust for the property industry. Its asset lock is enforced by the CIC Regulator — not by board policy, not by a founding promise, not by goodwill.</p>
+      </div>
+
+      <p>The structural difference from OpenAI:</p>
+      <ul>
+        <li>A CIC cannot transfer assets to members, directors, or any commercial entity — including EstateAigents Ltd</li>
+        <li>The asset lock is permanent and regulated externally</li>
+        <li>It cannot be voted away, restructured around, or eroded gradually while a statute of limitations runs</li>
+        <li>Anyone can check the CIC register at any time — Companies House, Co. 17202438</li>
+      </ul>
+
+      <p><strong>We made this decision in May 2026 — before the RAIA trademark had significant commercial value, before MoveHome.org had launched, before the protocol had paying users.</strong> That is the only moment a commitment of this kind is credible. OpenAI could not have made it in 2024 — the value already existed.</p>
+      <p>EstateAigents Ltd is the founding contributor. It holds one non-controlling board seat. It benefits from free listings on MoveHome.org and a non-exclusive trademark licence. That is the full extent of its position. The protocol does not belong to EstateAigents Ltd. It belongs to the community it serves.</p>
+
+      <div class="charter-refs">
+        <strong>References</strong>
+        Musk v. Altman et al., US District Court, Northern District of California (Oakland). Verdict: 18 May 2026. All claims dismissed on statute of limitations grounds. Judge Yvonne Gonzalez Rogers adopted the advisory verdict. Musk filing appeal to Ninth Circuit.<br>
+        Elon Musk (<a href="https://x.com/elonmusk" target="_blank">@elonmusk</a>) on X, 18 May 2026, 21.4M views.<br>
+        <a href="https://www.reddit.com/r/singularity/comments/1tgung8/elon_musk_loses_court_battle_against_sam_altman/" target="_blank">Reddit discussion (r/singularity), 18 May 2026.</a><br>
+        MoveHome Foundation CIC: <a href="https://find-and-update.company-information.service.gov.uk/company/17202438" target="_blank">Companies House Co. 17202438</a><br>
+        RAIA Charter (this document): <a href="https://github.com/estateaigents/raia-protocol/blob/main/CHARTER.md" target="_blank">github.com/estateaigents/raia-protocol</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section V -->
+  <div class="charter-section" id="the-invitation">
+    <div class="charter-section-eyebrow">Section V</div>
+    <h2>The Invitation</h2>
+
+    <div class="charter-prose">
+      <h3>To estate agents</h3>
+      <p>Your data is your most valuable asset. Open protocol infrastructure means your portfolio is accessible to every AI assistant that queries RAIA — without paying a portal for the privilege.</p>
+      <p>MoveHome.org gives your listings a free public presence. RAIA Protocol gives your AI agent a standard interface to every other participating agent. Together they replace the portal dependency with an open alternative.</p>
+      <p>Join the waitlist at <strong>estateaigents.com</strong>. List for free at <strong>movehome.org</strong> (launching 2026).</p>
+
+      <h3>To PropTech developers</h3>
+      <p>The schemas are in development. The MCP server is being built. Join the schema working group now.</p>
+      <p>Open an issue at <a href="https://github.com/estateaigents/raia-protocol" target="_blank">github.com/estateaigents/raia-protocol</a> with the label <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">schema-working-group</code>.</p>
+
+      <h3>To portal operators</h3>
+      <p>RAIA is not a competitor to your product. It is the transport layer that makes your product interoperable with the AI ecosystem. The portal that implements RAIA first stops being a toll booth and starts being a node.</p>
+      <p>Contact us at <strong>admin@estateaigents.org</strong>.</p>
+
+      <h3>To AI developers</h3>
+      <p>If your assistant speaks MCP, it can query any RAIA-compliant agent's portfolio. The reference MCP server publishes at <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">mcp.estateaigents.com</code> with v1.0 in Q3 2026.</p>
+
+      <h3>To regulators and industry bodies</h3>
+      <p>The protocol's jurisdictional module architecture was designed with regulatory compliance in mind. Every jurisdiction's compliance requirements are encoded in a separate module that plugs into the global core.</p>
+      <p>We are actively seeking input from professional bodies and regulatory authorities in every market where RAIA is being implemented. Contact us at <strong>admin@estateaigents.org</strong>.</p>
+
+      <h3>To the community</h3>
+      <p>MoveHome Foundation CIC — the entity that holds the trademark and governs the registry — is being incorporated now. Board seats will be open. Governance criteria will be published.</p>
+      <p>If you believe that property infrastructure should be a commons — this is where that belief becomes a structure rather than a sentiment.</p>
+    </div>
+  </div>
+
+  <!-- Section VI -->
+  <div class="charter-section" id="the-commitment">
+    <div class="charter-section-eyebrow">Section VI</div>
+    <h2>The Commitment</h2>
+
+    <div class="charter-prose">
+      <p>We commit to the following, publicly and permanently:</p>
+
+      <ul class="principles-list">
+        <li>
+          <span class="principle-num">1.</span>
+          <div class="principle-content">
+            <p>The protocol will be governed by a multi-stakeholder community foundation. MoveHome Foundation CIC holds the trademark. EstateAigents Ltd has one seat on the board — not a controlling seat.</p>
+            <p>MoveHome Foundation CIC was incorporated on 6 May 2026 (Co. 17202438, England and Wales).</p>
+          </div>
+        </li>
+        <li>
+          <span class="principle-num">2.</span>
+          <div class="principle-content">
+            <p>The RAIA™ trademark will be held by MoveHome Foundation CIC in trust for the property industry. It will not be exclusively licensed to any commercial entity.</p>
+          </div>
+        </li>
+        <li>
+          <span class="principle-num">3.</span>
+          <div class="principle-content">
+            <p>The registry criteria will be published and enforced transparently. Admission will not be at the discretion of any single commercial actor.</p>
+          </div>
+        </li>
+        <li>
+          <span class="principle-num">4.</span>
+          <div class="principle-content">
+            <p>The core protocol schema will evolve through open community process. No private amendments.</p>
+          </div>
+        </li>
+        <li>
+          <span class="principle-num">5.</span>
+          <div class="principle-content">
+            <p>If EstateAigents Ltd ceases to exist, the protocol continues. The CIC holds the trademark. The GitHub repo is public. The schemas are MIT licensed.</p>
+          </div>
+        </li>
+        <li>
+          <span class="principle-num">6.</span>
+          <div class="principle-content">
+            <p>MoveHome.org will remain free to list on. No agent listing fees. No consumer access charges. Ever.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section VII -->
+  <div class="charter-section" id="what-we-ask">
+    <div class="charter-section-eyebrow">Section VII</div>
+    <h2>What We Ask</h2>
+
+    <div class="charter-prose">
+      <p>Read the spec. Implement the protocol. Find what it gets wrong. Tell us in a GitHub issue.</p>
+      <p>Join the schema working group. Contribute a jurisdiction module. Apply for a board seat when MoveHome Foundation CIC is constituted.</p>
+      <p>This Charter is the beginning of that conversation.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Charter meta bar -->
+<div class="charter-footer-meta">
+  RAIA™ is a registered UK trademark (UK00003359082, Classes 36 + 42, registered 2018).<br>
+  Protocol specification MIT licensed.<br>
+  MoveHome Foundation CIC — incorporated 6 May 2026 (Co. 17202438).<br>
+  Founding contributor: EstateAigents Ltd.<br>
+  Canonical source: <a href="https://github.com/estateaigents/raia-protocol" target="_blank" style="color:var(--accent);">github.com/estateaigents/raia-protocol</a> · <a href="https://estateaigents.org" style="color:var(--accent);">estateaigents.org</a> · <a href="https://movehome.org" style="color:var(--accent);">movehome.org</a>
+</div>
+
+<div style="border-top: 1px solid var(--border);"></div>
+<footer>
+  <div class="footer-left">
+    RAIA™ · <span style="color:var(--accent);font-weight:500;">estateaigents.org</span> · © 2026 <a href="https://estateaigents.com">EstateAigents Ltd</a><br>
+    Protocol specification MIT licensed · <a href="https://github.com/estateaigents/raia-protocol/blob/main/LICENSE">License</a> · <a href="https://github.com/estateaigents/raia-protocol/blob/main/GOVERNANCE.md">Governance</a><br>
+    Canonical source: github.com/estateaigents/raia-protocol
+  </div>
+  <ul class="footer-links">
+    <li><a href="https://github.com/estateaigents/raia-protocol">GitHub</a></li>
+    <li><a href="https://github.com/estateaigents/raia-protocol/blob/main/SPEC.md">Spec</a></li>
+    <li><a href="/charter.html">Charter</a></li>
+    <li><a href="/faq.html">FAQ</a></li>
+    <li><a href="https://estateaigents.com">Platform</a></li>
+    <li><a href="mailto:protocol@estateaigents.org">Contact</a></li>
+  </ul>
+</footer>
+
+<script>
+(function() {
+  var WINS = [
+    {c:0,r:0},{c:1,r:0},
+    {c:0,r:1},{c:1,r:1},
+    {c:0,r:2},{c:1,r:2}
+  ]
+  var BG      = '#ffffff'
+  var BLUE    = '#4040ff'
+  var WIN_ON  = '#ffffff'
+  var WIN_OFF = '#4040ff'
+  var GROUND  = '#2929aa'
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath()
+    ctx.moveTo(x+r, y)
+    ctx.lineTo(x+w-r, y)
+    ctx.quadraticCurveTo(x+w, y, x+w, y+r)
+    ctx.lineTo(x+w, y+h-r)
+    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h)
+    ctx.lineTo(x+r, y+h)
+    ctx.quadraticCurveTo(x, y+h, x, y+h-r)
+    ctx.lineTo(x, y+r)
+    ctx.quadraticCurveTo(x, y, x+r, y)
+    ctx.closePath()
+    ctx.fill()
+  }
+
+  function drawFrame(ctx, size, states) {
+    var s = size / 32
+    ctx.clearRect(0, 0, size, size)
+    ctx.fillStyle = BG
+    roundRect(ctx, 0, 0, size, size, 5*s)
+    ctx.fillStyle = BLUE
+    ctx.fillRect(8*s, 5*s, 16*s, 22*s)
+    ctx.fillStyle = GROUND
+    ctx.fillRect(4*s, 27*s, 24*s, 2*s)
+    var cols = [10, 18]
+    var rows = [8, 13, 18]
+    for (var i = 0; i < states.length; i++) {
+      ctx.fillStyle = states[i] ? WIN_ON : WIN_OFF
+      ctx.fillRect(cols[WINS[i].c]*s, rows[WINS[i].r]*s, 4*s, 3*s)
+    }
+  }
+
+  function randomState() {
+    var s
+    do {
+      s = WINS.map(function() { return Math.random() > 0.5 })
+    } while (s.filter(Boolean).length < 2)
+    return s
+  }
+
+  function animateIcon(canvasId, size) {
+    var canvas = document.getElementById(canvasId)
+    if (!canvas) return
+    var ctx = canvas.getContext('2d')
+    var states = randomState()
+
+    function render() {
+      ctx.clearRect(0, 0, size, size)
+      drawFrame(ctx, size, states)
+    }
+
+    function flip() {
+      var lit = states.filter(Boolean).length
+      var idx = Math.floor(Math.random() * 6)
+      var next = states.slice()
+      if (!next[idx] && lit >= 5) { setTimeout(flip, 400 + Math.random()*1200); return }
+      if (next[idx] && lit <= 1)  { setTimeout(flip, 400 + Math.random()*1200); return }
+      next[idx] = !next[idx]
+      states = next
+      render()
+      setTimeout(flip, 500 + Math.random()*1500)
+    }
+
+    render()
+    setTimeout(flip, Math.random() * 800)
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      animateIcon('org-nav-icon', 26)
+    })
+  } else {
+    animateIcon('org-nav-icon', 26)
+  }
+})()
+</script>
+<script>
+(function() {
+  var btn = document.getElementById('nav-hamburger');
+  var menu = document.getElementById('mobile-menu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function() {
+    var open = menu.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open);
+    menu.setAttribute('aria-hidden', !open);
+  });
+  menu.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      menu.classList.remove('open');
+      btn.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+      menu.setAttribute('aria-hidden', 'true');
+    });
+  });
+})();
+</script>
+</body>
+</html>

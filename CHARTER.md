@@ -164,6 +164,49 @@ Two things changed between 2024 and 2026 that make this possible for the first t
 
 ---
 
+## IV-A. Why we structured this as a CIC before the protocol had commercial value
+
+In May 2026, a federal jury in Oakland dismissed Elon Musk's lawsuit against OpenAI and Sam Altman in under two hours.
+
+The case was not decided on the merits. It was dismissed because Musk had waited too long to sue — statute of limitations.
+
+Notably, OpenAI's defence was not "we didn't do it."
+
+It was: **"You noticed too late."**
+
+That defence only works when a nonprofit mission is held in place by policy, culture, and the goodwill of whoever happens to be in charge. By the time anyone notices the mission has drifted, the clock has run. The structure has already changed. The legal window is closed.
+
+After the verdict, Musk posted on X:
+
+> *"The judge & jury never actually ruled on the merits of the case, just on a calendar technicality. There is no question to anyone following the case in detail that Altman & Brockman did in fact enrich themselves by stealing a charity. The only question is WHEN they did it. I will be filing an appeal with the Ninth Circuit, because creating a precedent to loot charities is incredibly destructive to charitable giving in America. OpenAI was founded to benefit all of humanity."*
+> — Elon Musk (@elonmusk), 18 May 2026
+
+Whether Musk is correct on the merits is not the point. The point is that **"you noticed too late" is a viable legal defence** when governance rests on intent rather than structure.
+
+We drew the obvious conclusion.
+
+**RAIA Protocol is a not-for-profit open standard.** It is governed by MoveHome Foundation CIC (Co. 17202438, incorporated 6 May 2026) — a UK Community Interest Company. The CIC holds the RAIA trademark in trust for the property industry. Its asset lock is enforced by the CIC Regulator — not by board policy, not by a founding promise, not by goodwill.
+
+The structural difference from OpenAI:
+
+- A CIC cannot transfer assets to members, directors, or any commercial entity — including EstateAigents Ltd
+- The asset lock is permanent and regulated externally
+- It cannot be voted away, restructured around, or eroded gradually while a statute of limitations runs
+- Anyone can check the CIC register at any time — Companies House, Co. 17202438
+
+**We made this decision in May 2026 — before the RAIA trademark had significant commercial value, before MoveHome.org had launched, before the protocol had paying users.** That is the only moment a commitment of this kind is credible. OpenAI could not have made it in 2024 — the value already existed.
+
+EstateAigents Ltd is the founding contributor. It holds one non-controlling board seat. It benefits from free listings on MoveHome.org and a non-exclusive trademark licence. That is the full extent of its position. The protocol does not belong to EstateAigents Ltd. It belongs to the community it serves.
+
+**References:**
+- Musk v. Altman et al., US District Court, Northern District of California (Oakland). Verdict: 18 May 2026. All claims dismissed on statute of limitations grounds. Judge Yvonne Gonzalez Rogers adopted the advisory verdict. Musk filing appeal to Ninth Circuit.
+- Elon Musk (@elonmusk) on X, 18 May 2026, 21.4M views: https://x.com/elonmusk [link to post]
+- Reddit discussion (r/singularity), 18 May 2026: https://www.reddit.com/r/singularity/comments/1tgung8/elon_musk_loses_court_battle_against_sam_altman/
+- MoveHome Foundation CIC: Companies House Co. 17202438
+- RAIA Charter (this document): https://github.com/estateaigents/raia-protocol/blob/main/CHARTER.md
+
+---
+
 ## V. The invitation
 
 ### To estate agents
