@@ -1,0 +1,493 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://estateaigents.org/schemas/listing.json",
+  "title": "RAIA Property Listing",
+  "description": "Canonical shape of a property listing in the RAIA Protocol. Used by federated agencies hosting their own listings, by the RAIA snapshot_listing JSONB column, by the raia-public.tbl_listings mirror table, and by consumers such as MoveHome.org. v0.2 introduces explicit schema versioning, a jurisdiction_extensions block (GB and TH), an updated service_type enum (long_term, short_term, sale), features as a TEXT[], and a standardised provenance block.",
+  "type": "object",
+
+  "$defs": {
+    "geo_point": {
+      "type": "object",
+      "description": "Geographic point as decimal latitude and longitude (WGS 84). Both fields are required if location is provided.",
+      "required": ["lat", "lon"],
+      "properties": {
+        "lat": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90,
+          "description": "Decimal latitude in WGS 84. For unverified or pre-launch listings, may be a district centroid rather than plot-level."
+        },
+        "lon": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180,
+          "description": "Decimal longitude in WGS 84."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "media_photo": {
+      "type": "object",
+      "description": "A single photo with optional caption and ordering hint.",
+      "required": ["url"],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Absolute URL to the image. Should be served over HTTPS."
+        },
+        "caption": {
+          "type": "string",
+          "description": "Short human-readable caption (e.g. 'Living room', 'Kitchen')."
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Zero-based display order. Lower values appear first in the gallery."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "media_block": {
+      "type": "object",
+      "description": "Media references for the listing. URLs only — no binary payloads.",
+      "properties": {
+        "photo_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Single hero photo URL. Fallback when the photos array is empty."
+        },
+        "photos": {
+          "type": "array",
+          "description": "Ordered gallery of photos.",
+          "items": { "$ref": "#/$defs/media_photo" }
+        },
+        "featured_image_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Operator-chosen hero image. Takes precedence over photo_url and the first item in photos."
+        },
+        "floor_plan_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Floor plan image or PDF."
+        },
+        "video_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Marketing video. YouTube or hosted MP4."
+        },
+        "tour_360_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "360 tour URL. Giraffe360, Matterport, or equivalent."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "provenance_block": {
+      "type": "object",
+      "description": "Origin and integrity metadata for the listing record. Intended to be set by the receiving system, not by the publishing agent.",
+      "properties": {
+        "agent_id": {
+          "type": "string",
+          "pattern": "^org-[a-z]{2}-[a-z0-9-]{2,32}$",
+          "description": "RAIA org identifier of the agent that produced this record. Should match the top-level agent_id."
+        },
+        "received_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when the receiving aggregator first ingested this listing."
+        },
+        "signature_hash": {
+          "type": "string",
+          "description": "Optional content hash or detached signature reference. Format reserved for v1.0 — for v0.2, treat as opaque string."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "jurisdiction_gb": {
+      "type": "object",
+      "description": "United Kingdom-specific fields. Populated only when un_locode begins with 'GB'.",
+      "properties": {
+        "tenure": {
+          "type": "string",
+          "enum": ["freehold", "leasehold", "share_of_freehold", "commonhold"],
+          "description": "Form of legal ownership. Required for sales; informational for lettings."
+        },
+        "lease_years_remaining": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Years remaining on the lease as at the listing date. Only meaningful if tenure is leasehold or share_of_freehold."
+        },
+        "service_charge_pa": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Annual service charge in GBP."
+        },
+        "ground_rent_pa": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Annual ground rent in GBP. Note Leasehold Reform (Ground Rent) Act 2022 caps new leases at a peppercorn."
+        },
+        "council_tax_band": {
+          "type": "string",
+          "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "I"],
+          "description": "Council tax band. Bands A-H apply in England and Scotland; A-I in Wales."
+        },
+        "epc_rating": {
+          "type": "string",
+          "enum": ["A", "B", "C", "D", "E", "F", "G"],
+          "description": "Energy Performance Certificate rating. Mandatory for marketing under MEES."
+        },
+        "epc_register_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Link to the official EPC register entry. Per ADR-103, do not store the EPC PDF — link to the register instead."
+        },
+        "hmo_licence_number": {
+          "type": "string",
+          "description": "HMO licence reference issued by the local authority. Required for properties subject to mandatory or selective HMO licensing."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "jurisdiction_th": {
+      "type": "object",
+      "description": "Thailand-specific fields. Populated only when un_locode begins with 'TH'.",
+      "properties": {
+        "ownership_type": {
+          "type": "string",
+          "enum": ["freehold", "leasehold", "company_holding"],
+          "description": "Ownership structure. Foreigners typically hold condominium freehold within the 49% quota or take a 30-year leasehold on landed property."
+        },
+        "foreign_ownership_eligible": {
+          "type": "boolean",
+          "description": "Whether this unit is currently within the 49% foreign-ownership quota for the building (Condominium Act B.E. 2522)."
+        },
+        "chanote_type": {
+          "type": "string",
+          "enum": ["chanote", "nor_sor_3_gor", "nor_sor_3", "sor_kor_1", "por_bor_tor_5", "other"],
+          "description": "Land title deed class. Chanote (Nor Sor 4 Jor) is the only freehold title with definite GPS-surveyed boundaries."
+        },
+        "bts_station": {
+          "type": "string",
+          "description": "Nearest BTS Skytrain station name."
+        },
+        "bts_distance_m": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Walking distance to the nearest BTS station in metres."
+        },
+        "mrt_station": {
+          "type": "string",
+          "description": "Nearest MRT subway station name."
+        },
+        "mrt_distance_m": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Walking distance to the nearest MRT station in metres."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+
+  "required": [
+    "raia_id",
+    "agent_id",
+    "agent_card_url",
+    "un_locode",
+    "service_type",
+    "synced_at"
+  ],
+
+  "properties": {
+    "raia_id": {
+      "type": "string",
+      "pattern": "^prop-[a-z]{2}-[a-z0-9-]{2,32}-[0-9]{4,}$",
+      "description": "Stable external property identifier. Format: prop-{cc}-{org-slug}-{seq}. Example: prop-gb-rlf-000031.",
+      "examples": ["prop-gb-rlf-000031", "prop-th-rbc-000001"]
+    },
+    "agent_id": {
+      "type": "string",
+      "pattern": "^org-[a-z]{2}-[a-z0-9-]{2,32}$",
+      "description": "RAIA org identifier of the listing agent. Format: org-{cc}-{slug}. Example: org-gb-rlf.",
+      "examples": ["org-gb-rlf", "org-th-rbc"]
+    },
+    "agent_card_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Absolute URL of the listing agent's RAIA agent card (typically https://{host}/.well-known/raia-agent.json)."
+    },
+    "headline": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "Short human-readable headline. Example: '2-bed flat, Bethnal Green E2'."
+    },
+    "marketing_description": {
+      "type": "string",
+      "description": "Full marketing copy. May contain newlines. No HTML — markdown-light is acceptable."
+    },
+
+    "location": {
+      "$ref": "#/$defs/geo_point",
+      "description": "Plot-level geographic point if released, otherwise district centroid for masked listings."
+    },
+    "postcode_full": {
+      "type": "string",
+      "description": "Full postcode if released. Example UK: 'E2 0AB'. Masked listings should omit this."
+    },
+    "postcode_district": {
+      "type": "string",
+      "description": "Postcode district / outward code. Example UK: 'E2'."
+    },
+    "street_name": {
+      "type": "string",
+      "description": "Street name without number. Released only when masking allows."
+    },
+    "building_number": {
+      "type": "string",
+      "description": "Building number, name, or unit reference. Released only when masking allows."
+    },
+    "suburb": {
+      "type": "string",
+      "description": "Neighbourhood or suburb. Example UK: 'Bethnal Green'. Always safe to release."
+    },
+    "un_locode": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}[A-Z0-9]{3}$",
+      "description": "UN/LOCODE — ISO 3166-1 alpha-2 country code plus a three-character locode. Example: 'GBLON' (London), 'THBKK' (Bangkok), 'GBMAN' (Manchester).",
+      "examples": ["GBLON", "GBMAN", "THBKK"]
+    },
+
+    "property_type": {
+      "type": "string",
+      "enum": ["flat", "house", "studio", "commercial", "land", "other"],
+      "description": "Coarse property type. Jurisdictions may refine via jurisdiction_extensions."
+    },
+    "service_type": {
+      "type": "string",
+      "enum": ["long_term", "short_term", "sale"],
+      "description": "Transaction type. v0.2 standardises on long_term, short_term, sale (replacing v0.1 longlet, shortlet, sale)."
+    },
+
+    "bedrooms": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of bedrooms. 0 indicates a studio."
+    },
+    "bathrooms": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of bathrooms (including en-suites)."
+    },
+    "floor_area_sqm": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Internal floor area in square metres."
+    },
+    "floor": {
+      "type": "integer",
+      "description": "Floor number on which the unit sits. 0 = ground floor (UK convention). Negative for basement."
+    },
+    "total_floors": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Total number of floors in the building."
+    },
+    "furnishing": {
+      "type": "string",
+      "enum": ["furnished", "unfurnished", "part_furnished"],
+      "description": "Furnishing state at the start of the tenancy. Sales listings should omit."
+    },
+    "is_new_build": {
+      "type": "boolean",
+      "description": "True if this is a new-build (typically less than 2 years old or first-occupation)."
+    },
+    "development_name": {
+      "type": "string",
+      "description": "Name of the building or scheme. Example: 'The Stage', 'Battersea Power Station'."
+    },
+
+    "rent_pcm": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Asking rent per calendar month, expressed as a whole-currency integer (no fractional units). Only set when service_type = long_term."
+    },
+    "daily_rate": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Asking nightly rate, whole-currency integer. Only set when service_type = short_term."
+    },
+    "asking_price": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Asking sale price, whole-currency integer. Only set when service_type = sale."
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "ISO 4217 currency code. Required if any of rent_pcm, daily_rate, or asking_price is set.",
+      "examples": ["GBP", "THB", "USD", "EUR"]
+    },
+    "pricing_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Optional UUID for this pricing record. Allows price-history audit without rewriting the listing."
+    },
+
+    "available_from": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO 8601 date when the property becomes available."
+    },
+    "listing_status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "under_offer",
+        "let_agreed",
+        "sale_agreed",
+        "exchanged",
+        "completed",
+        "fallen_through",
+        "withdrawn",
+        "paused"
+      ],
+      "description": "Lifecycle state of the listing. Aggregators should hide listings with terminal states (completed, withdrawn) from default search."
+    },
+
+    "features": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Free-text feature flags. v0.2 stores features as TEXT[]; v0.1 used a boolean object. Example items: 'balcony', 'porter', 'permit_parking', 'pets_considered'."
+    },
+
+    "media": {
+      "$ref": "#/$defs/media_block",
+      "description": "All media references for the listing."
+    },
+
+    "enquiry_endpoint": {
+      "type": "string",
+      "format": "uri",
+      "description": "Absolute URL to which a consumer agent POSTs an enquiry conforming to enquiry.json. Should match endpoints.enquire on the agent card."
+    },
+
+    "visibility": {
+      "type": "string",
+      "enum": ["public", "pre_launch", "off_market"],
+      "default": "public",
+      "description": "Distribution scope. 'pre_launch' is visible to verified RAIA agents only; 'off_market' is unlisted and accessible only via direct raia_id reference."
+    },
+    "publish_from": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Earliest moment the listing should be shown publicly. Aggregators must respect this."
+    },
+    "publish_until": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Moment after which the listing should be hidden. Useful for short-term boost windows."
+    },
+
+    "provenance": {
+      "$ref": "#/$defs/provenance_block",
+      "description": "Origin and integrity metadata. Receiving aggregators set this on ingest."
+    },
+    "snapshot_version": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Monotonically increasing version of the underlying snapshot record. Consumers may use this to dedupe replays."
+    },
+    "synced_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the publishing agent last refreshed this listing record."
+    },
+
+    "jurisdiction_extensions": {
+      "type": "object",
+      "description": "Optional jurisdiction-specific fields. Populate only the sub-object that matches the un_locode country.",
+      "properties": {
+        "gb": { "$ref": "#/$defs/jurisdiction_gb" },
+        "th": { "$ref": "#/$defs/jurisdiction_th" }
+      },
+      "additionalProperties": false
+    }
+  },
+
+  "additionalProperties": false,
+
+  "examples": [
+    {
+      "raia_id": "prop-gb-rlf-000142",
+      "agent_id": "org-gb-rlf",
+      "agent_card_url": "https://app.estateaigents.com/.well-known/raia-agent.json",
+      "headline": "2-bed flat, Bethnal Green E2",
+      "marketing_description": "Bright second-floor flat in a quiet Victorian conversion, two minutes from Bethnal Green Underground. Original sash windows, refurbished kitchen, and a south-facing reception room. Communal garden to the rear.",
+      "location": { "lat": 51.5269, "lon": -0.0554 },
+      "postcode_full": "E2 0AB",
+      "postcode_district": "E2",
+      "street_name": "Old Bethnal Green Road",
+      "building_number": "32B",
+      "suburb": "Bethnal Green",
+      "un_locode": "GBLON",
+      "property_type": "flat",
+      "service_type": "long_term",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "floor_area_sqm": 64.5,
+      "floor": 2,
+      "total_floors": 3,
+      "furnishing": "furnished",
+      "is_new_build": false,
+      "rent_pcm": 2450,
+      "currency": "GBP",
+      "available_from": "2026-06-01",
+      "listing_status": "available",
+      "features": ["sash_windows", "communal_garden", "near_tube", "permit_parking"],
+      "media": {
+        "featured_image_url": "https://res.cloudinary.com/raia/image/upload/v1/marketing/org-gb-rlf/prop-gb-rlf-000142/hero.jpg",
+        "photos": [
+          { "url": "https://res.cloudinary.com/raia/image/upload/v1/marketing/org-gb-rlf/prop-gb-rlf-000142/01.jpg", "caption": "Reception room", "order": 0 },
+          { "url": "https://res.cloudinary.com/raia/image/upload/v1/marketing/org-gb-rlf/prop-gb-rlf-000142/02.jpg", "caption": "Kitchen", "order": 1 }
+        ],
+        "floor_plan_url": "https://res.cloudinary.com/raia/image/upload/v1/marketing/org-gb-rlf/prop-gb-rlf-000142/floorplan.jpg"
+      },
+      "enquiry_endpoint": "https://app.estateaigents.com/api/raia/enquire",
+      "visibility": "public",
+      "snapshot_version": 7,
+      "synced_at": "2026-05-07T09:14:00Z",
+      "provenance": {
+        "agent_id": "org-gb-rlf",
+        "received_at": "2026-05-07T09:14:02Z"
+      },
+      "jurisdiction_extensions": {
+        "gb": {
+          "tenure": "leasehold",
+          "lease_years_remaining": 112,
+          "service_charge_pa": 1850,
+          "ground_rent_pa": 0,
+          "council_tax_band": "C",
+          "epc_rating": "C",
+          "epc_register_url": "https://find-energy-certificate.service.gov.uk/energy-certificate/0123-4567-8901-2345-6789"
+        }
+      }
+    }
+  ],
+
+  "x-raia-notes": {
+    "schema_versioning": "v0.2 introduces explicit schema versioning. Implementations SHOULD declare the schema version they target. The wire-format version is announced via the agent card's schema_version field, not embedded in every listing.",
+    "address_masking": "Pre-COMMITTED listings (anonymous query results) MUST omit street_name, building_number, postcode_full, and the precise location point. The snapshot_listing JSONB column in the RAIA reference implementation enforces this by template-fill rather than LLM-generation.",
+    "currency": "All monetary fields are whole-currency integers — no minor units. For currencies without subdivisions (e.g. JPY) this is the natural representation; for GBP, THB and USD it intentionally drops fractional pence/satang/cents.",
+    "v01_to_v02_migration": "service_type values longlet -> long_term, shortlet -> short_term, sale unchanged. features changes from boolean object {balcony: true} to TEXT[] ['balcony']. jurisdiction_extensions is new — flatten or drop fields that v0.1 carried at the top level (e.g. epc_rating).",
+    "reference_implementation": "RAIA reference: snapshot_listing column on tbl_asset_snapshots, dual-served at /api/raia/property/{raia_id} and via raia-public.tbl_listings."
+  }
+}

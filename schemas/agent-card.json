@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://estateaigents.org/schemas/agent-card.json",
+  "title": "RAIA Agent Card",
+  "description": "Discovery document published by every RAIA-compliant estate agent at /.well-known/raia-agent.json. Declares identity, jurisdiction coverage, capabilities, and the endpoints that consumers can call. v0.2 adds schema_version, capabilities, verification, and provenance_signing.",
+  "type": "object",
+
+  "$defs": {
+    "contact_block": {
+      "type": "object",
+      "description": "Public contact details for the agency. PII relating to individual staff should not appear here — use endpoints.enquire instead.",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "General enquiries email."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Public switchboard number in E.164 format (e.g. '+442071234567')."
+        },
+        "address": {
+          "type": "string",
+          "description": "Registered or trading address of the agency."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "endpoints_block": {
+      "type": "object",
+      "description": "URLs the consumer can call. property is a URL template containing the literal string '{raia_id}', which the consumer substitutes before fetching.",
+      "required": ["search", "property"],
+      "properties": {
+        "search": {
+          "type": "string",
+          "format": "uri",
+          "description": "GET endpoint returning a paginated list of listings conforming to listing.json."
+        },
+        "property": {
+          "type": "string",
+          "description": "URL template with '{raia_id}' placeholder. Example: 'https://app.estateaigents.com/api/raia/property/{raia_id}'.",
+          "pattern": "\\{raia_id\\}"
+        },
+        "enquire": {
+          "type": "string",
+          "format": "uri",
+          "description": "POST endpoint accepting an enquiry conforming to enquiry.json."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "verification_block": {
+      "type": "object",
+      "description": "How a third party can verify that this agent card was published by the legitimate operator of the domain.",
+      "required": ["method"],
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": ["domain_dns_txt", "meta_tag", "manual"],
+          "description": "Verification method. domain_dns_txt = a TXT record at _raia.{host} contains the token. meta_tag = a <meta name=\"raia-verification\" content=\"{token}\"> tag at the homepage. manual = registry-side review."
+        },
+        "token": {
+          "type": "string",
+          "description": "Opaque verification token. Required for domain_dns_txt and meta_tag; not used for manual."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "provenance_signing_block": {
+      "type": "object",
+      "description": "Public-key material for verifying signed listings. Reserved for v1.0 — for v0.2 only the public_key_url field is defined.",
+      "properties": {
+        "public_key_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the agent's public key (PEM or JWK). Used by aggregators to verify provenance.signature_hash on incoming listings."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+
+  "required": ["schema_version", "agent_id", "name", "endpoints"],
+
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$",
+      "description": "Version of the RAIA Protocol schemas this agent implements. v0.2 example: '0.2'.",
+      "examples": ["0.2", "1.0"]
+    },
+    "agent_id": {
+      "type": "string",
+      "pattern": "^org-[a-z]{2}-[a-z0-9-]{2,32}$",
+      "description": "RAIA org identifier. Format: org-{cc}-{slug}. Country code is ISO 3166-1 alpha-2 lower-cased. Slug is the agency's chosen short identifier — 3 to 8 characters is conventional but not enforced.",
+      "examples": ["org-gb-rlf", "org-th-rbc", "org-gb-small-london-lettings"]
+    },
+    "name": {
+      "type": "string",
+      "description": "Legal or trading name of the agency. Used as the canonical match key for the registry."
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Public-facing brand name if it differs from name. Optional."
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description of the agency for use in registry listings."
+    },
+    "logo_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Square logo. SVG or PNG, served over HTTPS."
+    },
+
+    "endpoints": {
+      "$ref": "#/$defs/endpoints_block",
+      "description": "Callable endpoints exposed by this agent."
+    },
+
+    "jurisdictions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]{2}[A-Z0-9]{3}$"
+      },
+      "description": "UN/LOCODE areas the agent operates in. Example: ['GBLON', 'GBMAN']. Country-only coverage is expressed as the capital city locode plus the wildcard convention 'GB***' RESERVED for v1.0 — for v0.2 list each city explicitly."
+    },
+
+    "contact": {
+      "$ref": "#/$defs/contact_block"
+    },
+
+    "companies_house_number": {
+      "type": "string",
+      "pattern": "^[A-Z0-9]{6,10}$",
+      "description": "Companies House registration number. UK only. Aggregators may verify this against the Companies House public API."
+    },
+
+    "verification": {
+      "$ref": "#/$defs/verification_block",
+      "description": "How a third party can verify the agent card was published by the domain operator. Required for registry admission but optional for self-hosted use."
+    },
+
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["search", "property", "enquire", "delegate", "verify", "viewing_request", "offer"]
+      },
+      "description": "Capabilities the agent supports. 'search', 'property' and 'enquire' map to endpoints. 'delegate' indicates the agent can issue scoped tokens (RAIA reference: tbl_agent_delegations). 'verify', 'viewing_request' and 'offer' map to MCP tools defined in SPEC.md section 8."
+    },
+
+    "provenance_signing": {
+      "$ref": "#/$defs/provenance_signing_block"
+    }
+  },
+
+  "additionalProperties": false,
+
+  "examples": [
+    {
+      "schema_version": "0.2",
+      "agent_id": "org-gb-small-london-lettings",
+      "name": "Small London Lettings Ltd",
+      "display_name": "Small London Lettings",
+      "description": "Independent lettings agency covering Hampstead, Belsize Park and Primrose Hill.",
+      "logo_url": "https://smalllondonlettings.co.uk/logo.svg",
+      "endpoints": {
+        "search": "https://smalllondonlettings.co.uk/api/raia/search",
+        "property": "https://smalllondonlettings.co.uk/api/raia/property/{raia_id}",
+        "enquire": "https://smalllondonlettings.co.uk/api/raia/enquire"
+      },
+      "jurisdictions": ["GBLON"],
+      "contact": {
+        "email": "hello@smalllondonlettings.co.uk",
+        "phone": "+442074311234",
+        "address": "12 Heath Street, Hampstead, London NW3 6TE"
+      },
+      "companies_house_number": "12345678",
+      "verification": {
+        "method": "domain_dns_txt",
+        "token": "raia-verify-9f7b2c1e4a8d"
+      },
+      "capabilities": ["search", "property", "enquire"]
+    }
+  ],
+
+  "x-raia-notes": {
+    "discovery": "Agent cards are discovered via a fetch of /.well-known/raia-agent.json on the agent's primary domain. CORS MUST be open (Access-Control-Allow-Origin: *) — anonymous consumer agents need to read this from any origin.",
+    "url_template": "endpoints.property is a URL template, not a regular URL. The literal substring '{raia_id}' is replaced by the consumer prior to fetch. This pattern follows RFC 6570 Level 1.",
+    "registry": "The reference registry at estateaigents.org/registry verifies agent cards using the verification block, then publishes the verified set. Self-hosted agents may operate without registry admission but cannot use the RAIA-Verified™ trust signal."
+  }
+}
