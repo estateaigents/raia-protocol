@@ -1,0 +1,489 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12",
+  "$id": "https://estateaigents.org/schemas/enquiry.json",
+  "title": "RAIA Enquiry",
+  "description": "Transaction lifecycle and level-gated data envelope for RAIA Protocol enquiries. Supports L0 public listing context, L1 enquiry data, L2 KYC assertions, and L3 AML/proof-of-funds records.",
+  "version": "0.2.0",
+  "type": "object",
+  "required": [
+    "enquiry_id",
+    "raia_version",
+    "property_raia_id",
+    "transaction_type",
+    "jurisdiction",
+    "buyer_agent",
+    "estate_agent",
+    "state",
+    "created_at"
+  ],
+  "properties": {
+    "enquiry_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID v4 assigned by the estate agent's system when the enquiry is first created. Immutable for the lifetime of the session."
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "Stable transaction identifier used by L2/L3 assertions. May equal enquiry_id for simple implementations."
+    },
+    "raia_version": {
+      "type": "string",
+      "description": "RAIA Protocol version. All messages in a session must carry the same major version. Format: MAJOR.MINOR."
+    },
+    "property_raia_id": {
+      "type": "string",
+      "pattern": "^prop-[a-z]{2}-[a-z0-9]+-[0-9]+$",
+      "description": "The stable RAIA property identifier being enquired about."
+    },
+    "property_ref": {
+      "type": "string",
+      "pattern": "^prop-[a-z]{2}-[a-z0-9]+-[0-9]+$",
+      "description": "Alias for property_raia_id used by consent-token claims and security examples."
+    },
+    "transaction_type": {
+      "type": "string",
+      "enum": ["LETTINGS", "SALES"],
+      "description": "Whether this enquiry is for a letting or a sale. Drives session TTL, offer structure, and applicable qualification signals."
+    },
+    "jurisdiction": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$",
+      "description": "Jurisdiction (ISO 3166-1 alpha-2) of the property."
+    },
+    "buyer_agent": {
+      "$ref": "#/$defs/AgentRef"
+    },
+    "estate_agent": {
+      "$ref": "#/$defs/AgentRef"
+    },
+    "state": {
+      "$ref": "#/$defs/EnquiryState"
+    },
+    "state_reason": {
+      "type": ["string", "null"],
+      "maxLength": 500
+    },
+    "qualification": {
+      "$ref": "#/$defs/Qualification"
+    },
+    "viewing": {
+      "$ref": "#/$defs/Viewing"
+    },
+    "offer": {
+      "$ref": "#/$defs/Offer"
+    },
+    "offer_history": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Offer" }
+    },
+    "fee_split": {
+      "$ref": "#/$defs/FeeSplit"
+    },
+    "l0": {
+      "$ref": "#/$defs/L0Public"
+    },
+    "l1": {
+      "$ref": "#/$defs/L1Enquiry"
+    },
+    "l2": {
+      "$ref": "#/$defs/L2Kyc"
+    },
+    "l3": {
+      "$ref": "#/$defs/L3Aml"
+    },
+    "session_ttl_hours": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Session TTL in hours from created_at. Default 24 for lettings, 720 for sales.",
+      "default": 24
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional implementation-specific metadata. Never use metadata to carry L1+ personal data.",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "EnquiryState": {
+      "type": "string",
+      "enum": [
+        "IDENTIFIED",
+        "DATA_GATHERING",
+        "AWAITING_HUMAN_ASSERTION",
+        "COMMITTED",
+        "SETTLED",
+        "WITHDRAWN",
+        "EXPIRED"
+      ]
+    },
+    "AgentRef": {
+      "type": "object",
+      "required": ["raia_id"],
+      "description": "Reference to a RAIA-compliant agent participating in this enquiry.",
+      "properties": {
+        "raia_id": {
+          "type": "string",
+          "pattern": "^org-[a-z]{2}-[a-z0-9]+$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "agent_card_url": {
+          "type": ["string", "null"],
+          "format": "uri"
+        },
+        "identity_credential": {
+          "$ref": "#/$defs/AgentIdentityCredential"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AgentIdentityCredential": {
+      "type": "object",
+      "required": ["credential_id", "issuer", "subject", "max_data_level", "jurisdictions", "issued_at", "expires_at"],
+      "description": "W3C Verifiable Credential summary issued by the RAIA registry. Full VC proof may be exchanged out-of-band or carried in vc_jwt.",
+      "properties": {
+        "credential_id": { "type": "string" },
+        "issuer": { "type": "string" },
+        "subject": { "type": "string", "pattern": "^org-[a-z]{2}-[a-z0-9]+$" },
+        "max_data_level": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "jurisdictions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "pattern": "^[A-Z]{2}$" }
+        },
+        "data_residency": { "$ref": "#/$defs/DataResidency" },
+        "issued_at": { "type": "string", "format": "date-time" },
+        "expires_at": { "type": "string", "format": "date-time" },
+        "vc_jwt": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "ConsentTokenRef": {
+      "type": "object",
+      "required": ["token", "level", "purpose", "scopes", "issued_at", "expires_at", "audience"],
+      "properties": {
+        "token": {
+          "type": "string",
+          "pattern": "^ct_l[123]_[A-Za-z0-9._-]+$",
+          "description": "Scoped, signed JWT consent token. Tokens are non-transferable and level-specific."
+        },
+        "level": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "purpose": { "type": "string", "maxLength": 100 },
+        "scopes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "issued_at": { "type": "string", "format": "date-time" },
+        "expires_at": { "type": "string", "format": "date-time" },
+        "audience": { "type": "string", "pattern": "^org-[a-z]{2}-[a-z0-9]+$" }
+      },
+      "additionalProperties": false
+    },
+    "DataResidency": {
+      "type": "string",
+      "enum": ["UK", "EEA", "ADEQUACY", "TH", "SG", "US"]
+    },
+    "HashRef": {
+      "type": "string",
+      "pattern": "^sha256:[A-Fa-f0-9]{8,64}$"
+    },
+    "L0Public": {
+      "type": "object",
+      "description": "L0 public listing context. Must contain no personal data.",
+      "properties": {
+        "listing": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "L1Enquiry": {
+      "type": "object",
+      "required": ["consent", "purpose", "data_subject_id", "data_residency"],
+      "description": "L1 enquiry data. Personal fields must be encrypted or tokenised unless both agents are mutually authenticated.",
+      "properties": {
+        "consent": { "$ref": "#/$defs/ConsentTokenRef" },
+        "consent_token": {
+          "type": "string",
+          "pattern": "^ct_l1_[A-Za-z0-9._-]+$",
+          "description": "Deprecated shorthand. Prefer consent.token."
+        },
+        "consent_expires_at": { "type": "string", "format": "date-time" },
+        "purpose": { "type": "string", "enum": ["enquiry", "viewing", "offer", "tenancy_application", "sales_progression"] },
+        "data_subject_id": { "type": "string" },
+        "data_residency": { "$ref": "#/$defs/DataResidency" },
+        "enquirer": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "email": { "type": "string" },
+            "phone": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "field_scopes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "L2Kyc": {
+      "type": "object",
+      "required": ["consent", "assurance_framework", "assurance_level", "scopes_granted", "verifier_assertions", "data_subject_id", "data_residency"],
+      "description": "L2 KYC and standard CDD assertions. Raw identity documents and raw Right to Rent share codes are never carried.",
+      "properties": {
+        "consent": { "$ref": "#/$defs/ConsentTokenRef" },
+        "consent_token": {
+          "type": "string",
+          "pattern": "^ct_l2_[A-Za-z0-9._-]+$"
+        },
+        "data_subject_id": { "type": "string" },
+        "data_residency": { "$ref": "#/$defs/DataResidency" },
+        "assurance_framework": {
+          "type": "string",
+          "enum": ["uk_tfida", "gpg45", "eidas", "nist_ial2", "iso_29115", "openid_ekyc", "w3c_vc"]
+        },
+        "assurance_level": {
+          "type": "string",
+          "enum": ["medium", "high", "substantial", "ial2", "loa3"]
+        },
+        "scopes_granted": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "verifier_assertions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/VerifierAssertion" }
+        },
+        "right_to_rent": {
+          "$ref": "#/$defs/RightToRentAssertion"
+        },
+        "cdd": {
+          "$ref": "#/$defs/CddScreening"
+        }
+      },
+      "additionalProperties": false
+    },
+    "VerifierAssertion": {
+      "type": "object",
+      "required": ["provider", "framework", "scope", "assertion_hash", "issued_at", "expires_at"],
+      "properties": {
+        "provider": { "type": "string" },
+        "framework": { "type": "string" },
+        "scope": { "type": "string" },
+        "confidence_score": { "type": "number", "minimum": 0 },
+        "assertion_hash": { "$ref": "#/$defs/HashRef" },
+        "issued_at": { "type": "string", "format": "date-time" },
+        "expires_at": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "RightToRentAssertion": {
+      "type": "object",
+      "required": ["verified", "share_code_hash", "checked_at", "expires_at"],
+      "properties": {
+        "verified": { "type": "boolean" },
+        "share_code_hash": { "$ref": "#/$defs/HashRef" },
+        "checked_at": { "type": "string", "format": "date-time" },
+        "expires_at": { "type": "string", "format": "date-time" },
+        "provider": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "CddScreening": {
+      "type": "object",
+      "required": ["sanctions_clear", "pep_clear", "screened_at"],
+      "properties": {
+        "sanctions_clear": { "type": "boolean" },
+        "pep_clear": { "type": "boolean" },
+        "adverse_media_clear": { "type": "boolean" },
+        "risk_level": { "type": "string", "enum": ["LOW", "STANDARD", "HIGH"] },
+        "screening_provider": { "type": "string" },
+        "screening_hash": { "$ref": "#/$defs/HashRef" },
+        "screened_at": { "type": "string", "format": "date-time" },
+        "expires_at": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "L3Aml": {
+      "type": "object",
+      "required": ["consent", "edd_required", "source_of_funds", "data_subject_id", "data_residency"],
+      "description": "L3 AML, proof-of-funds, document integrity, and payment reference data. Raw bank details and raw source-of-funds evidence are never carried.",
+      "properties": {
+        "consent": { "$ref": "#/$defs/ConsentTokenRef" },
+        "consent_token": {
+          "type": "string",
+          "pattern": "^ct_l3_[A-Za-z0-9._-]+$"
+        },
+        "data_subject_id": { "type": "string" },
+        "data_residency": { "$ref": "#/$defs/DataResidency" },
+        "edd_required": { "type": "boolean" },
+        "edd_trigger": {
+          "type": "string",
+          "enum": ["transaction_value_exceeds_threshold", "pep_involved", "non_uk_funds", "high_risk_flag", "foreign_buyer", "provider_required"]
+        },
+        "source_of_funds": { "$ref": "#/$defs/SourceOfFundsAssertion" },
+        "document_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DocumentRef" }
+        },
+        "payment_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/PaymentRef" }
+        },
+        "retention_exemption_disclosed": {
+          "type": "boolean",
+          "description": "True when the data subject was told L3 AML records may be retained despite an erasure request where law requires retention."
+        }
+      },
+      "additionalProperties": false
+    },
+    "SourceOfFundsAssertion": {
+      "type": "object",
+      "required": ["assertion_hash", "provider", "verified_at", "expires_at"],
+      "properties": {
+        "assertion_hash": { "$ref": "#/$defs/HashRef" },
+        "provider": { "type": "string" },
+        "transaction_id": { "type": "string" },
+        "verified_at": { "type": "string", "format": "date-time" },
+        "expires_at": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "DocumentRef": {
+      "type": "object",
+      "required": ["type", "content_hash"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["tenancy_agreement", "sale_contract", "reservation_agreement", "deposit_receipt", "proof_of_funds_summary", "other"]
+        },
+        "content_hash": { "$ref": "#/$defs/HashRef" },
+        "signed_by": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "signed_at": { "type": "string", "format": "date-time" },
+        "storage_ref": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "PaymentRef": {
+      "type": "object",
+      "required": ["type", "amount_pence", "method", "provider_ref", "beneficiary_verified", "status"],
+      "properties": {
+        "type": { "type": "string", "enum": ["holding_deposit", "deposit", "rent", "purchase_deposit", "completion_funds", "fee"] },
+        "amount_pence": { "type": "integer", "minimum": 0 },
+        "method": { "type": "string", "enum": ["open_banking", "bank_transfer_reference", "card_reference", "escrow_reference"] },
+        "provider_ref": { "type": "string" },
+        "beneficiary_verified": { "type": "boolean" },
+        "verification_timestamp": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["pending", "held", "released", "failed", "cancelled"] }
+      },
+      "additionalProperties": false
+    },
+    "Qualification": {
+      "type": "object",
+      "description": "Buyer or tenant qualification signals. Contains no PII.",
+      "properties": {
+        "employment_status": { "type": ["string", "null"], "enum": ["EMPLOYED", "SELF_EMPLOYED", "CONTRACTOR", "RETIRED", "STUDENT", "NOT_EMPLOYED", null] },
+        "income_band": { "type": ["string", "null"], "enum": ["BAND_0_25K", "BAND_25_50K", "BAND_50_75K", "BAND_75_100K", "BAND_100K_PLUS", null] },
+        "household_size": { "type": ["integer", "null"], "minimum": 1 },
+        "has_mortgage_in_principle": { "type": ["boolean", "null"] },
+        "is_cash_buyer": { "type": ["boolean", "null"] },
+        "is_chain_free": { "type": ["boolean", "null"] },
+        "has_pets": { "type": ["boolean", "null"] },
+        "move_in_date": { "type": ["string", "null"], "format": "date" },
+        "max_rent_pcm": { "type": ["number", "null"], "minimum": 0 },
+        "max_purchase_price": { "type": ["number", "null"], "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "Viewing": {
+      "type": "object",
+      "properties": {
+        "proposed_slots": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/TimeSlot" }
+        },
+        "confirmed_slot": {
+          "oneOf": [{ "$ref": "#/$defs/TimeSlot" }, { "type": "null" }]
+        },
+        "viewing_type": { "type": ["string", "null"], "enum": ["IN_PERSON", "VIRTUAL", null] },
+        "notes": { "type": ["string", "null"], "maxLength": 500 }
+      },
+      "additionalProperties": false
+    },
+    "TimeSlot": {
+      "type": "object",
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "type": "string", "format": "date-time" },
+        "end": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "Offer": {
+      "type": "object",
+      "required": ["amount", "currency", "submitted_at", "expiry"],
+      "properties": {
+        "amount": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "term_months": { "type": ["integer", "null"], "minimum": 1 },
+        "start_date": { "type": ["string", "null"], "format": "date" },
+        "submitted_at": { "type": "string", "format": "date-time" },
+        "submitted_by": { "type": ["string", "null"] },
+        "expiry": { "type": "string", "format": "date-time" },
+        "is_counter": { "type": "boolean", "default": false },
+        "conditions": { "type": ["string", "null"], "maxLength": 1000 },
+        "human_approved": { "type": ["boolean", "null"] },
+        "human_approved_at": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "FeeSplit": {
+      "type": "object",
+      "required": ["buyer_agent_pct", "estate_agent_pct"],
+      "properties": {
+        "buyer_agent_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "estate_agent_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "buyer_agent_approved": { "type": ["boolean", "null"] },
+        "estate_agent_approved": { "type": ["boolean", "null"] },
+        "finalised": { "type": "boolean", "default": false },
+        "finalised_at": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "x-raia-notes": {
+    "data_levels": {
+      "l0": "Public listing context. No personal data.",
+      "l1": "Enquiry identity/contact data. Requires ct_l1 consent token.",
+      "l2": "KYC and CDD assertions. Requires ct_l2 consent token and receiving agent max_data_level >= 2.",
+      "l3": "AML/proof-of-funds, document hashes, and payment references. Requires ct_l3 consent token and receiving agent max_data_level >= 3."
+    },
+    "pii_policy": "Raw identity documents, bank details, Right to Rent share codes, and source-of-funds evidence are never transmitted. RAIA carries consent tokens, verifier assertions, references, and hashes.",
+    "erasure": "Every L1+ module carries data_subject_id and data_residency so erasure and residency obligations can be enforced per level."
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "raia-mcp-server",
+  "version": "0.2.0",
+  "description": "Reference MCP server for RAIA Protocol — the open standard for AI agents to transact property",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "raia-mcp-server": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["mcp", "raia", "real-estate", "property", "ai-agents"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/estateaigents/raia-protocol"
+  }
+}
