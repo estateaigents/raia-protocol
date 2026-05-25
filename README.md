@@ -100,7 +100,14 @@ See [SPEC.md](SPEC.md) and [SECURITY.md](SECURITY.md) for issuer rules, JWT clai
 
 ## Contribute
 
-We welcome schema review, SDK improvements, MCP adapter work, conformance tests, and jurisdiction modules. See [CONTRIBUTING.md](CONTRIBUTING.md) and [GOVERNANCE.md](GOVERNANCE.md).
+We welcome schema review, SDK improvements, MCP adapter work, conformance tests, and jurisdiction modules.
+
+1. Fork [estateaigents/raia-protocol](https://github.com/estateaigents/raia-protocol)
+2. Branch using `<type>/<scope>-<description>` (e.g. `feat/schemas-property-v0-2`)
+3. Commit with [Conventional Commits](https://www.conventionalcommits.org/)
+4. Open a PR to `master`
+
+Full workflow and naming rules: [CONTRIBUTING.md](CONTRIBUTING.md). Governance: [GOVERNANCE.md](GOVERNANCE.md).
 
 ## Trademark
 
