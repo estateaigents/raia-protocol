@@ -3,15 +3,29 @@
   "$id": "https://estateaigents.org/schemas/property.json",
   "title": "RAIA Property Card",
   "description": "Public-facing property listing card for the RAIA Protocol marketplace. Address is always masked to district level. Served from snapshot_listing in tbl_asset_snapshots.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "object",
-  "required": ["raia_id", "agent_card_url", "location", "headline", "letting_agent", "enquiry_endpoint"],
+  "required": [
+    "raia_id",
+    "agent_card_url",
+    "transaction_type",
+    "status",
+    "location",
+    "headline",
+    "listing_agent",
+    "enquiry_endpoint"
+  ],
   "properties": {
     "raia_id": {
       "type": "string",
       "pattern": "^prop-[a-z]{2}-[a-z0-9]+-[0-9]+$",
       "description": "External stable property identifier. Format: prop-{jurisdiction}-{org-slug}-{sequence}. Example: prop-gb-rlf-000031.",
       "examples": ["prop-gb-rlf-000031", "prop-th-rbc-000001"]
+    },
+    "raia_version": {
+      "type": "string",
+      "description": "RAIA Protocol version that generated this card.",
+      "default": "0.2"
     },
     "rebuilt_at": {
       "type": "string",
@@ -23,6 +37,46 @@
       "format": "uri",
       "description": "URL of the listing agent's RAIA agent card (/.well-known/raia-agent.json)."
     },
+    "transaction_type": {
+      "type": "string",
+      "enum": ["LETTINGS", "SALES"],
+      "description": "Whether this property is available to let or for sale. Drives which price field applies and which compliance signals are relevant."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "AVAILABLE",
+        "UNDER_OFFER",
+        "SOLD_STC",
+        "SOLD_STCM",
+        "RESERVED",
+        "LET_AGREED",
+        "OFF_MARKET",
+        "WITHDRAWN"
+      ],
+      "description": "Current marketing lifecycle status. SOLD_STC = sold subject to contract. SOLD_STCM = sold subject to contract and mortgage. LET_AGREED = letting agreed subject to referencing."
+    },
+    "property_type": {
+      "type": ["string", "null"],
+      "enum": [
+        "FLAT",
+        "APARTMENT",
+        "STUDIO",
+        "MAISONETTE",
+        "TERRACED",
+        "END_TERRACE",
+        "SEMI_DETACHED",
+        "DETACHED",
+        "BUNGALOW",
+        "COTTAGE",
+        "TOWNHOUSE",
+        "LAND",
+        "COMMERCIAL",
+        "OTHER",
+        null
+      ],
+      "description": "Property sub-type."
+    },
     "location": {
       "type": "object",
       "required": ["district"],
@@ -32,6 +86,10 @@
           "type": ["string", "null"],
           "description": "Neighbourhood or suburb name. e.g. 'Hammersmith', 'Sukhumvit'."
         },
+        "postcode_district": {
+          "type": ["string", "null"],
+          "description": "Postcode district prefix only — never the full postcode. e.g. 'SW1', 'W6', 'BN3'. Full postcode is released after COMMITTED state."
+        },
         "un_locode": {
           "type": ["string", "null"],
           "pattern": "^[A-Z]{2}[A-Z0-9]{3}$",
@@ -39,62 +97,191 @@
         },
         "lat": {
           "type": ["number", "null"],
-          "description": "Approximate latitude (district centroid — never plot-level)."
+          "minimum": -90,
+          "maximum": 90,
+          "description": "Approximate latitude — district centroid, never plot-level."
         },
         "lng": {
           "type": ["number", "null"],
-          "description": "Approximate longitude (district centroid — never plot-level)."
+          "minimum": -180,
+          "maximum": 180,
+          "description": "Approximate longitude — district centroid, never plot-level."
         }
       },
       "additionalProperties": false
     },
     "headline": {
       "type": "string",
+      "maxLength": 150,
       "description": "Short human-readable label. e.g. '1-bed flat, Hammersmith W6'."
+    },
+    "description": {
+      "type": ["string", "null"],
+      "maxLength": 5000,
+      "description": "Full property description. Plain text only — HTML must be stripped before populating this field."
     },
     "bedrooms": {
       "type": ["integer", "null"],
       "minimum": 0,
-      "description": "Number of bedrooms."
+      "description": "Number of bedrooms. 0 = studio."
     },
     "bathrooms": {
       "type": ["integer", "null"],
       "minimum": 0,
       "description": "Number of bathrooms."
     },
+    "reception_rooms": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Number of reception rooms (living rooms, dining rooms, studies). Maps to living_rooms in Zoopla feed and reception_rooms in Rightmove feed."
+    },
     "floor_area_sqm": {
       "type": ["number", "null"],
       "minimum": 0,
-      "description": "Floor area in square metres."
+      "description": "Total floor area in square metres."
     },
     "available_from": {
       "type": ["string", "null"],
       "format": "date",
-      "description": "ISO 8601 date when the property becomes available. Null if occupied with no vacancy."
+      "description": "ISO 8601 date when the property becomes available. Null if occupied with no confirmed vacancy date."
     },
     "asking_rent_pcm": {
       "type": ["number", "null"],
       "minimum": 0,
-      "description": "Asking rent per calendar month in the jurisdiction's default currency. Null if not currently listed."
+      "description": "Asking rent per calendar month in the jurisdiction's default currency. Applies when transaction_type is LETTINGS. Null if price on application."
+    },
+    "rent_frequency": {
+      "type": ["string", "null"],
+      "enum": ["WEEKLY", "MONTHLY", null],
+      "description": "Frequency of rent payments. Applies when transaction_type is LETTINGS. Defaults to MONTHLY if null."
+    },
+    "asking_price": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Asking price. Applies when transaction_type is SALES. Null if price on application."
+    },
+    "price_qualifier": {
+      "type": ["string", "null"],
+      "enum": [
+        "PRICE_ON_APPLICATION",
+        "GUIDE_PRICE",
+        "OFFERS_OVER",
+        "OFFERS_IN_EXCESS_OF",
+        "OFFERS_IN_REGION_OF",
+        "FROM",
+        "FIXED_PRICE",
+        null
+      ],
+      "description": "Price display qualifier. Null means the stated price is the exact asking figure."
     },
     "currency": {
       "type": ["string", "null"],
       "pattern": "^[A-Z]{3}$",
       "description": "ISO 4217 currency code. e.g. 'GBP', 'THB'. Null defaults to jurisdiction default."
     },
+    "deposit": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Tenancy deposit amount in the property's currency. Applies when transaction_type is LETTINGS."
+    },
+    "tenure": {
+      "type": ["string", "null"],
+      "enum": ["FREEHOLD", "LEASEHOLD", "SHARE_OF_FREEHOLD", "COMMONHOLD", null],
+      "description": "Tenure type. Applies when transaction_type is SALES. Null for lettings."
+    },
+    "furnishing": {
+      "type": ["string", "null"],
+      "enum": ["FURNISHED", "PART_FURNISHED", "UNFURNISHED", "FURNISHED_OR_UNFURNISHED", null],
+      "description": "Furnishing state. Primarily applies when transaction_type is LETTINGS."
+    },
+    "parking": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "OFF_STREET",
+          "GARAGE",
+          "ALLOCATED",
+          "RESIDENTS_PERMIT",
+          "ON_STREET",
+          "NONE"
+        ]
+      },
+      "maxItems": 5,
+      "description": "Parking options available with the property. Empty array means not specified."
+    },
+    "outside_space": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "PRIVATE_GARDEN",
+          "COMMUNAL_GARDEN",
+          "BALCONY",
+          "TERRACE",
+          "ROOF_TERRACE",
+          "COURTYARD",
+          "NONE"
+        ]
+      },
+      "maxItems": 5,
+      "description": "Outdoor space types available with the property. Empty array means not specified."
+    },
+    "epc_rating": {
+      "type": ["string", "null"],
+      "enum": ["A", "B", "C", "D", "E", "F", "G", null],
+      "description": "EPC (Energy Performance Certificate) letter rating. Mandatory for marketing in GB. Null if not yet assessed or exempt."
+    },
     "features": {
       "type": "array",
       "items": { "type": "string" },
       "maxItems": 10,
-      "description": "Up to 10 notable features. e.g. ['Balcony', 'Porter', 'Permit parking']."
+      "description": "Up to 10 notable features. e.g. ['Balcony', 'Porter', 'Permit parking']. Maps to feature_list in Zoopla feed and details.features in Rightmove feed."
     },
-    "letting_agent": {
+    "media": {
+      "type": "object",
+      "description": "Media assets for this property listing.",
+      "properties": {
+        "photos": {
+          "type": "array",
+          "maxItems": 50,
+          "items": { "$ref": "#/$defs/MediaAsset" },
+          "description": "Property photos ordered by sort_order ascending. First item is the primary/hero image."
+        },
+        "floorplans": {
+          "type": "array",
+          "maxItems": 10,
+          "items": { "$ref": "#/$defs/MediaAsset" },
+          "description": "Floorplan images or PDFs."
+        },
+        "epc_documents": {
+          "type": "array",
+          "maxItems": 5,
+          "items": { "$ref": "#/$defs/MediaAsset" },
+          "description": "EPC certificate documents or graphs. URL should indicate whether asset is a graph image or full PDF report."
+        },
+        "virtual_tours": {
+          "type": "array",
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/MediaAsset" },
+          "description": "Virtual tour URLs."
+        },
+        "brochures": {
+          "type": "array",
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/MediaAsset" },
+          "description": "Property brochure PDFs. URLs must end in .pdf."
+        }
+      },
+      "additionalProperties": false
+    },
+    "listing_agent": {
       "type": "object",
       "required": ["name", "raia_id", "verified"],
-      "description": "The estate agency managing this property.",
+      "description": "The estate agency listing this property (lettings or sales).",
       "properties": {
-        "name":     { "type": "string" },
-        "raia_id":  {
+        "name": { "type": "string" },
+        "raia_id": {
           "type": "string",
           "pattern": "^org-[a-z]{2}-[a-z0-9]+$",
           "description": "Agent's RAIA org identifier. e.g. 'org-gb-rlf'."
@@ -114,15 +301,91 @@
     "session_ttl_hours": {
       "type": "integer",
       "minimum": 1,
-      "description": "Session TTL in hours. 24 for lettings, 720 for sales."
+      "description": "Session TTL in hours from enquiry creation. 24 for lettings, 720 for sales.",
+      "default": 24
     }
   },
   "additionalProperties": false,
-
+  "$defs": {
+    "MediaAsset": {
+      "type": "object",
+      "required": ["url"],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 500,
+          "description": "Publicly accessible URL to the media asset. ETag support recommended to avoid unnecessary re-downloads."
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Optional human-readable caption or label."
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Display sort order. Lower values appear first. If provided, must be unique within its media type array."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
   "x-raia-notes": {
+    "version_changes_0_2_0": [
+      "Added transaction_type (LETTINGS | SALES) — now required",
+      "Added status enum (AVAILABLE, UNDER_OFFER, SOLD_STC, SOLD_STCM, RESERVED, LET_AGREED, OFF_MARKET, WITHDRAWN)",
+      "Added property_type enum",
+      "Added description (full plain-text description)",
+      "Added asking_price for sales listings (alongside existing asking_rent_pcm for lettings)",
+      "Added rent_frequency (WEEKLY | MONTHLY)",
+      "Added price_qualifier enum",
+      "Added deposit for lettings",
+      "Added tenure (FREEHOLD | LEASEHOLD | SHARE_OF_FREEHOLD | COMMONHOLD)",
+      "Added furnishing enum",
+      "Added parking array",
+      "Added outside_space array",
+      "Added reception_rooms",
+      "Added epc_rating letter (A–G)",
+      "Added media object (photos, floorplans, epc_documents, virtual_tours, brochures)",
+      "Added postcode_district to location (prefix only — never full postcode)",
+      "Added raia_version field",
+      "Renamed letting_agent to listing_agent (covers both lettings and sales)"
+    ],
     "address_masking": "Full address is NEVER included in this schema. District + postcode prefix only. Full address is transmitted once per enquiry session when session state reaches COMMITTED (human-approved viewing).",
+    "price_fields": "Use asking_rent_pcm for LETTINGS. Use asking_price for SALES. Both may be null when price_qualifier is PRICE_ON_APPLICATION.",
     "authentication": "Anonymous requests return this public card. Bearer delegation tokens (scope: snapshot:tenant or snapshot:landlord) served via /api/raia/property/{raia_id} return role-gated narrative tiers. See ADR-211.",
     "source_of_truth": "snapshot_listing column in tbl_asset_snapshots. Rebuilt on asset/amenity/listing change. Zero LLM cost — template fill only.",
-    "reference_implementation": "RentLondonFlat on estateaigents.com — agent card at https://app.estateaigents.com/.well-known/raia-agent.json"
+    "reference_implementation": "RentLondonFlat on estateaigents.com — agent card at https://app.estateaigents.com/.well-known/raia-agent.json",
+    "portal_field_mapping": {
+      "zoopla": {
+        "total_bedrooms": "bedrooms",
+        "bathrooms": "bathrooms",
+        "living_rooms": "reception_rooms",
+        "furnished_state": "furnishing",
+        "life_cycle_status": "status",
+        "feature_list": "features",
+        "outside_space": "outside_space",
+        "parking": "parking",
+        "available_from_date": "available_from",
+        "pricing.transaction_type": "transaction_type",
+        "pricing.price_qualifier": "price_qualifier",
+        "deposit": "deposit",
+        "tenure": "tenure"
+      },
+      "rightmove": {
+        "details.bedrooms": "bedrooms",
+        "details.bathrooms": "bathrooms",
+        "details.reception_rooms": "reception_rooms",
+        "details.furnished_type": "furnishing",
+        "details.parking": "parking",
+        "details.outside_space": "outside_space",
+        "details.features": "features",
+        "price_information.tenure_type": "tenure",
+        "price_information.deposit": "deposit",
+        "price_information.price_qualifier": "price_qualifier",
+        "new_home": "— not mapped in RAIA v0.2, use features array"
+      }
+    }
   }
 }

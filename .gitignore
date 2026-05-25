@@ -1,2 +1,14 @@
 .index.html.backup
 .*.backup
+propertyhive/
+node_modules/
+dist/
+mcp/node_modules/
+mcp/dist/
+sdk/typescript/node_modules/
+sdk/typescript/dist/
+sdk/python/build/
+sdk/python/dist/
+sdk/python/*.egg-info/
+__pycache__/
+*.pyc
