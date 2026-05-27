@@ -116,6 +116,10 @@ Read the spec: [SPEC.md](SPEC.md)
 
 Full documentation: [estateaigents.org](https://estateaigents.org)
 
+## HTTP API contracts
+
+- [openapi/raia-portal-feed-api.yaml](openapi/raia-portal-feed-api.yaml) — vendor-neutral Portal Feed API for listing syndication, branch reconciliation, performance, enquiries, and product activations ([developer guide](docs/raia-portal-feed-api.md))
+
 ---
 
 ## Contribute

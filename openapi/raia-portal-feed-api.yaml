@@ -1,0 +1,1482 @@
+openapi: 3.1.0
+info:
+  title: RAIA Portal Feed API
+  version: 0.1.0
+  summary: Vendor-neutral HTTP contract for syndicating property listings, reconciling branch inventory, polling enquiries, and activating portal products.
+  description: |
+    The RAIA Portal Feed API gives implementers a single, vendor-neutral contract
+    that covers the same jobs-to-be-done as the historical PropertyHive vendor
+    integrations (Rightmove Real-Time Data Feed, Rightmove Commercial Listings,
+    Zoopla Real-Time Listings, and Zoopla Products).
+
+    Implementers expose this API in front of their CRM, MLS or listing
+    aggregator. Buyer agents, portals, and partner systems consume it to:
+
+    - Upload, update, retrieve and remove residential and commercial listings.
+    - Reconcile a branch's live inventory against their own source of truth.
+    - Pull branch performance metrics and enquiries (leads).
+    - Request and inspect portal product activations such as Premium Listings
+      and Featured Properties.
+
+    The contract intentionally uses RAIA naming conventions
+    (`snake_case` fields, `SCREAMING_SNAKE_CASE` enum values, `raia_id`
+    identifiers) and shares the public listing projection with
+    [`schemas/property.json`](../schemas/property.json).
+
+    Specification is published under the MIT license. See the developer guide
+    at [`docs/raia-portal-feed-api.md`](../docs/raia-portal-feed-api.md).
+  contact:
+    name: RAIA Protocol Working Group
+    email: protocol@estateaigents.org
+    url: https://estateaigents.org
+  license:
+    name: MIT
+    identifier: MIT
+
+servers:
+  - url: https://feed.example.com/api/raia/portal/v1
+    description: Production (implementer-hosted)
+  - url: https://staging.feed.example.com/api/raia/portal/v1
+    description: Staging / sandbox (implementer-hosted)
+  - url: http://localhost:8787/api/raia/portal/v1
+    description: Local development
+
+tags:
+  - name: Listings
+    description: Upload, update, retrieve and remove residential or commercial listings.
+  - name: Branches
+    description: Per-branch reconciliation, performance reporting and enquiry retrieval.
+  - name: Products
+    description: Portal product activations such as Premium Listings and Featured Properties.
+  - name: Operational
+    description: Health and metadata.
+
+security:
+  - OAuth2ClientCredentials: [feed.read, feed.write, products.write]
+
+paths:
+  /healthz:
+    get:
+      tags: [Operational]
+      summary: Service health probe
+      operationId: getHealth
+      security: []
+      responses:
+        '200':
+          description: Service is healthy.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+              example:
+                status: OK
+                version: 0.1.0
+                checked_at: '2026-05-28T06:00:00Z'
+
+  /listings/{reference}:
+    parameters:
+      - $ref: '#/components/parameters/ListingReference'
+    put:
+      tags: [Listings]
+      summary: Upsert a listing
+      description: |
+        Upload a new listing or update an existing one. Identity is driven by
+        the path `reference`; if the reference is new the listing is created
+        (HTTP `201`), otherwise it is updated (HTTP `200`).
+
+        The payload covers both residential and commercial property. Use the
+        `residential` body when marketing a single dwelling and the
+        `commercial` body when marketing a building (optionally with up to 50
+        spaces). Buyers and portals can see the same listing projected through
+        the public RAIA property card.
+      operationId: upsertListing
+      security:
+        - OAuth2ClientCredentials: [feed.write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListingUpsert'
+            examples:
+              residentialLetting:
+                $ref: '#/components/examples/ResidentialLettingUpsert'
+              commercialBuilding:
+                $ref: '#/components/examples/CommercialBuildingUpsert'
+      responses:
+        '200':
+          description: Listing updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListingSaveAction'
+        '201':
+          description: Listing created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListingSaveAction'
+        '202':
+          description: |
+            Accepted for asynchronous processing. Returned when the feed
+            implementation queues uploads (mirrors the Rightmove RTDF and
+            Zoopla ZPG behaviour where ingestion is asynchronous).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAccepted'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409':
+          description: The reference conflicts with another existing listing (for example, attempting to re-use a building reference for a space).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '5XX': { $ref: '#/components/responses/ServerError' }
+
+    get:
+      tags: [Listings]
+      summary: Retrieve a listing
+      operationId: getListing
+      security:
+        - OAuth2ClientCredentials: [feed.read]
+      parameters:
+        - $ref: '#/components/parameters/BranchIdHeader'
+      responses:
+        '200':
+          description: Listing found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listing'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '5XX': { $ref: '#/components/responses/ServerError' }
+
+    delete:
+      tags: [Listings]
+      summary: Remove a listing
+      description: |
+        Permanently removes a listing from the feed. The caller must supply a
+        `removal_reason` so the receiving portal/system can audit why the
+        listing was withdrawn. Removing a building also removes any associated
+        spaces.
+      operationId: deleteListing
+      security:
+        - OAuth2ClientCredentials: [feed.write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListingRemovalRequest'
+            example:
+              branch_id: 56726
+              removal_reason: SOLD_BY_US
+              removed_at: '2026-05-28T06:00:00Z'
+      responses:
+        '200':
+          description: Listing removed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListingRemovalResult'
+        '202':
+          description: Removal accepted for asynchronous processing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAccepted'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '5XX': { $ref: '#/components/responses/ServerError' }
+
+  /branches/{branch_id}/listings:
+    parameters:
+      - $ref: '#/components/parameters/BranchId'
+    get:
+      tags: [Branches]
+      summary: List a branch's current listings
+      description: |
+        Returns a paginated snapshot of every listing the branch currently
+        publishes to this feed. Use this to reconcile your CRM/MLS against
+        what the feed believes is live.
+      operationId: listBranchListings
+      security:
+        - OAuth2ClientCredentials: [feed.read]
+      parameters:
+        - name: transaction_type
+          in: query
+          description: Restrict the response to `SALES` or `LETTINGS` listings.
+          schema:
+            $ref: '#/components/schemas/TransactionType'
+        - name: status
+          in: query
+          description: Restrict to a single lifecycle status.
+          schema:
+            $ref: '#/components/schemas/ListingStatus'
+        - name: updated_since
+          in: query
+          description: Only return listings updated on or after this ISO 8601 timestamp.
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+      responses:
+        '200':
+          description: Reconciliation snapshot.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BranchListingsPage'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '5XX': { $ref: '#/components/responses/ServerError' }
+
+  /branches/{branch_id}/performance:
+    parameters:
+      - $ref: '#/components/parameters/BranchId'
+    get:
+      tags: [Branches]
+      summary: Branch performance / listing statistics
+      description: |
+        Returns daily performance metrics for the branch (impressions, detail
+        views, click-throughs and enquiry counts). Mirrors the RTDF
+        `getbranchperformance` operation: the granularity is per day and per
+        portal-recognised listing reference.
+      operationId: getBranchPerformance
+      security:
+        - OAuth2ClientCredentials: [feed.read]
+      parameters:
+        - name: from
+          in: query
+          required: true
+          description: Start date (inclusive). Implementations typically cap the window at 28 days.
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          required: true
+          description: End date (inclusive). Must be on or after `from`.
+          schema:
+            type: string
+            format: date
+        - name: portal
+          in: query
+          description: Restrict to a single downstream portal/network if the feed implementation syndicates to more than one.
+          schema:
+            type: string
+            examples: [RIGHTMOVE, ZOOPLA, ONTHEMARKET]
+      responses:
+        '200':
+          description: Performance report.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BranchPerformanceReport'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '5XX': { $ref: '#/components/responses/ServerError' }
+
+  /branches/{branch_id}/enquiries:
+    parameters:
+      - $ref: '#/components/parameters/BranchId'
+    get:
+      tags: [Branches]
+      summary: Poll new branch enquiries (leads)
+      description: |
+        Returns the latest enquiries (leads) raised against listings published
+        by this branch. Polling-based to mirror the existing RTDF
+        `getbranchemails` and Zoopla FTP enquiry ingestion flows. Use the
+        `since_enquiry_id` cursor to avoid duplicates between polls.
+      operationId: listBranchEnquiries
+      security:
+        - OAuth2ClientCredentials: [feed.read]
+      parameters:
+        - name: since_enquiry_id
+          in: query
+          description: Return only enquiries with an `enquiry_id` greater than this cursor.
+          schema:
+            type: string
+        - name: since
+          in: query
+          description: Return enquiries received on or after this timestamp.
+          schema:
+            type: string
+            format: date-time
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+            default: 100
+      responses:
+        '200':
+          description: List of enquiries plus the next polling cursor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BranchEnquiriesPage'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '5XX': { $ref: '#/components/responses/ServerError' }
+
+  /products/premium-listings:
+    get:
+      tags: [Products]
+      summary: List Premium Listing activations
+      operationId: listPremiumListingActivations
+      security:
+        - OAuth2ClientCredentials: [feed.read]
+      parameters:
+        - $ref: '#/components/parameters/PageQuery'
+        - $ref: '#/components/parameters/PerPageQuery'
+      responses:
+        '200':
+          description: Activations page.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductActivationsPage'
+    post:
+      tags: [Products]
+      summary: Request a Premium Listing activation
+      operationId: requestPremiumListingActivation
+      security:
+        - OAuth2ClientCredentials: [products.write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PremiumListingActivationRequest'
+            example:
+              customer_listing_id: DEMO_20210129_06
+              highlights:
+                - id: 1
+      responses:
+        '201':
+          description: Activation created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductActivation'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '5XX': { $ref: '#/components/responses/ServerError' }
+
+  /products/premium-listings/{activation_id}:
+    parameters:
+      - $ref: '#/components/parameters/ActivationId'
+    get:
+      tags: [Products]
+      summary: Get a Premium Listing activation
+      operationId: getPremiumListingActivation
+      security:
+        - OAuth2ClientCredentials: [feed.read]
+      responses:
+        '200':
+          description: Activation found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductActivation'
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /products/featured-properties:
+    get:
+      tags: [Products]
+      summary: List Featured Property activations
+      operationId: listFeaturedPropertyActivations
+      security:
+        - OAuth2ClientCredentials: [feed.read]
+      parameters:
+        - $ref: '#/components/parameters/PageQuery'
+        - $ref: '#/components/parameters/PerPageQuery'
+      responses:
+        '200':
+          description: Activations page.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductActivationsPage'
+    post:
+      tags: [Products]
+      summary: Request a Featured Property activation
+      description: |
+        Mirrors Zoopla's Weekly Featured Property product. The downstream
+        portal will run the activation for its standard weekly window once
+        accepted.
+      operationId: requestFeaturedPropertyActivation
+      security:
+        - OAuth2ClientCredentials: [products.write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeaturedPropertyActivationRequest'
+            example:
+              customer_listing_id: DEMO_20210202_01
+      responses:
+        '201':
+          description: Activation created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductActivation'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '5XX': { $ref: '#/components/responses/ServerError' }
+
+  /products/featured-properties/{activation_id}:
+    parameters:
+      - $ref: '#/components/parameters/ActivationId'
+    get:
+      tags: [Products]
+      summary: Get a Featured Property activation
+      operationId: getFeaturedPropertyActivation
+      security:
+        - OAuth2ClientCredentials: [feed.read]
+      responses:
+        '200':
+          description: Activation found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductActivation'
+        '404': { $ref: '#/components/responses/NotFound' }
+
+components:
+
+  securitySchemes:
+    OAuth2ClientCredentials:
+      type: oauth2
+      description: |
+        Server-to-server OAuth2 client credentials flow. The token endpoint is
+        published by the implementer; credentials are issued out-of-band
+        during onboarding. Tokens are short-lived Bearer JWTs.
+      flows:
+        clientCredentials:
+          tokenUrl: https://feed.example.com/oauth/token
+          scopes:
+            feed.read: Read listings, branches, performance and enquiries.
+            feed.write: Upsert and remove listings.
+            products.write: Request portal product activations.
+
+  parameters:
+    ListingReference:
+      name: reference
+      in: path
+      required: true
+      description: |
+        Customer-controlled listing reference. Must be unique per branch. For
+        commercial properties with spaces, this is the building reference;
+        each space carries its own reference inside the payload.
+      schema:
+        type: string
+        pattern: '^[A-Za-z0-9_-]{1,100}$'
+        examples: [REF_001, BLD_LON_001]
+
+    BranchId:
+      name: branch_id
+      in: path
+      required: true
+      description: Stable identifier of the branch (office) on the feed.
+      schema:
+        oneOf:
+          - type: integer
+            format: int64
+          - type: string
+            pattern: '^[A-Za-z0-9_-]{1,64}$'
+
+    BranchIdHeader:
+      name: X-RAIA-Branch-Id
+      in: header
+      required: false
+      description: |
+        Optional branch context for the read. When omitted the response is
+        scoped to all branches the caller's credentials grant access to.
+      schema:
+        type: string
+
+    ActivationId:
+      name: activation_id
+      in: path
+      required: true
+      description: Identifier of the product activation request.
+      schema:
+        type: string
+        examples: ['af2c1c7a-1a13-4a3a-9d6a-9bdc4c5d3df2']
+
+    PageQuery:
+      name: page
+      in: query
+      description: Page number (1-indexed).
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+
+    PerPageQuery:
+      name: per_page
+      in: query
+      description: Page size.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 200
+        default: 50
+
+  responses:
+    BadRequest:
+      description: Validation error. The body is a `ProblemDetail`.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    Unauthorized:
+      description: Missing or invalid bearer token.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    Forbidden:
+      description: Token is valid but lacks the required scope.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    NotFound:
+      description: Resource not found.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    TooManyRequests:
+      description: Rate limit exceeded. Quotas reset every 60 seconds.
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+            description: Seconds to wait before retrying.
+        X-RateLimit-Limit:
+          schema: { type: integer }
+        X-RateLimit-Remaining:
+          schema: { type: integer }
+        X-RateLimit-Reset:
+          schema: { type: integer, description: 'Epoch seconds when the quota resets.' }
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+
+  schemas:
+
+    HealthStatus:
+      type: object
+      required: [status, version, checked_at]
+      properties:
+        status:
+          type: string
+          enum: [OK, DEGRADED, DOWN]
+        version:
+          type: string
+          examples: ['0.1.0']
+        checked_at:
+          type: string
+          format: date-time
+
+    ProblemDetail:
+      description: RFC 7807 problem detail. Implementations may add vendor-specific extension members.
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          default: about:blank
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 100
+          maximum: 599
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        trace_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        validation_errors:
+          type: array
+          items:
+            type: object
+            required: [field, message]
+            properties:
+              field: { type: string, examples: ['building.location.postcode'] }
+              message: { type: string }
+              code: { type: string, examples: ['MISSING'] }
+
+    AsyncAccepted:
+      type: object
+      required: [status, request_id]
+      properties:
+        status:
+          type: string
+          enum: [QUEUED]
+        request_id:
+          type: string
+          description: Identifier the caller can use to correlate logs.
+        polling_url:
+          type: string
+          format: uri
+          description: Optional URL the caller may poll for the final result.
+
+    PaginationMeta:
+      type: object
+      required: [page, per_page, total]
+      properties:
+        page: { type: integer, minimum: 1 }
+        per_page: { type: integer, minimum: 1, maximum: 200 }
+        total: { type: integer, minimum: 0 }
+
+    TransactionType:
+      type: string
+      enum: [SALES, LETTINGS]
+
+    ListingStatus:
+      type: string
+      description: Marketing lifecycle status. Mirrors the public RAIA property card statuses plus the commercial-only `UNDER_OFFER`.
+      enum:
+        - AVAILABLE
+        - UNDER_OFFER
+        - SOLD_STC
+        - SOLD_STCM
+        - RESERVED
+        - LET_AGREED
+        - OFF_MARKET
+        - WITHDRAWN
+
+    PropertyType:
+      type: string
+      description: Residential property sub-type. Use the `commercial` payload for commercial classifications.
+      enum:
+        - FLAT
+        - APARTMENT
+        - STUDIO
+        - MAISONETTE
+        - TERRACED
+        - END_TERRACE
+        - SEMI_DETACHED
+        - DETACHED
+        - BUNGALOW
+        - COTTAGE
+        - TOWNHOUSE
+        - LAND
+        - OTHER
+
+    TenureType:
+      type: string
+      enum: [FREEHOLD, LEASEHOLD, SHARE_OF_FREEHOLD, COMMONHOLD]
+
+    Furnishing:
+      type: string
+      enum: [FURNISHED, PART_FURNISHED, UNFURNISHED, FURNISHED_OR_UNFURNISHED]
+
+    RentFrequency:
+      type: string
+      enum: [MONTHLY, YEARLY, WEEKLY]
+
+    Currency:
+      type: string
+      description: ISO 4217 currency code.
+      pattern: '^[A-Z]{3}$'
+      examples: [GBP, EUR, USD, THB, SGD]
+
+    AreaSizeUnit:
+      type: string
+      enum: [SQFT, SQM, ACRES, HECTARES]
+
+    MeasurementType:
+      type: string
+      enum: [GEA, GIA, NIA, IPMS1, IPMS2, IPMS3_1, IPMS3_2]
+
+    RemovalReason:
+      type: string
+      description: Why a listing is being removed. Aligned with both Rightmove Commercial removal reasons and the RTDF action set.
+      enum:
+        - SOLD_BY_US
+        - SOLD_BY_ANOTHER_AGENT
+        - LET_BY_US
+        - LET_BY_ANOTHER_AGENT
+        - WITHDRAWN_FROM_MARKET
+        - LOST_INSTRUCTION
+        - REMOVED
+
+    MediaAsset:
+      type: object
+      required: [url]
+      properties:
+        url:
+          type: string
+          format: uri
+          maxLength: 1024
+          description: Publicly accessible URL. Brochures must end in `.pdf`.
+        description:
+          type: string
+          maxLength: 200
+        order:
+          type: integer
+          minimum: 0
+        etag:
+          type: string
+          description: |
+            Optional ETag of the asset at the time it was published. Feed
+            consumers SHOULD honour this when revalidating downloads.
+
+    Media:
+      type: object
+      description: Bundles of media for a listing or commercial space.
+      properties:
+        photos:
+          type: array
+          items: { $ref: '#/components/schemas/MediaAsset' }
+        floor_plans:
+          type: array
+          items: { $ref: '#/components/schemas/MediaAsset' }
+        epcs:
+          type: array
+          items: { $ref: '#/components/schemas/MediaAsset' }
+        epc_graphs:
+          type: array
+          items: { $ref: '#/components/schemas/MediaAsset' }
+        brochures:
+          type: array
+          items: { $ref: '#/components/schemas/MediaAsset' }
+        virtual_tours:
+          type: array
+          items: { $ref: '#/components/schemas/MediaAsset' }
+
+    Address:
+      type: object
+      required: [display_address, postcode, country]
+      description: |
+        Full address for the listing as held by the feed implementer. Note the
+        public RAIA property card masks the address to district level until an
+        enquiry reaches the `COMMITTED` state — see ADR-211.
+      properties:
+        display_address:
+          type: string
+          maxLength: 120
+        building_identifier:
+          type: string
+          maxLength: 100
+          description: Number or name of the building.
+        address_line_1: { type: string, maxLength: 200 }
+        address_line_2: { type: string, maxLength: 200 }
+        district: { type: string, maxLength: 100 }
+        town: { type: string, maxLength: 100 }
+        county: { type: string, maxLength: 100 }
+        postcode:
+          type: string
+          maxLength: 12
+          examples: ['W1D 3QU']
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code.
+          pattern: '^[A-Z]{2}$'
+        latitude:
+          type: number
+          format: float
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          format: float
+          minimum: -180
+          maximum: 180
+        uprn:
+          type: integer
+          format: int64
+          description: UK Unique Property Reference Number, where applicable.
+        show_map:
+          type: boolean
+          default: true
+
+    ResidentialListingInput:
+      type: object
+      required: [transaction_type, status, property_type, address, headline]
+      description: Residential single-dwelling listing payload.
+      properties:
+        transaction_type: { $ref: '#/components/schemas/TransactionType' }
+        status: { $ref: '#/components/schemas/ListingStatus' }
+        property_type: { $ref: '#/components/schemas/PropertyType' }
+        headline:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 10000
+        bedrooms: { type: integer, minimum: 0 }
+        bathrooms: { type: integer, minimum: 0 }
+        reception_rooms: { type: integer, minimum: 0 }
+        floor_area_sqm: { type: number, minimum: 0 }
+        available_from: { type: string, format: date }
+        asking_price: { type: number, minimum: 0, description: 'Sales price. Use when transaction_type is SALES.' }
+        asking_rent_pcm: { type: number, minimum: 0, description: 'Lettings rent per calendar month. Use when transaction_type is LETTINGS.' }
+        rent_frequency: { $ref: '#/components/schemas/RentFrequency' }
+        deposit: { type: number, minimum: 0 }
+        currency: { $ref: '#/components/schemas/Currency' }
+        tenure: { $ref: '#/components/schemas/TenureType' }
+        furnishing: { $ref: '#/components/schemas/Furnishing' }
+        epc_rating:
+          type: string
+          pattern: '^[A-G]$'
+        features:
+          type: array
+          items: { type: string, maxLength: 200 }
+          maxItems: 20
+        parking:
+          type: array
+          items:
+            type: string
+            enum: [OFF_STREET, GARAGE, ALLOCATED, RESIDENTS_PERMIT, NONE]
+        outside_space:
+          type: array
+          items:
+            type: string
+            enum: [PRIVATE_GARDEN, BALCONY, TERRACE, ROOF_TERRACE, NONE]
+        address: { $ref: '#/components/schemas/Address' }
+        media: { $ref: '#/components/schemas/Media' }
+        public_card:
+          $ref: '#/components/schemas/PublicCardProjection'
+
+    CommercialClassification:
+      type: string
+      description: |
+        Commercial classification family. The selected sub-type determines
+        which optional extension object (e.g. `office`, `industrial`) is
+        meaningful.
+      enum:
+        - OFFICE
+        - INDUSTRIAL_AND_LOGISTICS
+        - RETAIL
+        - LEISURE_AND_HOSPITALITY
+        - LAND_AND_DEVELOPMENT
+        - OTHER
+
+    CommercialSubType:
+      type: string
+      enum:
+        - OFFICE
+        - SERVICED_OFFICE
+        - WAREHOUSE
+        - DISTRIBUTION_WAREHOUSE
+        - FACTORY_MANUFACTURING
+        - SELF_STORAGE
+        - TRADE_COUNTER
+        - INDUSTRIAL_PARK
+        - LIGHT_INDUSTRIAL
+        - HEAVY_INDUSTRIAL
+        - LAND
+        - WOODLAND
+        - FARM
+        - COMMERCIAL_DEVELOPMENT
+        - RESIDENTIAL_DEVELOPMENT
+        - SCIENCE_PARK
+        - RETAIL_HIGH_STREET
+        - RETAIL_OUT_OF_TOWN
+        - RETAIL_PROPERTY_SHOPPING_CENTRE
+        - SHOP
+        - CONVENIENCE_STORE
+        - POST_OFFICE
+        - HOTEL
+        - PUB
+        - RESTAURANT
+        - BAR
+        - CAFE
+        - LEISURE_FACILITY
+        - CAMPSITE_HOLIDAY_VILLAGE
+        - COMM_GUEST_HOUSE
+        - HEALTHCARE_FACILITY
+        - DENTAL_CARE
+        - PHARMACY
+        - CARE_HOME_FACILITY
+        - CHILDCARE_FACILITY
+        - PLACE_OF_WORSHIP
+        - GARAGE
+        - PETROL_STATION
+        - DATA_CENTRE
+        - LIFE_SCIENCES_LABS
+        - AUTOMOTIVE
+        - MIXED_USE
+        - STUDENT_HOUSING
+        - OTHER
+
+    PropertyClassification:
+      type: object
+      required: [classification, sub_type]
+      properties:
+        classification: { $ref: '#/components/schemas/CommercialClassification' }
+        sub_type: { $ref: '#/components/schemas/CommercialSubType' }
+
+    Sizing:
+      type: object
+      properties:
+        size: { type: number, minimum: 0 }
+        min_size: { type: number, minimum: 0 }
+        max_size: { type: number, minimum: 0 }
+        unit: { $ref: '#/components/schemas/AreaSizeUnit' }
+        measurement_type: { $ref: '#/components/schemas/MeasurementType' }
+
+    Pricing:
+      type: object
+      required: [price]
+      properties:
+        price:
+          type: number
+          minimum: 0
+        currency: { $ref: '#/components/schemas/Currency' }
+        display_qualifier:
+          type: string
+          enum:
+            - NONE
+            - PRICE_ON_APPLICATION
+            - GUIDE_PRICE
+            - OFFERS_IN_EXCESS_OF
+            - OFFERS_IN_REGION_OF
+            - FROM
+        frequency: { $ref: '#/components/schemas/RentFrequency' }
+        rent_obligation:
+          type: string
+          enum:
+            - FULLY_REPAIRING_AND_INSURING
+            - INTERNAL_REPAIRING_AND_INSURING
+            - INTERNAL_REPAIRING_ONLY
+            - NEGOTIABLE
+
+    CommercialSpace:
+      type: object
+      required: [reference, name, floor_identifier, sizing, status, primary_classification]
+      properties:
+        reference:
+          type: string
+          pattern: '^[A-Za-z0-9_-]{1,100}$'
+          description: Unique within the building; must differ from the building reference.
+        name: { type: string, maxLength: 200 }
+        floor_identifier: { type: string, maxLength: 50 }
+        description: { type: string, maxLength: 100000 }
+        sizing: { $ref: '#/components/schemas/Sizing' }
+        status: { $ref: '#/components/schemas/ListingStatus' }
+        pricing: { $ref: '#/components/schemas/Pricing' }
+        let_type:
+          type: string
+          enum: [STANDARD, SHORT_TERM, LONG_TERM, FLEXIBLE]
+        available_date: { type: string, format: date }
+        service_charge: { type: number }
+        business_rates: { type: number }
+        let_contract_length:
+          type: integer
+          description: Length of rental contract in months. Lettings only.
+        rent_all_inclusive: { type: boolean }
+        published: { type: boolean }
+        condition:
+          type: string
+          enum: [FULL_FIT_OUT, PARTIAL_FIT_OUT, SHELL_SPACE]
+        primary_classification: { $ref: '#/components/schemas/PropertyClassification' }
+        secondary_classifications:
+          type: array
+          items: { $ref: '#/components/schemas/PropertyClassification' }
+        media: { $ref: '#/components/schemas/Media' }
+        order: { type: integer, minimum: 0 }
+        key_features:
+          type: array
+          items: { type: string, maxLength: 300 }
+          maxItems: 10
+
+    CommercialBuilding:
+      type: object
+      required: [reference, address, status, primary_classification]
+      description: |
+        Commercial building. A building may be marketed on its own (BUILDING
+        model) or alongside one or more `spaces` (SPACE model). Maximum of
+        50 spaces per building, matching the upstream Rightmove Commercial
+        limit.
+      properties:
+        reference:
+          type: string
+          pattern: '^[A-Za-z0-9_-]{1,100}$'
+        address: { $ref: '#/components/schemas/Address' }
+        status: { $ref: '#/components/schemas/ListingStatus' }
+        published: { type: boolean, default: true }
+        primary_classification: { $ref: '#/components/schemas/PropertyClassification' }
+        secondary_classifications:
+          type: array
+          items: { $ref: '#/components/schemas/PropertyClassification' }
+        available_date: { type: string, format: date }
+        let_type:
+          type: string
+          enum: [STANDARD, SHORT_TERM, LONG_TERM, FLEXIBLE]
+        let_contract_length: { type: integer }
+        service_charge: { type: number }
+        business_rates: { type: number }
+        rent_all_inclusive: { type: boolean }
+        condition:
+          type: string
+          enum: [FULL_FIT_OUT, PARTIAL_FIT_OUT, SHELL_SPACE]
+        sizing: { $ref: '#/components/schemas/Sizing' }
+        pricing: { $ref: '#/components/schemas/Pricing' }
+        amenities:
+          type: array
+          items: { type: string }
+          description: Free-form amenity tags such as `WIFI`, `CONCIERGE`, `PARKING`, `AIR_CONDITIONING`.
+        auction:
+          type: boolean
+          default: false
+          description: True if the building is being offered via auction (sales only).
+        media: { $ref: '#/components/schemas/Media' }
+        spaces:
+          type: array
+          items: { $ref: '#/components/schemas/CommercialSpace' }
+          maxItems: 50
+
+    CommercialListingInput:
+      type: object
+      required: [transaction_type, building]
+      description: Commercial listing payload.
+      properties:
+        transaction_type: { $ref: '#/components/schemas/TransactionType' }
+        building: { $ref: '#/components/schemas/CommercialBuilding' }
+        public_card:
+          $ref: '#/components/schemas/PublicCardProjection'
+
+    PublicCardProjection:
+      type: object
+      description: |
+        Optional projection that controls how the listing surfaces on the
+        public RAIA property card (`schemas/property.json`). When omitted the
+        feed implementation derives sensible defaults from the listing.
+      properties:
+        raia_id:
+          type: string
+          pattern: '^prop-[a-z]{2}-[a-z0-9]+-[0-9]+$'
+          description: External stable RAIA property identifier.
+        publish: { type: boolean, default: true }
+        max_data_level:
+          type: integer
+          minimum: 0
+          maximum: 3
+          default: 0
+        suppress_address:
+          type: boolean
+          default: true
+          description: When true, the public card only exposes district-level location until COMMITTED.
+
+    ListingUpsert:
+      oneOf:
+        - $ref: '#/components/schemas/ResidentialListingInput'
+        - $ref: '#/components/schemas/CommercialListingInput'
+      discriminator:
+        propertyName: kind
+        mapping:
+          residential: '#/components/schemas/ResidentialListingInput'
+          commercial: '#/components/schemas/CommercialListingInput'
+
+    Listing:
+      type: object
+      required: [reference, branch_id, transaction_type, status, updated_at]
+      properties:
+        reference: { type: string }
+        branch_id: { type: string, description: 'Stringified branch identifier for stable JSON consumers.' }
+        transaction_type: { $ref: '#/components/schemas/TransactionType' }
+        status: { $ref: '#/components/schemas/ListingStatus' }
+        kind:
+          type: string
+          enum: [residential, commercial]
+        residential: { $ref: '#/components/schemas/ResidentialListingInput' }
+        commercial: { $ref: '#/components/schemas/CommercialListingInput' }
+        public_card_url:
+          type: string
+          format: uri
+          description: URL of the public RAIA property card derived from this listing.
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        version:
+          type: integer
+          description: Monotonically increasing version. Useful for optimistic concurrency.
+
+    ListingSaveAction:
+      type: object
+      required: [reference, action, updated_at]
+      description: Returned by upsert operations. Mirrors the upstream `PropertySaveAction` envelope.
+      properties:
+        reference: { type: string }
+        action:
+          type: string
+          enum: [CREATED, UPDATED, NO_CHANGE]
+        updated_at: { type: string, format: date-time }
+        version: { type: integer }
+        public_card_url:
+          type: string
+          format: uri
+
+    ListingRemovalRequest:
+      type: object
+      required: [removal_reason]
+      properties:
+        branch_id:
+          oneOf:
+            - { type: integer, format: int64 }
+            - { type: string }
+        removal_reason: { $ref: '#/components/schemas/RemovalReason' }
+        removed_at:
+          type: string
+          format: date-time
+          description: When the removal was committed in the source system.
+        note:
+          type: string
+          maxLength: 500
+
+    ListingRemovalResult:
+      type: object
+      required: [reference, removed_at, removal_reason]
+      properties:
+        reference: { type: string }
+        removed_at: { type: string, format: date-time }
+        removal_reason: { $ref: '#/components/schemas/RemovalReason' }
+
+    BranchListingSummary:
+      type: object
+      required: [reference, transaction_type, status, updated_at]
+      properties:
+        reference: { type: string }
+        transaction_type: { $ref: '#/components/schemas/TransactionType' }
+        status: { $ref: '#/components/schemas/ListingStatus' }
+        kind:
+          type: string
+          enum: [residential, commercial]
+        public_card_url: { type: string, format: uri }
+        updated_at: { type: string, format: date-time }
+        version: { type: integer }
+
+    BranchListingsPage:
+      type: object
+      required: [meta, listings]
+      properties:
+        meta: { $ref: '#/components/schemas/PaginationMeta' }
+        listings:
+          type: array
+          items: { $ref: '#/components/schemas/BranchListingSummary' }
+
+    BranchPerformanceReport:
+      type: object
+      required: [branch_id, range, totals, by_day]
+      properties:
+        branch_id: { type: string }
+        portal:
+          type: string
+          description: Downstream portal if scoped by the `portal` query parameter.
+        range:
+          type: object
+          required: [from, to]
+          properties:
+            from: { type: string, format: date }
+            to: { type: string, format: date }
+        totals:
+          $ref: '#/components/schemas/PerformanceMetrics'
+        by_day:
+          type: array
+          items:
+            type: object
+            required: [date, metrics]
+            properties:
+              date: { type: string, format: date }
+              metrics: { $ref: '#/components/schemas/PerformanceMetrics' }
+        by_property:
+          type: array
+          description: Optional per-listing breakdown.
+          items:
+            type: object
+            required: [reference, metrics]
+            properties:
+              reference: { type: string }
+              metrics: { $ref: '#/components/schemas/PerformanceMetrics' }
+
+    PerformanceMetrics:
+      type: object
+      required: [impressions, detail_views, enquiries]
+      properties:
+        impressions: { type: integer, minimum: 0 }
+        detail_views: { type: integer, minimum: 0 }
+        click_throughs: { type: integer, minimum: 0 }
+        phone_reveals: { type: integer, minimum: 0 }
+        brochure_downloads: { type: integer, minimum: 0 }
+        enquiries: { type: integer, minimum: 0 }
+
+    BranchEnquiriesPage:
+      type: object
+      required: [enquiries]
+      properties:
+        enquiries:
+          type: array
+          items: { $ref: '#/components/schemas/BranchEnquiry' }
+        next_cursor:
+          type: string
+          description: |
+            Opaque cursor to pass back as `since_enquiry_id` on the next poll.
+            Absent when there are no more enquiries.
+
+    BranchEnquiry:
+      type: object
+      required: [enquiry_id, listing_reference, received_at, source, contact]
+      description: Lightweight enquiry envelope. Identity payloads remain governed by `schemas/enquiry.json` and ADR-211 access rules.
+      properties:
+        enquiry_id: { type: string }
+        listing_reference: { type: string }
+        received_at: { type: string, format: date-time }
+        source:
+          type: string
+          examples: [RIGHTMOVE, ZOOPLA, ONTHEMARKET, WEBSITE]
+        message: { type: string, maxLength: 4000 }
+        contact:
+          type: object
+          required: [type]
+          properties:
+            type:
+              type: string
+              enum: [BUYER_AGENT, INDIVIDUAL, COMPANY]
+            buyer_agent_raia_id:
+              type: string
+              description: Present when the lead is brokered by a RAIA-registered buyer agent.
+            name: { type: string }
+            email: { type: string, format: email }
+            phone: { type: string }
+            consent_token_ref:
+              type: string
+              description: |
+                Reference to the consent token authorising the personal-data
+                payload. Required when the lead carries L1 or higher personal
+                data per `schemas/enquiry.json`.
+        viewing_request:
+          type: object
+          properties:
+            proposed_slots:
+              type: array
+              items:
+                type: object
+                required: [start]
+                properties:
+                  start: { type: string, format: date-time }
+                  end: { type: string, format: date-time }
+            viewing_type:
+              type: string
+              enum: [IN_PERSON, VIRTUAL]
+
+    PremiumListingHighlight:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: integer
+          description: |
+            Highlight identifier. Mirrors Zoopla's Premium Listing highlight
+            ids; implementers SHOULD publish their accepted values as
+            additional documentation.
+
+    PremiumListingActivationRequest:
+      type: object
+      description: At least one of `listing_id` or `customer_listing_id` must be supplied.
+      properties:
+        listing_id:
+          type: integer
+          format: int64
+          description: Portal-internal listing id (where known).
+        customer_listing_id:
+          type: string
+          description: The branch's own reference, matching `reference` on `/listings/{reference}`.
+        highlights:
+          type: array
+          items: { $ref: '#/components/schemas/PremiumListingHighlight' }
+      oneOf:
+        - required: [listing_id]
+        - required: [customer_listing_id]
+
+    FeaturedPropertyActivationRequest:
+      type: object
+      description: At least one of `listing_id` or `customer_listing_id` must be supplied.
+      properties:
+        listing_id:
+          type: integer
+          format: int64
+        customer_listing_id:
+          type: string
+      oneOf:
+        - required: [listing_id]
+        - required: [customer_listing_id]
+
+    ProductActivationStatus:
+      type: string
+      enum: [PENDING, ACTIVE, EXPIRED, REJECTED, CANCELLED]
+
+    ProductActivation:
+      type: object
+      required: [id, product, status, created_at]
+      properties:
+        id:
+          type: string
+          description: Activation identifier. Mirrors the upstream Zoopla activation `id` UUID.
+        product:
+          type: string
+          enum: [PREMIUM_LISTING, FEATURED_PROPERTY]
+        status: { $ref: '#/components/schemas/ProductActivationStatus' }
+        listing_id:
+          type: integer
+          format: int64
+        customer_listing_id:
+          type: string
+        highlights:
+          type: array
+          items: { $ref: '#/components/schemas/PremiumListingHighlight' }
+        created_at: { type: string, format: date-time }
+        starts_at: { type: string, format: date-time }
+        ends_at: { type: string, format: date-time }
+        cancellation_reason: { type: string }
+
+    ProductActivationsPage:
+      type: object
+      required: [meta, activations]
+      properties:
+        meta: { $ref: '#/components/schemas/PaginationMeta' }
+        activations:
+          type: array
+          items: { $ref: '#/components/schemas/ProductActivation' }
+
+  examples:
+    ResidentialLettingUpsert:
+      summary: Residential lettings listing
+      value:
+        kind: residential
+        transaction_type: LETTINGS
+        status: AVAILABLE
+        property_type: FLAT
+        headline: 2-bed flat, Hammersmith W6
+        description: Bright two-bedroom flat close to the station.
+        bedrooms: 2
+        bathrooms: 1
+        reception_rooms: 1
+        floor_area_sqm: 62
+        available_from: '2026-07-01'
+        asking_rent_pcm: 2450
+        rent_frequency: MONTHLY
+        deposit: 2826
+        currency: GBP
+        furnishing: FURNISHED
+        epc_rating: C
+        features: [Balcony, Close to tube, Furnished, Managed property]
+        parking: [RESIDENTS_PERMIT]
+        outside_space: [BALCONY]
+        address:
+          display_address: 42 King Street, London W6 9TA
+          address_line_1: 42 King Street
+          town: London
+          postcode: W6 9TA
+          country: GB
+          latitude: 51.4927
+          longitude: -0.2228
+        media:
+          photos:
+            - url: https://example-estates.test/media/REF_001/photo-1.jpg
+              description: Living room
+              order: 0
+        public_card:
+          raia_id: prop-gb-example-000001
+          publish: true
+          max_data_level: 3
+          suppress_address: true
+
+    CommercialBuildingUpsert:
+      summary: Commercial building with one space
+      value:
+        kind: commercial
+        transaction_type: LETTINGS
+        building:
+          reference: BLD_LON_001
+          status: AVAILABLE
+          published: true
+          primary_classification:
+            classification: OFFICE
+            sub_type: SERVICED_OFFICE
+          address:
+            display_address: 33 Soho Square, London
+            building_identifier: '33 Soho Square'
+            postcode: W1D 3QU
+            country: GB
+            latitude: 51.5139
+            longitude: -0.1317
+          pricing:
+            price: 750000
+            currency: GBP
+            display_qualifier: GUIDE_PRICE
+          amenities: [WIFI, CONCIERGE, PARKING, AIR_CONDITIONING]
+          spaces:
+            - reference: SPACE_LON_001_FL2
+              name: 2nd Floor
+              floor_identifier: 'Floor 2'
+              sizing:
+                size: 5941
+                unit: SQFT
+                measurement_type: GIA
+              status: AVAILABLE
+              pricing:
+                price: 65
+                currency: GBP
+                frequency: YEARLY
+              primary_classification:
+                classification: OFFICE
+                sub_type: SERVICED_OFFICE
+              key_features:
+                - Open plan with private meeting rooms
+                - Bike storage and shower facilities
