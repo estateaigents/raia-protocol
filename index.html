@@ -97,6 +97,9 @@
     nav.top .cta { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
     nav.top .inner { padding: 0.75rem var(--gutter); }
   }
+  @media (max-width: 480px) {
+    nav.top .logo .logo-suffix { display: none; }
+  }
 
   /* SECTION TABS */
   .section-tabs { border-bottom: 1px solid var(--border); background: var(--bg); }
@@ -593,7 +596,7 @@
 <!-- NAV -->
 <nav class="top">
   <div class="inner">
-    <a href="#" class="logo"><img src="/assets/raia-logo.png" alt="RAIA" class="raia-mark"><span>RAIA<span class="mark">™</span> · estateaigents.org</span></a>
+    <a href="#" class="logo"><img src="/assets/raia-logo.png" alt="RAIA" class="raia-mark"><span>RAIA<span class="mark">™</span><span class="logo-suffix"> · estateaigents.org</span></span></a>
     <ul>
       <li><a href="#home" data-tab="home">Home</a></li>
       <li><a href="#developers" data-tab="developers">Developers</a></li>
