@@ -5,7 +5,7 @@ info:
   summary: Vendor-neutral HTTP contract for syndicating property listings, reconciling branch inventory, polling enquiries, and activating portal products.
   description: |
     The RAIA Portal Feed API gives implementers a single, vendor-neutral contract
-    that covers the same jobs-to-be-done as the historical PropertyHive vendor
+    that covers the same jobs-to-be-done as historical UK portal feed
     integrations (Rightmove Real-Time Data Feed, Rightmove Commercial Listings,
     Zoopla Real-Time Listings, and Zoopla Products).
 

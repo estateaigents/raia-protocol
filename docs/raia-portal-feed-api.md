@@ -2,14 +2,14 @@
 
 > **Status:** Draft v0.1.0 (May 2026)
 > **Spec:** [`openapi/raia-portal-feed-api.yaml`](../openapi/raia-portal-feed-api.yaml)
+> **Implementer guide:** [`docs/raia-portal-feed-api-implementer-guide.md`](raia-portal-feed-api-implementer-guide.md)
 > **License:** MIT
 
 The RAIA Portal Feed API is a vendor-neutral HTTP contract that lets any
 developer build the same kind of property feed integration that exists today
 behind closed APIs such as Rightmove's Real-Time Data Feed (RTDF), Rightmove's
 Commercial Listings API, Zoopla's Real-Time Listings, and the Zoopla Products
-API. It is the contract published in this repository that mirrors the
-capabilities found in [`propertyhive/`](../propertyhive/) and aligns them with
+API. It is the contract published in this repository and aligns with
 the public RAIA schemas in [`schemas/`](../schemas/).
 
 If you implement this API in front of your CRM, MLS or listing aggregator,
@@ -31,7 +31,7 @@ and product activations without a vendor-specific SDK.
 8. [Error model](#error-model)
 9. [Operation reference](#operation-reference)
 10. [Workflows](#workflows)
-11. [Capability map: PropertyHive to RAIA](#capability-map-propertyhive-to-raia)
+11. [Capability map: industry portals to RAIA](#capability-map-industry-portals-to-raia)
 12. [Implementer responsibilities](#implementer-responsibilities)
 13. [Known gaps and non-goals](#known-gaps-and-non-goals)
 14. [Examples](#examples)
@@ -41,18 +41,20 @@ and product activations without a vendor-specific SDK.
 
 ## What this API replaces
 
-The [`propertyhive/`](../propertyhive/) folder bundles four reference artefacts:
+The RAIA Portal Feed API consolidates capabilities that today exist across
+multiple closed vendor integrations:
 
-| File | Source API | Surface |
-|---|---|---|
-| [`property-feed-api-product.yaml`](../propertyhive/property-feed-api-product.yaml) | Rightmove Commercial Listings v2.1.3 | OpenAPI 3.0.1 spec for commercial listings (CRUD by reference, branch paging) |
-| [`Products-API.json`](../propertyhive/Products-API.json) | Zoopla Products | Postman collection for OAuth2 + Premium Listings + Weekly Featured Properties |
-| [`propertyhive-real-time-feed.php`](../propertyhive/propertyhive-real-time-feed.php) | Rightmove RTDF v1 (residential + commercial) | WordPress plugin sending mutual-TLS JSON over `sendpropertydetails`, `removeproperty`, `getbranchpropertylist`, `getbranchperformance`, `getbranchemails` |
-| [`propertyhive-zoopla-real-time-feed.php`](../propertyhive/propertyhive-zoopla-real-time-feed.php) | Zoopla ZPG Real-Time Listings v1.2 | WordPress plugin sending mutual-TLS JSON over `/v1/listing/update`, `/v1/listing/delete`, `/v1/listing/list` |
+| Capability area | Typical upstream pattern |
+|---|---|
+| Commercial listings | OpenAPI CRUD by reference, branch paging |
+| Residential and commercial real-time feeds | Mutual-TLS JSON push over send/update/delete operations |
+| Portal products | OAuth2 + Premium Listings + Featured Properties activations |
+| Branch reconciliation | List branch inventory, compare against source of truth |
+| Performance and leads | Daily stats polling and enquiry/lead retrieval |
 
 The RAIA Portal Feed API covers each capability under a single, modern
-contract. Implementers are free to keep talking directly to the vendor APIs
-under the hood - the point of this API is to give consumers a stable surface
+contract. Implementers are free to keep talking directly to vendor APIs
+under the hood — the point of this API is to give consumers a stable surface
 they can build against once.
 
 ## Why a vendor-neutral contract
@@ -65,10 +67,9 @@ they can build against once.
   Commercial Listings API only covers commercial; the RTDF covers
   residential and commercial. Here both share `PUT/GET/DELETE
   /v1/listings/{reference}`.
-- **Reconciliation, stats, and leads first-class.** PropertyHive exposes
-  these as bespoke WordPress REST routes (`/rightmove/c`,
-  `/zoopla/getlistingstat`, etc). The RAIA Portal Feed API documents them
-  as proper, paginated endpoints.
+- **Reconciliation, stats, and leads first-class.** Legacy integrations often
+  expose these as ad hoc routes or batch jobs. The RAIA Portal Feed API
+  documents them as proper, paginated endpoints.
 - **Product activations decoupled from a single vendor.** Premium Listing
   and Featured Property activations come from the Zoopla Products API but
   are modelled here as portable resources with `customer_listing_id` as
@@ -122,10 +123,10 @@ Accept: application/json
 
 ### Legacy: mutual TLS
 
-The two PHP plugins in [`propertyhive/`](../propertyhive/) authenticate to
-their upstream APIs with mutual-TLS client certificates rather than OAuth2.
-Implementers MAY continue to use mTLS internally for upstream calls but the
-RAIA Portal Feed API itself uses bearer-token OAuth2 to stay portable.
+Some legacy upstream portal APIs authenticate with mutual-TLS client
+certificates rather than OAuth2. Implementers MAY continue to use mTLS
+internally for upstream calls but the RAIA Portal Feed API itself uses
+bearer-token OAuth2 to stay portable.
 
 ## Environments and base URLs
 
@@ -459,9 +460,9 @@ Featured Properties use the same shape minus `highlights`. Poll the
 activation GET endpoint until `status` becomes `ACTIVE`, `EXPIRED`,
 `REJECTED`, or `CANCELLED`.
 
-## Capability map: PropertyHive to RAIA
+## Capability map: industry portals to RAIA
 
-| Capability | PropertyHive source | RAIA Portal Feed endpoint |
+| Capability | Upstream pattern | RAIA Portal Feed endpoint |
 |---|---|---|
 | OAuth2 token | Zoopla Products `POST oauth2/token`; Rightmove Commercial OAuth2 | OAuth2 `clientCredentials` security scheme on every operation |
 | Upload/update residential listing | RTDF `POST /v1/property/sendpropertydetails`; ZPG `POST /v1/listing/update` | `PUT /v1/listings/{reference}` with a `residential` payload |
@@ -477,7 +478,7 @@ activation GET endpoint until `status` becomes `ACTIVE`, `EXPIRED`,
 | List Weekly Featured Properties | Zoopla Products `GET /products/weekly-featured-properties` | `GET /v1/products/featured-properties` |
 | Request Weekly Featured Property | Zoopla Products `POST /products/weekly-featured-properties` | `POST /v1/products/featured-properties` |
 | Get Weekly Featured Property | Zoopla Products `GET /products/weekly-featured-properties/{uuid}` | `GET /v1/products/featured-properties/{activation_id}` |
-| Site-only WordPress trigger routes (`/wp-json/rightmove/refreshall`, etc.) | PropertyHive WordPress REST routes | Not standardised - implementers MAY expose private equivalents but they are out of scope for the public contract. |
+| Bulk refresh / manual trigger routes | Private admin or cron endpoints | Not standardised — implementers MAY expose private equivalents but they are out of scope for the public contract. |
 
 ## Implementer responsibilities
 
@@ -490,8 +491,7 @@ If you stand up a service behind this contract you are responsible for:
    handle re-submission gracefully (`200` with `action: NO_CHANGE`).
 3. **Downstream syndication.** Translate the neutral RAIA payload into the
    format each downstream portal expects (Rightmove, Zoopla, OnTheMarket,
-   etc.). The PHP plugins under [`propertyhive/`](../propertyhive/) are a
-   reference for the upstream wire formats.
+   etc.).
 4. **Public card projection.** Derive the public
    [`schemas/property.json`](../schemas/property.json) card from each
    listing, honouring `public_card.publish`,
@@ -517,14 +517,12 @@ If you stand up a service behind this contract you are responsible for:
 - **No webhooks.** Both upstream APIs are poll/push - the RAIA Portal Feed
   API stays poll-based (`GET /enquiries`, `GET /performance`) to keep
   parity. A webhook profile may be added in a later release.
-- **No site-specific routes.** PropertyHive's WordPress plugins expose
-  private trigger routes (for example
-  `/wp-json/zoopla/refreshallsales`,
-  `/wp-json/rightmove/c`). These are intentionally not part of this
-  contract.
-- **Hard-coded branch ids.** The PropertyHive Zoopla plugin contains
-  hard-coded branch references (`56726`, `72737`). Implementers MUST
-  derive the branch identifier from credentials or the path.
+- **No site-specific routes.** Legacy CRM or CMS integrations often expose
+  private trigger routes for bulk refresh or manual reconciliation. These
+  are intentionally not part of this contract.
+- **Branch identifiers must be credential-scoped.** Implementers MUST derive
+  the branch identifier from credentials or the path — never hard-code
+  branch references in application logic.
 - **No residential commercial conversion semantics.** Converting a
   building to spaces (or back) is left to the implementer. The contract
   accepts either shape on the same `PUT /v1/listings/{reference}` call;
