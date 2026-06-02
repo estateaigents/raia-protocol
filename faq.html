@@ -26,6 +26,7 @@
     --mid: #94A3B8;
     --border: #1E293B;
     --code-bg: #1E293B;
+    --nav-bg: rgba(11, 15, 28, 0.92);
   }
 
   /* Light Mode (.light class) */
@@ -38,6 +39,7 @@
     --mid: #475569;
     --border: #CBD5E1;
     --code-bg: #F1F5F9;
+    --nav-bg: rgba(250, 250, 248, 0.92);
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -57,7 +59,7 @@
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
-    background: rgba(250,250,248,0.92);
+    background: var(--nav-bg);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     border-top: 3px solid var(--accent);
@@ -87,20 +89,25 @@
   }
 
   .logo-accent {
-    color: #4040ff;
+    color: var(--accent);
   }
 
   .logo-tld {
-    color: #666666;
+    color: var(--mid);
     font-weight: 400;
     font-size: 14px;
     margin-left: 1px;
   }
 
-  #org-nav-icon {
+  .raia-mark {
+    width: 26px;
+    height: 26px;
     border-radius: 4px;
     display: block;
     flex-shrink: 0;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
   }
 
   .nav-links {
@@ -468,7 +475,7 @@
 
 <nav>
   <a href="/" class="nav-logo" id="org-logo-link">
-    <canvas id="org-nav-icon" width="26" height="26" aria-label="EstateAigents building icon"></canvas>
+    <img src="/assets/raia-logo.png" alt="RAIA" class="raia-mark">
     <span class="logo-text">Estate<span class="logo-accent">Aigents</span><span class="logo-tld">.org</span></span>
   </a>
   <ul class="nav-links">
@@ -877,95 +884,7 @@
   </ul>
 </footer>
 
-<script>
-(function() {
-  var WINS = [
-    {c:0,r:0},{c:1,r:0},
-    {c:0,r:1},{c:1,r:1},
-    {c:0,r:2},{c:1,r:2}
-  ]
-  var BG      = '#ffffff'
-  var BLUE    = '#06B6D4'
-  var WIN_ON  = '#ffffff'
-  var WIN_OFF = '#06B6D4'
-  var GROUND  = '#0891B2'
 
-  function roundRect(ctx, x, y, w, h, r) {
-    ctx.beginPath()
-    ctx.moveTo(x+r, y)
-    ctx.lineTo(x+w-r, y)
-    ctx.quadraticCurveTo(x+w, y, x+w, y+r)
-    ctx.lineTo(x+w, y+h-r)
-    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h)
-    ctx.lineTo(x+r, y+h)
-    ctx.quadraticCurveTo(x, y+h, x, y+h-r)
-    ctx.lineTo(x, y+r)
-    ctx.quadraticCurveTo(x, y, x+r, y)
-    ctx.closePath()
-    ctx.fill()
-  }
-
-  function drawFrame(ctx, size, states) {
-    var s = size / 32
-    ctx.clearRect(0, 0, size, size)
-    ctx.fillStyle = BG
-    roundRect(ctx, 0, 0, size, size, 5*s)
-    ctx.fillStyle = BLUE
-    ctx.fillRect(8*s, 5*s, 16*s, 22*s)
-    ctx.fillStyle = GROUND
-    ctx.fillRect(4*s, 27*s, 24*s, 2*s)
-    var cols = [10, 18]
-    var rows = [8, 13, 18]
-    for (var i = 0; i < states.length; i++) {
-      ctx.fillStyle = states[i] ? WIN_ON : WIN_OFF
-      ctx.fillRect(cols[WINS[i].c]*s, rows[WINS[i].r]*s, 4*s, 3*s)
-    }
-  }
-
-  function randomState() {
-    var s
-    do {
-      s = WINS.map(function() { return Math.random() > 0.5 })
-    } while (s.filter(Boolean).length < 2)
-    return s
-  }
-
-  function animateIcon(canvasId, size) {
-    var canvas = document.getElementById(canvasId)
-    if (!canvas) return
-    var ctx = canvas.getContext('2d')
-    var states = randomState()
-
-    function render() {
-      ctx.clearRect(0, 0, size, size)
-      drawFrame(ctx, size, states)
-    }
-
-    function flip() {
-      var lit = states.filter(Boolean).length
-      var idx = Math.floor(Math.random() * 6)
-      var next = states.slice()
-      if (!next[idx] && lit >= 5) { setTimeout(flip, 400 + Math.random()*1200); return }
-      if (next[idx] && lit <= 1)  { setTimeout(flip, 400 + Math.random()*1200); return }
-      next[idx] = !next[idx]
-      states = next
-      render()
-      setTimeout(flip, 500 + Math.random()*1500)
-    }
-
-    render()
-    setTimeout(flip, Math.random() * 800)
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      animateIcon('org-nav-icon', 26)
-    })
-  } else {
-    animateIcon('org-nav-icon', 26)
-  }
-})()
-</script>
 <script>
 (function() {
   var btn = document.getElementById('nav-hamburger');
