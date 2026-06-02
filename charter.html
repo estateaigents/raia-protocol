@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" suppressHydrationWarning>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.className = theme;
+  })();
+</script>
 <title>The RAIA Charter — An Open Standard for Property AI</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="shortcut icon" href="/favicon.svg">
@@ -10,15 +16,28 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --black: #0d0d0d;
-    --white: #fafaf8;
-    --off-white: #f4f3ef;
-    --accent: #2563FF;
-    --accent-light: #e8eeff;
-    --mid: #6b6b6b;
-    --border: #e2e1dc;
-    --code-bg: #f0efe9;
+  /* Default Dark Mode (root / .dark class) */
+  :root, .dark {
+    --black: #F8FAFC;
+    --white: #0B0F1C;
+    --off-white: #121A2E;
+    --accent: #06B6D4;
+    --accent-light: rgba(6, 182, 212, 0.15);
+    --mid: #94A3B8;
+    --border: #1E293B;
+    --code-bg: #1E293B;
+  }
+
+  /* Light Mode (.light class) */
+  .light {
+    --black: #0F172A;
+    --white: #FAFAF9;
+    --off-white: #F1F1EF;
+    --accent: #0891B2;
+    --accent-light: #CFFAFE;
+    --mid: #475569;
+    --border: #CBD5E1;
+    --code-bg: #F1F5F9;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -322,7 +341,8 @@
 
   .charter-prose p {
     font-size: 15px;
-    color: #444;
+    color: var(--black);
+    opacity: 0.85;
     line-height: 1.75;
     margin-bottom: 16px;
   }
@@ -374,7 +394,8 @@
   }
   .charter-prose li {
     font-size: 15px;
-    color: #444;
+    color: var(--black);
+    opacity: 0.85;
     line-height: 1.75;
     margin-bottom: 6px;
   }
@@ -506,6 +527,14 @@
     <li><a href="/charter.html" class="active">Charter</a></li>
     <li><a href="/faq.html">FAQ</a></li>
     <li><a href="https://estateaigents.com" target="_blank">Platform →</a></li>
+    <li class="theme-toggle-li" style="display: flex; align-items: center;">
+      <button id="theme-toggle" aria-label="Toggle Theme" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0.5rem; color: var(--mid); transition: color 0.15s; outline: none;">
+        <!-- Moon icon -->
+        <svg id="theme-toggle-dark-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width: 1.25rem; height: 1.25rem; display: none;"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+        <!-- Sun icon -->
+        <svg id="theme-toggle-light-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width: 1.25rem; height: 1.25rem; display: none;"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+      </button>
+    </li>
     <li><a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="nav-cta">View on GitHub</a></li>
   </ul>
   <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
@@ -521,6 +550,15 @@
     <li><a href="/charter.html">Charter</a></li>
     <li><a href="/faq.html">FAQ</a></li>
     <li><a href="https://estateaigents.com" target="_blank">Platform →</a></li>
+    <li class="mobile-theme-toggle-li" style="border-bottom: 1px solid var(--border); padding: 10px 0; display: flex; align-items: center;">
+      <button id="theme-toggle-mobile" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--black); font-size: 15px; outline: none; padding: 0;">
+        <span>Toggle Mode</span>
+        <!-- Moon icon -->
+        <svg id="theme-toggle-dark-icon-mobile" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width: 1.15rem; height: 1.15rem; display: none;"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+        <!-- Sun icon -->
+        <svg id="theme-toggle-light-icon-mobile" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width: 1.15rem; height: 1.15rem; display: none;"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+      </button>
+    </li>
     <li><a href="https://github.com/estateaigents/raia-protocol" target="_blank" class="mobile-cta">
       <svg style="width:15px;height:15px;flex-shrink:0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
       View on GitHub
@@ -898,10 +936,10 @@ Anthropic MCP →  How agents connect to property data tools</pre>
     {c:0,r:2},{c:1,r:2}
   ]
   var BG      = '#ffffff'
-  var BLUE    = '#4040ff'
+  var BLUE    = '#06B6D4'
   var WIN_ON  = '#ffffff'
-  var WIN_OFF = '#4040ff'
-  var GROUND  = '#2929aa'
+  var WIN_OFF = '#06B6D4'
+  var GROUND  = '#0891B2'
 
   function roundRect(ctx, x, y, w, h, r) {
     ctx.beginPath()
@@ -999,6 +1037,52 @@ Anthropic MCP →  How agents connect to property data tools</pre>
     });
   });
 })();
+</script>
+
+<script>
+  (function() {
+    var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    var themeToggleBtn = document.getElementById('theme-toggle');
+
+    var themeToggleDarkIconMobile = document.getElementById('theme-toggle-dark-icon-mobile');
+    var themeToggleLightIconMobile = document.getElementById('theme-toggle-light-icon-mobile');
+    var themeToggleBtnMobile = document.getElementById('theme-toggle-mobile');
+
+    function updateIcons() {
+      var isDark = document.documentElement.classList.contains('dark');
+      if (isDark) {
+        if (themeToggleDarkIcon) themeToggleDarkIcon.style.display = 'none';
+        if (themeToggleLightIcon) themeToggleLightIcon.style.display = 'block';
+        if (themeToggleDarkIconMobile) themeToggleDarkIconMobile.style.display = 'none';
+        if (themeToggleLightIconMobile) themeToggleLightIconMobile.style.display = 'block';
+      } else {
+        if (themeToggleDarkIcon) themeToggleDarkIcon.style.display = 'block';
+        if (themeToggleLightIcon) themeToggleLightIcon.style.display = 'none';
+        if (themeToggleDarkIconMobile) themeToggleDarkIconMobile.style.display = 'block';
+        if (themeToggleLightIconMobile) themeToggleLightIconMobile.style.display = 'none';
+      }
+    }
+
+    function toggleTheme() {
+      var currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      var newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.className = newTheme;
+      localStorage.setItem('theme', newTheme);
+      updateIcons();
+    }
+
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', toggleTheme);
+    }
+    if (themeToggleBtnMobile) {
+      themeToggleBtnMobile.addEventListener('click', toggleTheme);
+    }
+
+    // Set initial icon states
+    updateIcons();
+  })();
 </script>
 </body>
 </html>
