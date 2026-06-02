@@ -1,0 +1,20 @@
+{
+  "name": "@raia-protocol/client",
+  "version": "0.2.0",
+  "description": "TypeScript client SDK for RAIA Protocol HTTP endpoints",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "files": ["dist"],
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}

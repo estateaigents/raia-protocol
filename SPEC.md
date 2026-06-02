@@ -1,10 +1,10 @@
 # RAIA Protocol Specification
-## Version 0.1 — DRAFT · NOT FOR PRODUCTION
+## Version 0.2 - Implementer Release
 
-**Published:** April 2026
+**Published:** May 2026
 **Trademark:** UK00003359082 (Classes 36 + 42)
 **License:** MIT
-**Status:** Working draft. Formal JSON Schema files publish with v1.0. Breaking changes expected.
+**Status:** Implementer release. Core schemas, reference MCP server, client SDKs, and consent-token contract are published. Breaking changes remain possible before v1.0 certification.
 
 ---
 
@@ -17,6 +17,8 @@ Built on:
 - **Anthropic MCP** (https://github.com/modelcontextprotocol/servers) — model-to-tool connections
 
 RAIA sits on top of both as the property-specific schema and trust layer.
+
+**Breaking changes from v0.1:** `property.json` now requires `transaction_type` (LETTINGS | SALES) and `status`. Field `letting_agent` renamed to `listing_agent`.
 
 ---
 
@@ -53,19 +55,51 @@ Every RAIA-compliant estate agent exposes a discovery card at:
 GET /.well-known/raia-agent.json
 ```
 
-The agent card declares identity, jurisdiction, UN/LOCODE coverage, markets, compliance signals, MCP endpoint, and A2A endpoint.
+The RAIA agent card declares identity, jurisdiction, UN/LOCODE coverage, markets, compliance signals, max permitted data level, MCP endpoint, consent endpoint, and A2A endpoint.
 
 Registry of verified agent cards: `estateaigents.org/registry`
+
+### 3.1 A2A agent card relationship
+
+RAIA and Google A2A cards coexist.
+
+| Card | Path | Purpose |
+|---|---|---|
+| RAIA Agent Card | `/.well-known/raia-agent.json` | Property/compliance metadata, RAIA registry status, MCP endpoint, consent endpoint, data-level credential summary |
+| Google A2A Agent Card | `/.well-known/agent.json` | Native A2A discovery, skills, messaging, and task-routing metadata |
+
+The RAIA card is not a replacement for the native A2A card. It links to the native card with `a2a_agent_card_url` and to the A2A service with `a2a_endpoint`. A2A messages carrying RAIA payloads MUST use the schemas in `/schemas/` unchanged.
 
 ---
 
 ## 4. Query
 
-Buyer agents submit structured search requests to estate agent MCP endpoints.
+Buyer agents submit structured search requests to estate agent MCP endpoints via the `raia_search` MCP tool.
 
-Parameters: UN/LOCODE city scope, property type, bedrooms, price/rent range, currency, availability date, furnishing, parking, term preferences.
+### Query parameters
 
-Responses return property cards at suburb/district level. Full address released after viewing confirmed.
+| Parameter | Type | Applies to | Description |
+|---|---|---|---|
+| `un_locode` | string | both | UN/LOCODE city code. e.g. `GBLON`, `THBKK`. Required. |
+| `transaction_type` | enum | both | `LETTINGS` or `SALES`. Required. |
+| `property_type` | enum | both | `FLAT`, `APARTMENT`, `TERRACED`, `SEMI_DETACHED`, `DETACHED`, `BUNGALOW`, `STUDIO`, `MAISONETTE`, etc. Optional. |
+| `min_bedrooms` | integer | both | Minimum number of bedrooms. |
+| `max_bedrooms` | integer | both | Maximum number of bedrooms. |
+| `min_rent_pcm` | number | lettings | Minimum asking rent per calendar month. |
+| `max_rent_pcm` | number | lettings | Maximum asking rent per calendar month. |
+| `min_price` | number | sales | Minimum asking price. |
+| `max_price` | number | sales | Maximum asking price. |
+| `currency` | string | both | ISO 4217 currency code. Defaults to jurisdiction default. |
+| `available_from` | date | both | ISO 8601 date — property must be available on or before this date. |
+| `furnishing` | enum | lettings | `FURNISHED`, `PART_FURNISHED`, `UNFURNISHED`, `FURNISHED_OR_UNFURNISHED`. |
+| `parking` | enum array | both | One or more of: `OFF_STREET`, `GARAGE`, `ALLOCATED`, `RESIDENTS_PERMIT`. |
+| `outside_space` | enum array | both | One or more of: `PRIVATE_GARDEN`, `BALCONY`, `TERRACE`, `ROOF_TERRACE`. |
+| `tenure` | enum | sales | `FREEHOLD`, `LEASEHOLD`, `SHARE_OF_FREEHOLD`, `COMMONHOLD`. |
+| `epc_min_rating` | enum | both | Minimum EPC letter rating. e.g. `C` returns C, B, and A. |
+| `min_floor_area_sqm` | number | both | Minimum floor area in square metres. |
+| `term_months` | integer | lettings | Preferred minimum tenancy length in months. |
+
+Responses return property cards (`schemas/property.json`) at suburb/district level. Full address is only released when session state reaches COMMITTED.
 
 ---
 
@@ -121,33 +155,80 @@ No PII in search or property card responses. Jurisdiction scoping mandatory on e
 
 ---
 
-## 8. MCP Tools (v1.0)
+## 8. MCP Tools (v0.2)
 
 | Tool | Description |
 |---|---|
-| `raia_search` | Search properties by structured requirements |
-| `raia_verify_agent` | Verify compliance status |
-| `raia_request_viewing` | Submit a viewing request |
-| `raia_get_property` | Get full property card by raia_id |
+| `raia_search` | Search properties by structured requirements (see §4 for query parameters) |
+| `raia_verify_agent` | Verify an estate agent's compliance status against registry |
+| `raia_request_viewing` | Submit a viewing request (initiates or advances the enquiry state machine) |
+| `raia_get_property` | Get full property card by `raia_id` |
+
+The reference MCP server is published in [mcp/](mcp/). It runs against stub data by default and switches to a live registry/private CRM adapter when `RAIA_REGISTRY_BASE_URL` is configured. Hosted reference endpoint: `mcp.estateaigents.com`.
 
 ---
 
-## 9. Schemas (v1.0)
+## 9. Schemas (v0.2)
 
-- `schemas/agent.json` — Agent Card
-- `schemas/property.json` — Property Card (lettings + sales)
-- `schemas/enquiry.json` — Enquiry lifecycle
+All three schemas are now published.
 
-To join the schema working group: open an issue labelled `schema-working-group`.
+| Schema | Version | Description |
+|---|---|---|
+| `schemas/agent.json` | 0.1.0 | Agent Card — identity, jurisdiction, compliance signals, MCP/A2A endpoints |
+| `schemas/property.json` | 0.2.0 | Property Card — lettings and sales, all queryable fields |
+| `schemas/enquiry.json` | 0.2.0 | Enquiry - transaction lifecycle plus L0/L1/L2/L3 data-level envelopes |
+
+See [schemas/README.md](schemas/README.md) for field-level summaries and breaking change notes. Example RAIA agent card: [.well-known/raia-agent.json](.well-known/raia-agent.json).
 
 ---
 
-## 10. Versioning
+## 10. Consent Token Service
+
+All L1+ exchanges require a scoped consent token issued by the data subject or an authorised buyer agent acting for the data subject. The issuing service is advertised by `consent_endpoint` on the RAIA agent card.
+
+```text
+POST /consent-tokens
+Authorization: Bearer {agent_api_token}
+Content-Type: application/json
+```
+
+Request:
+
+```json
+{
+  "data_subject_id": "ds_123",
+  "audience": "org-gb-listingagent",
+  "purpose": "viewing",
+  "level": 1,
+  "property_ref": "prop-gb-rlf-000031",
+  "scopes": ["enquirer.name", "enquirer.email"],
+  "expires_in_seconds": 604800
+}
+```
+
+Response:
+
+```json
+{
+  "token": "ct_l1_...",
+  "token_type": "Bearer",
+  "level": 1,
+  "scopes": ["enquirer.name", "enquirer.email"],
+  "issued_at": "2026-05-24T00:00:00Z",
+  "expires_at": "2026-05-31T00:00:00Z"
+}
+```
+
+Token issuers MUST verify the presenting agent identity, bind `audience` to the receiving agent, reject scope escalation, and produce JWT claims matching [SECURITY.md](SECURITY.md). Standard errors: `400 INVALID_SCOPE`, `401 INVALID_AGENT_CREDENTIAL`, `403 LEVEL_NOT_PERMITTED`, `409 CONSENT_REVOKED`.
+
+---
+
+## 11. Versioning
 
 Semantic versioning MAJOR.MINOR. Breaking changes: 60-day deprecation notice + MAJOR bump. All messages carry `raia_version`.
 
 ---
 
-## 11. Out of scope for v0.1
+## 12. Out of scope for v0.2
 
-Payment processing · Tenancy execution · Deposit handling · Conveyancing · AML/KYC · Blockchain attestations
+Payment processing execution, conveyancing, biometric liveness, raw identity-document transmission, raw Right to Rent share-code transmission, raw bank statement transmission, blockchain attestations, automated compliance body verification.

@@ -1,0 +1,129 @@
+{
+  "enquiry_id": "550e8400-e29b-41d4-a716-446655440000",
+  "transaction_id": "txn_sample_001",
+  "raia_version": "0.2",
+  "property_raia_id": "prop-gb-example-000001",
+  "property_ref": "prop-gb-example-000001",
+  "transaction_type": "LETTINGS",
+  "jurisdiction": "GB",
+  "buyer_agent": {
+    "raia_id": "org-gb-buyeragent",
+    "name": "Sample Buyer Agent"
+  },
+  "estate_agent": {
+    "raia_id": "org-gb-example",
+    "name": "Example Estates Ltd"
+  },
+  "state": "DATA_GATHERING",
+  "created_at": "2026-05-24T00:00:00Z",
+  "l0": {
+    "listing": {
+      "title": "2-bed flat, Hammersmith W6",
+      "rent_pcm": 2450,
+      "available_from": "2026-07-01",
+      "furnished": true
+    }
+  },
+  "l1": {
+    "consent": {
+      "token": "ct_l1_sample",
+      "level": 1,
+      "purpose": "viewing",
+      "scopes": ["enquirer.name", "enquirer.email"],
+      "issued_at": "2026-05-24T00:00:00Z",
+      "expires_at": "2026-05-31T00:00:00Z",
+      "audience": "org-gb-example"
+    },
+    "purpose": "viewing",
+    "data_subject_id": "ds_sample_001",
+    "data_residency": "UK",
+    "enquirer": {
+      "name": "[encrypted]",
+      "email": "[encrypted]"
+    }
+  },
+  "l2": {
+    "consent": {
+      "token": "ct_l2_sample",
+      "level": 2,
+      "purpose": "tenancy_application",
+      "scopes": ["identity.name", "right_to_rent.verified", "cdd.sanctions_clear", "cdd.pep_clear"],
+      "issued_at": "2026-05-24T01:00:00Z",
+      "expires_at": "2026-05-31T01:00:00Z",
+      "audience": "org-gb-example"
+    },
+    "data_subject_id": "ds_sample_001",
+    "data_residency": "UK",
+    "assurance_framework": "uk_tfida",
+    "assurance_level": "medium",
+    "scopes_granted": ["identity.name", "right_to_rent.verified", "cdd.sanctions_clear", "cdd.pep_clear"],
+    "verifier_assertions": [
+      {
+        "provider": "sample_idsp",
+        "framework": "uk_tfida",
+        "scope": "identity",
+        "assertion_hash": "sha256:a3f9a3f9a3f9a3f9",
+        "issued_at": "2026-05-24T01:00:00Z",
+        "expires_at": "2026-08-22T01:00:00Z"
+      }
+    ],
+    "right_to_rent": {
+      "verified": true,
+      "share_code_hash": "sha256:d4e5d4e5d4e5d4e5",
+      "checked_at": "2026-05-24T01:05:00Z",
+      "expires_at": "2026-08-22T01:05:00Z",
+      "provider": "uk_home_office"
+    },
+    "cdd": {
+      "sanctions_clear": true,
+      "pep_clear": true,
+      "risk_level": "STANDARD",
+      "screening_provider": "sample_screening_provider",
+      "screening_hash": "sha256:e6f7e6f7e6f7e6f7",
+      "screened_at": "2026-05-24T01:10:00Z",
+      "expires_at": "2026-08-22T01:10:00Z"
+    }
+  },
+  "l3": {
+    "consent": {
+      "token": "ct_l3_sample",
+      "level": 3,
+      "purpose": "tenancy_application",
+      "scopes": ["source_of_funds.assertion", "payment_refs.deposit"],
+      "issued_at": "2026-05-24T02:00:00Z",
+      "expires_at": "2026-05-31T02:00:00Z",
+      "audience": "org-gb-example"
+    },
+    "data_subject_id": "ds_sample_001",
+    "data_residency": "UK",
+    "edd_required": true,
+    "edd_trigger": "transaction_value_exceeds_threshold",
+    "source_of_funds": {
+      "assertion_hash": "sha256:c9d1c9d1c9d1c9d1",
+      "provider": "sample_open_banking_provider",
+      "transaction_id": "txn_sample_001",
+      "verified_at": "2026-05-24T02:10:00Z",
+      "expires_at": "2026-08-22T02:10:00Z"
+    },
+    "document_refs": [
+      {
+        "type": "tenancy_agreement",
+        "content_hash": "sha256:b7c2b7c2b7c2b7c2",
+        "signed_by": ["org-gb-example", "org-gb-buyeragent"],
+        "signed_at": "2026-05-24T03:00:00Z"
+      }
+    ],
+    "payment_refs": [
+      {
+        "type": "deposit",
+        "amount_pence": 282600,
+        "method": "open_banking",
+        "provider_ref": "ob_ref_sample_001",
+        "beneficiary_verified": true,
+        "verification_timestamp": "2026-05-24T02:30:00Z",
+        "status": "held"
+      }
+    ],
+    "retention_exemption_disclosed": true
+  }
+}

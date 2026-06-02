@@ -1,146 +1,122 @@
-# RAIA™ Protocol
+# RAIA Protocol
 ### Real Estate Artificial Intelligence Agent Protocol
 
-> **The open standard for AI agents to transact property.**
+> The open standard for AI agents to discover, verify, enquire about, and transact property.
 
-[![Status](https://img.shields.io/badge/status-draft-orange)](https://github.com/estateaigents/raia-protocol)
+[![Status](https://img.shields.io/badge/status-v0.2%20implementer%20release-blue)](https://github.com/estateaigents/raia-protocol)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Trademark](https://img.shields.io/badge/trademark-UK00003359082-green)](https://trademarks.ipo.gov.uk/)
 
----
-
-## The problem
-
-Portals were built for humans.
-
-In 2026, AI assistants are doing the searching. Personal AI agents are reading property listings, qualifying requirements, and making enquiries on behalf of buyers and tenants. Estate agents are deploying AI to handle inbound enquiries, qualify leads, and manage viewings.
-
-But there is no standard for how these agents talk to each other.
-
-Every AI-to-AI property interaction today is either a web scrape (fragile, unverified) or a proprietary integration (locked, expensive, non-portable). There is no open, structured, trusted way for an AI assistant to say:
-
-> "My client needs a 2-bed in Battersea, £2,500/month, available June 2026. Who has verified stock?"
-
-And get back a machine-readable, verified response from a licensed estate agent's AI.
-
-**RAIA™ Protocol is that standard.**
-
----
-
-## What RAIA defines
-
-Five capabilities. Each is independently implementable.
+## What RAIA Defines
 
 | Capability | What it defines |
 |---|---|
-| **Discover** | How AI agents find verified estate agents and their live portfolios |
-| **Query** | Structured property search — location, type, price, dates, tenure |
-| **Verify** | Agent identity, licence status, jurisdiction compliance signals |
-| **Transact** | Viewing requests, offer management, fee splits agent-to-agent |
-| **Trust** | Participation rules — only licensed, verified agents list on the protocol |
+| Discover | How AI agents find verified estate agents and their live portfolios |
+| Query | Structured property search by location, type, price, dates, tenure, and local signals |
+| Verify | Agent identity, licence status, jurisdiction compliance, and max permitted data level |
+| Transact | Viewing requests, offers, session state, human approval gates, and fee splits |
+| Trust | Participation rules, consent tokens, agent credentials, KYC/AML assertion envelopes |
 
----
+RAIA is a vertical property schema and trust layer on top of existing transport standards:
 
-## Built on open infrastructure
+- Google A2A for agent-to-agent communication
+- Anthropic MCP for model-to-tool connections
+- Direct HTTPS for registry, consent-token, and application endpoints
 
-RAIA is not a new transport layer. It is a **vertical implementation** of two existing open standards:
+## Current Status
 
-- **[Google A2A Protocol](https://github.com/google-a2a/A2A)** — agent-to-agent communication (discovery, messaging, task routing)
-- **[Anthropic MCP](https://github.com/modelcontextprotocol/servers)** — model-to-tool connections (structured data access, action execution)
+| Version | Status | Date | Notes |
+|---|---|---|---|
+| v0.1 | Historical draft | April 2026 | Superseded |
+| v0.2 | Implementer release | May 2026 | Schemas, MCP server, SDKs, consent-token contract, and initial jurisdiction modules published |
+| v1.0 | Certification target | Planned | Compatibility freeze, conformance tests, registry certification process |
 
+The formal JSON Schemas are published now in [schemas/](schemas/). The reference MCP server is published now in [mcp/](mcp/). Client SDKs are published now in [sdk/](sdk/).
+
+Production implementations should use v0.2 only with registry-issued credentials and jurisdiction-specific legal review. L1+ personal data requires consent tokens and Agent Identity Credentials as specified in [SECURITY.md](SECURITY.md).
+
+## Published Schemas
+
+| Schema | Version | Description |
+|---|---|---|
+| [agent.json](schemas/agent.json) | 0.1.0 | RAIA discovery card, compliance signals, MCP/A2A endpoints, consent endpoint, max data level |
+| [property.json](schemas/property.json) | 0.2.0 | Public property card for lettings and sales |
+| [enquiry.json](schemas/enquiry.json) | 0.2.0 | Transaction lifecycle plus L0/L1/L2/L3 data-level envelopes |
+
+Providers expose a RAIA card at:
+
+```text
+GET /.well-known/raia-agent.json
 ```
-Google A2A          →  General: any agent talks to any agent
-  └── RAIA Protocol →  Vertical: estate agents + personal AI assistants
-        └── MCP     →  Transport: how agents connect to RAIA tools
-```
 
-If you have already implemented A2A or MCP, RAIA adds a property schema layer on top. No new infrastructure required.
+A copy-pasteable example is available at [.well-known/raia-agent.json](.well-known/raia-agent.json).
 
----
+## Reference Implementations
 
-## Who this is for
+- [mcp/](mcp/) - MCP server exposing `raia_search`, `raia_get_property`, `raia_verify_agent`, and `raia_request_viewing`
+- [sdk/typescript/](sdk/typescript/) - TypeScript HTTP client SDK
+- [sdk/python/](sdk/python/) - Python HTTP client SDK
 
-**Estate agents** deploying AI to handle enquiries, manage viewings, and split fees with other agents.
-
-**PropTech developers** building AI-native property products who need a standard data model.
-
-**Personal AI assistant developers** (ChatGPT plugins, Claude tools, Gemini extensions) who need a verified property data source.
-
-**Portals and CRMs** who want to expose their listings to AI-agent traffic without bespoke integrations.
-
----
-
-## The AI Agent Marketplace
-
-RAIA Protocol is the marketplace layer where AI agents connect to transact property.
-
-Estate agent AI (Aigents) publish their portfolios and capabilities to the RAIA registry. Personal AI assistants discover, query and transact with them directly — no portal, no human intermediary at each step.
-
-The registry at `estateaigents.org` is the connection point. Any agent that implements the protocol can participate. Any AI assistant that speaks A2A or MCP can query it.
+The MCP server defaults to stub data for local testing. Set `RAIA_REGISTRY_BASE_URL` and credentials from [mcp/.env.example](mcp/.env.example) to connect it to a live registry or CRM adapter.
 
 ## Jurisdictions
 
-| Code | Country | Module status |
+| Code | Jurisdiction | Module status |
 |---|---|---|
-| GB | United Kingdom | Draft |
-| TH | Thailand | Draft |
-| SG | Singapore | Planned |
-| US | United States | Planned |
-| EU | European Union | Planned |
+| [GB](modules/GB/README.md) | United Kingdom | Draft module |
+| [TH](modules/TH/README.md) | Thailand | Draft module |
+| [SG](modules/SG/README.md) | Singapore | Initial module |
+| [US](modules/US/README.md) | United States | Initial module |
+| [EU](modules/EU/README.md) | European Union | Initial module |
 
-Jurisdictional modules are community-contributed. See `/modules/`.
+Jurisdictional modules define accepted compliance bodies, local lifecycle mappings, property signals, and data-handling constraints.
 
----
+## A2A Interop
 
-## Status
+RAIA does not replace Google A2A agent cards. A provider may publish both:
 
-| Version | Status | Date |
-|---|---|---|
-| v0.1 | **DRAFT — NOT FOR PRODUCTION** | April 2026 |
-| v1.0 | Planned — JSON schemas + MCP server | Q3 2026 |
+- `/.well-known/raia-agent.json` for RAIA-specific property, compliance, consent, MCP, and data-level metadata
+- `/.well-known/agent.json` for the native Google A2A agent card
 
-Formal JSON Schema files will be published with v1.0.
-Early implementers: open an issue or email protocol@estateaigents.org
+The RAIA card links to the native A2A card with `a2a_agent_card_url` and to the A2A service with `a2a_endpoint`.
 
----
+## Consent Tokens
 
-## Reference implementation
+L1+ exchanges require scoped, non-transferable, time-bounded consent tokens:
 
-[EstateAigents.com](https://estateaigents.com) is the reference marketplace built on RAIA Protocol — used by agents managing 5,000+ properties across GB and TH.
+```text
+POST /consent-tokens
+```
 
----
+See [SPEC.md](SPEC.md) and [SECURITY.md](SECURITY.md) for issuer rules, JWT claims, scopes, expiry, and error semantics.
 
-## Get started
+## Get Started
 
-Read the spec: [SPEC.md](SPEC.md)
-
-Full documentation: [estateaigents.org](https://estateaigents.org)
-
----
+1. Read [SPEC.md](SPEC.md).
+2. Validate your cards against [schemas/](schemas/).
+3. Run the MCP reference server in [mcp/](mcp/).
+4. Use the TypeScript or Python SDK in [sdk/](sdk/) for buyer-agent integrations.
+5. Follow the jurisdiction module for each market you operate in.
 
 ## Contribute
 
-- **Issues** — challenge the spec, flag jurisdiction gaps, propose capabilities
-- **PRs** — jurisdictional module contributions, documentation improvements
-- **Schema review** — join the v1.0 working group via issue label `schema-working-group`
+We welcome schema review, SDK improvements, MCP adapter work, conformance tests, and jurisdiction modules.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [GOVERNANCE.md](GOVERNANCE.md).
+1. Fork [estateaigents/raia-protocol](https://github.com/estateaigents/raia-protocol)
+2. Branch using `<type>/<scope>-<description>` (e.g. `feat/schemas-property-v0-2`)
+3. Commit with [Conventional Commits](https://www.conventionalcommits.org/)
+4. Open a PR to `master`
 
----
+Full workflow and naming rules: [CONTRIBUTING.md](CONTRIBUTING.md). Governance: [GOVERNANCE.md](GOVERNANCE.md).
 
 ## Trademark
 
-RAIA™ is a registered UK word mark (UK00003359082, Classes 36 + 42, registered 2018).
+RAIA is a registered UK word mark (UK00003359082, Classes 36 + 42, registered 2018).
 
-Class 36 covers estate agency services. Class 42 covers software and AI services.
-
-The protocol specification is MIT licensed — you can implement it freely.
-The RAIA™ name may not be used to claim registry membership or official endorsement without written permission from EstateAigents Ltd.
-
----
+The protocol specification is MIT licensed. The RAIA name may not be used to claim registry membership or official endorsement without written permission from EstateAigents Ltd.
 
 ## License
 
-MIT — see [LICENSE](LICENSE)
+MIT - see [LICENSE](LICENSE).
 
-Protocol specification © 2026 EstateAigents Ltd. RAIA™ is a registered UK trademark UK00003359082.
+Protocol specification (c) 2026 EstateAigents Ltd.

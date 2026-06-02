@@ -1,8 +1,8 @@
 # RAIA Protocol — Security & Data Privacy Architecture
-## Version 0.1 — DRAFT · NOT FOR PRODUCTION
+## Version 0.2 - Implementer Release
 
 **Published:** May 2026
-**Status:** Working draft. Subject to change before v1.0.
+**Status:** Implementer release. L0-L3 schema envelopes, consent-token contract, and Agent Identity Credential fields are published for v0.2 pilots. Subject to change before v1.0 certification.
 **Regulatory scope:** UK GDPR · UK Data Protection Act 2018 · Money Laundering Regulations 2017 (MLR 2017) · FCA guidance
 
 ---
@@ -78,9 +78,41 @@ Each level occupies its own top-level key. Levels absent from a message are omit
 
 ```json
 {
-  "raia_version": "1.0",
+  "enquiry_id": "550e8400-e29b-41d4-a716-446655440000",
+  "raia_version": "0.2",
   "transaction_id": "txn_abc123",
+  "property_raia_id": "prop-gb-movehome-00042",
   "property_ref": "prop-gb-movehome-00042",
+  "transaction_type": "LETTINGS",
+  "jurisdiction": "GB",
+  "buyer_agent": {
+    "raia_id": "org-gb-buyeragent",
+    "identity_credential": {
+      "credential_id": "vc_raia_org_gb_buyeragent_2026_05",
+      "issuer": "did:web:estateaigents.org:registry",
+      "subject": "org-gb-buyeragent",
+      "max_data_level": 3,
+      "jurisdictions": ["GB"],
+      "data_residency": "UK",
+      "issued_at": "2026-05-01T00:00:00Z",
+      "expires_at": "2026-06-01T00:00:00Z"
+    }
+  },
+  "estate_agent": {
+    "raia_id": "org-gb-movehome",
+    "identity_credential": {
+      "credential_id": "vc_raia_org_gb_movehome_2026_05",
+      "issuer": "did:web:estateaigents.org:registry",
+      "subject": "org-gb-movehome",
+      "max_data_level": 3,
+      "jurisdictions": ["GB"],
+      "data_residency": "UK",
+      "issued_at": "2026-05-01T00:00:00Z",
+      "expires_at": "2026-06-01T00:00:00Z"
+    }
+  },
+  "state": "DATA_GATHERING",
+  "created_at": "2026-05-18T09:00:00Z",
 
   "l0": {
     "listing": {
@@ -92,9 +124,20 @@ Each level occupies its own top-level key. Levels absent from a message are omit
   },
 
   "l1": {
-    "consent_token": "ct_l1_...",
+    "consent": {
+      "token": "ct_l1_example",
+      "level": 1,
+      "purpose": "enquiry",
+      "scopes": ["enquirer.name", "enquirer.email", "enquirer.phone"],
+      "issued_at": "2026-05-18T09:00:00Z",
+      "expires_at": "2026-06-18T00:00:00Z",
+      "audience": "org-gb-movehome"
+    },
+    "consent_token": "ct_l1_example",
     "consent_expires_at": "2026-06-18T00:00:00Z",
     "purpose": "enquiry",
+    "data_subject_id": "ds_abc123",
+    "data_residency": "UK",
     "enquirer": {
       "name": "[encrypted]",
       "email": "[encrypted]",
@@ -103,7 +146,18 @@ Each level occupies its own top-level key. Levels absent from a message are omit
   },
 
   "l2": {
-    "consent_token": "ct_l2_...",
+    "consent": {
+      "token": "ct_l2_example",
+      "level": 2,
+      "purpose": "tenancy_application",
+      "scopes": ["identity.name", "right_to_rent.verified", "cdd.sanctions_clear", "cdd.pep_clear"],
+      "issued_at": "2026-05-18T09:30:00Z",
+      "expires_at": "2026-06-18T00:00:00Z",
+      "audience": "org-gb-movehome"
+    },
+    "consent_token": "ct_l2_example",
+    "data_subject_id": "ds_abc123",
+    "data_residency": "UK",
     "assurance_framework": "uk_tfida",
     "assurance_level": "medium",
     "scopes_granted": [
@@ -122,27 +176,55 @@ Each level occupies its own top-level key. Levels absent from a message are omit
         "provider": "onfido",
         "framework": "uk_tfida",
         "scope": "identity",
-        "assertion_hash": "sha256:a3f9...",
+        "assertion_hash": "sha256:a3f9a3f9a3f9a3f9",
         "issued_at": "2026-05-18T10:00:00Z",
         "expires_at": "2026-08-18T10:00:00Z"
       }
-    ]
+    ],
+    "right_to_rent": {
+      "verified": true,
+      "share_code_hash": "sha256:d4e5d4e5d4e5d4e5",
+      "checked_at": "2026-05-18T10:30:00Z",
+      "expires_at": "2026-08-18T10:30:00Z",
+      "provider": "uk_home_office"
+    },
+    "cdd": {
+      "sanctions_clear": true,
+      "pep_clear": true,
+      "risk_level": "STANDARD",
+      "screening_provider": "example_screening_provider",
+      "screening_hash": "sha256:e6f7e6f7e6f7e6f7",
+      "screened_at": "2026-05-18T10:45:00Z",
+      "expires_at": "2026-08-18T10:45:00Z"
+    }
   },
 
   "l3": {
-    "consent_token": "ct_l3_...",
+    "consent": {
+      "token": "ct_l3_example",
+      "level": 3,
+      "purpose": "tenancy_application",
+      "scopes": ["source_of_funds.assertion", "payment_refs.deposit"],
+      "issued_at": "2026-05-19T08:30:00Z",
+      "expires_at": "2026-06-19T00:00:00Z",
+      "audience": "org-gb-movehome"
+    },
+    "consent_token": "ct_l3_example",
+    "data_subject_id": "ds_abc123",
+    "data_residency": "UK",
     "edd_required": true,
     "edd_trigger": "transaction_value_exceeds_threshold",
     "source_of_funds": {
-      "assertion_hash": "sha256:c9d1...",
+      "assertion_hash": "sha256:c9d1c9d1c9d1c9d1",
       "provider": "hmrc_verify",
+      "transaction_id": "txn_abc123",
       "verified_at": "2026-05-19T09:00:00Z",
       "expires_at": "2026-08-19T09:00:00Z"
     },
     "document_refs": [
       {
         "type": "tenancy_agreement",
-        "content_hash": "sha256:b7c2...",
+        "content_hash": "sha256:b7c2b7c2b7c2b7c2",
         "signed_by": ["landlord_agent_id", "tenant_agent_id"],
         "signed_at": "2026-05-19T14:30:00Z"
       }
@@ -157,7 +239,8 @@ Each level occupies its own top-level key. Levels absent from a message are omit
         "verification_timestamp": "2026-05-18T14:00:00Z",
         "status": "held"
       }
-    ]
+    ],
+    "retention_exemption_disclosed": true
   }
 }
 ```
@@ -189,6 +272,30 @@ Token format (signed JWT, RS256):
   "exp": 1750291200
 }
 ```
+
+### 5.1 Issuance endpoint
+
+Consent tokens are issued by the data subject's buyer agent, wallet, or delegated consent service after authenticating the data subject and verifying the requesting agent credential.
+
+```text
+POST /consent-tokens
+Authorization: Bearer {agent_api_token}
+Content-Type: application/json
+```
+
+Request fields:
+
+| Field | Required | Description |
+|---|---|---|
+| `data_subject_id` | yes | Stable pseudonymous subject identifier |
+| `audience` | yes | Receiving RAIA agent ID; becomes JWT `aud` |
+| `purpose` | yes | Specific purpose such as `viewing`, `tenancy_application`, or `sales_progression` |
+| `level` | yes | `1`, `2`, or `3`; L0 never needs consent |
+| `property_ref` | yes | Property this consent is bound to |
+| `scopes` | yes | Field scopes being granted |
+| `expires_in_seconds` | no | Requested lifetime; servers MAY shorten it |
+
+Issuers MUST reject level upgrades, unlisted scopes, expired/revoked subject authority, and any request where the audience agent's `max_data_level` is lower than the requested level.
 
 ---
 

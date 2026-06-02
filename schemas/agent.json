@@ -1,0 +1,297 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12",
+  "$id": "https://estateaigents.org/schemas/agent.json",
+  "title": "RAIA Agent Card",
+  "description": "Discovery card for RAIA-compliant estate agents. Every RAIA participant exposes this document at /.well-known/raia-agent.json on their domain. The estateaigents.org registry indexes verified cards.",
+  "version": "0.1.0",
+  "type": "object",
+  "required": [
+    "raia_id",
+    "name",
+    "jurisdiction",
+    "markets",
+    "mcp_endpoint",
+    "enquiry_endpoint",
+    "verified"
+  ],
+  "properties": {
+    "raia_id": {
+      "type": "string",
+      "pattern": "^org-[a-z]{2}-[a-z0-9]+$",
+      "description": "Stable org identifier. Format: org-{jurisdiction}-{slug}. Example: org-gb-rlf.",
+      "examples": ["org-gb-rlf", "org-th-rbc"]
+    },
+    "raia_version": {
+      "type": "string",
+      "description": "RAIA Protocol version this agent implements.",
+      "default": "0.2"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "Legal trading name of the estate agency."
+    },
+    "website": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "Public website URL."
+    },
+    "jurisdiction": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$",
+      "description": "Primary jurisdiction (ISO 3166-1 alpha-2). e.g. 'GB', 'TH'. Determines which compliance signals are required."
+    },
+    "additional_jurisdictions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]{2}$"
+      },
+      "description": "Additional jurisdictions this agent is licensed to operate in."
+    },
+    "markets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "RESIDENTIAL_LETTINGS",
+          "RESIDENTIAL_SALES",
+          "COMMERCIAL_LETTINGS",
+          "COMMERCIAL_SALES"
+        ]
+      },
+      "description": "Property market segments this agent actively operates in."
+    },
+    "coverage": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]{2}[A-Z0-9]{3}$"
+      },
+      "description": "UN/LOCODE city codes this agent covers. e.g. ['GBLON', 'GBMCR', 'THBKK']."
+    },
+    "compliance": {
+      "type": "object",
+      "description": "Jurisdiction-keyed compliance signals. Top-level keys are ISO 3166-1 alpha-2 codes matching the agent's jurisdiction(s). Accepted bodies per jurisdiction are defined in /modules/{CC}/README.md.",
+      "additionalProperties": {
+        "$ref": "#/$defs/ComplianceBundle"
+      },
+      "examples": [
+        {
+          "GB": {
+            "bodies": [
+              {
+                "name": "ARLA Propertymark",
+                "membership_id": "M12345",
+                "verify_url": "https://arla.co.uk/find-a-member",
+                "expiry": "2027-03-31"
+              },
+              {
+                "name": "TPO",
+                "membership_id": "TPO-67890",
+                "verify_url": "https://www.tpos.co.uk",
+                "expiry": null
+              }
+            ],
+            "client_money_protection": true,
+            "redress_scheme": "TPO"
+          }
+        }
+      ]
+    },
+    "verified": {
+      "type": "boolean",
+      "description": "True if this agent has been verified by the estateaigents.org registry. Unverified agents can query but cannot list or receive enquiries.",
+      "default": false
+    },
+    "registry_admitted": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "ISO 8601 date when this agent was admitted to the registry. Null if not yet verified."
+    },
+    "active_listings": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Approximate number of currently active listings. Null if the agent chooses not to disclose."
+    },
+    "max_data_level": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3,
+      "description": "Highest RAIA data level this agent is currently credentialed to receive. L0 public = 0, L1 enquiry = 1, L2 KYC = 2, L3 AML/proof-of-funds = 3."
+    },
+    "agent_identity_credential": {
+      "$ref": "#/$defs/AgentIdentityCredential",
+      "description": "Registry-issued verifiable credential summary. Required before exchanging L1+ data in production."
+    },
+    "mcp_endpoint": {
+      "type": "string",
+      "format": "uri",
+      "description": "MCP server base URL. Must support the four RAIA tools: raia_search, raia_verify_agent, raia_request_viewing, raia_get_property."
+    },
+    "a2a_endpoint": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "Google A2A agent endpoint for agent-to-agent messaging and task routing. Null if agent implements MCP only."
+    },
+    "a2a_agent_card_url": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "Canonical Google A2A agent card URL when the implementer publishes a native A2A card. Usually /.well-known/agent.json."
+    },
+    "enquiry_endpoint": {
+      "type": "string",
+      "format": "uri",
+      "description": "HTTP endpoint to POST RAIA Enquiry objects to. Initiates the session state machine (IDENTIFIED → DATA_GATHERING → ...)."
+    },
+    "consent_endpoint": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "HTTPS endpoint for requesting scoped RAIA consent tokens. Must implement the consent service contract in SPEC.md for L1+ production use."
+    },
+    "contact": {
+      "$ref": "#/$defs/ContactInfo"
+    },
+    "published_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when this card was last published or updated."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "ComplianceBundle": {
+      "type": "object",
+      "description": "Compliance signals for a specific jurisdiction. Structure follows the jurisdiction's module definition in /modules/{CC}/README.md.",
+      "properties": {
+        "bodies": {
+          "type": "array",
+          "description": "Regulatory or professional body memberships.",
+          "items": {
+            "$ref": "#/$defs/ComplianceBody"
+          }
+        },
+        "client_money_protection": {
+          "type": ["boolean", "null"],
+          "description": "True if the agent holds a valid Client Money Protection scheme membership. Mandatory in GB."
+        },
+        "redress_scheme": {
+          "type": ["string", "null"],
+          "description": "Name of the redress scheme the agent is enrolled with. e.g. 'TPO', 'PRS'. Mandatory in GB."
+        }
+      },
+      "additionalProperties": true
+    },
+    "ComplianceBody": {
+      "type": "object",
+      "required": ["name", "membership_id"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the regulatory or professional body. e.g. 'ARLA Propertymark', 'RICS', 'TPO'."
+        },
+        "membership_id": {
+          "type": "string",
+          "description": "Agent's membership or registration number with this body."
+        },
+        "verify_url": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "URL where this membership can be independently verified."
+        },
+        "expiry": {
+          "type": ["string", "null"],
+          "format": "date",
+          "description": "Membership expiry date in ISO 8601 format. Null if the membership does not expire."
+        }
+      },
+      "additionalProperties": false
+    },
+    "AgentIdentityCredential": {
+      "type": "object",
+      "required": [
+        "credential_id",
+        "issuer",
+        "subject",
+        "max_data_level",
+        "jurisdictions",
+        "issued_at",
+        "expires_at"
+      ],
+      "properties": {
+        "credential_id": {
+          "type": "string",
+          "description": "Stable credential identifier issued by the RAIA registry."
+        },
+        "issuer": {
+          "type": "string",
+          "description": "Credential issuer identifier. Production credentials are issued by the RAIA registry or a delegated registry authority."
+        },
+        "subject": {
+          "type": "string",
+          "pattern": "^org-[a-z]{2}-[a-z0-9]+$",
+          "description": "RAIA org identifier the credential was issued to."
+        },
+        "max_data_level": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "jurisdictions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        "data_residency": {
+          "type": "string",
+          "enum": ["UK", "EEA", "ADEQUACY", "TH", "SG", "US"]
+        },
+        "issued_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "vc_jwt": {
+          "type": "string",
+          "description": "Optional compact W3C VC/JWT proof. Omitted from public cards when the registry exposes proof material separately."
+        }
+      },
+      "additionalProperties": false
+    },
+    "ContactInfo": {
+      "type": "object",
+      "description": "Public contact details for the estate agency.",
+      "properties": {
+        "email": {
+          "type": ["string", "null"],
+          "format": "email",
+          "description": "Public enquiry email address."
+        },
+        "phone": {
+          "type": ["string", "null"],
+          "description": "Public telephone number including country code. e.g. '+44 20 7123 4567'."
+        },
+        "address": {
+          "type": ["string", "null"],
+          "maxLength": 300,
+          "description": "Registered office or branch address. Used for compliance display only — not used in property address masking."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "x-raia-notes": {
+    "discovery": "Buyer agents discover estate agents by querying estateaigents.org/registry or by fetching /.well-known/raia-agent.json directly from a known agent domain.",
+    "a2a_interop": "RAIA cards coexist with native Google A2A cards. Publish /.well-known/raia-agent.json for RAIA-specific property/compliance metadata and /.well-known/agent.json for native A2A metadata. Link the native A2A card from a2a_agent_card_url and the A2A endpoint from a2a_endpoint.",
+    "verification": "The registry verifies compliance signals against the bodies listed in each jurisdiction's module. Verification is manual in v0.x. Automated verification is planned for v1.0.",
+    "trust_tiers": "verified=true agents can list properties and receive enquiries. verified=false agents can query the registry but cannot list or transact.",
+    "reference_implementation": "https://app.estateaigents.com/.well-known/raia-agent.json"
+  }
+}

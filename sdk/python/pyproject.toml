@@ -1,0 +1,13 @@
+[project]
+name = "raia-client"
+version = "0.2.0"
+description = "Python client SDK for RAIA Protocol HTTP endpoints"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "EstateAigents Ltd", email = "protocol@estateaigents.org" }]
+keywords = ["raia", "real-estate", "property", "ai-agents"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

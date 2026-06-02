@@ -1,0 +1,55 @@
+{
+  "raia_id": "org-gb-example",
+  "raia_version": "0.2",
+  "name": "Example Estates Ltd",
+  "website": "https://example-estates.test",
+  "jurisdiction": "GB",
+  "additional_jurisdictions": ["TH"],
+  "markets": ["RESIDENTIAL_LETTINGS", "RESIDENTIAL_SALES"],
+  "coverage": ["GBLON", "THBKK"],
+  "compliance": {
+    "GB": {
+      "bodies": [
+        {
+          "name": "ARLA Propertymark",
+          "membership_id": "M12345",
+          "verify_url": "https://www.propertymark.co.uk/find-an-expert.html",
+          "expiry": "2027-03-31"
+        },
+        {
+          "name": "TPO",
+          "membership_id": "TPO-67890",
+          "verify_url": "https://www.tpos.co.uk",
+          "expiry": null
+        }
+      ],
+      "client_money_protection": true,
+      "redress_scheme": "TPO"
+    }
+  },
+  "verified": true,
+  "registry_admitted": "2026-05-01",
+  "active_listings": 128,
+  "max_data_level": 3,
+  "agent_identity_credential": {
+    "credential_id": "vc_raia_org_gb_example_2026_05",
+    "issuer": "did:web:estateaigents.org:registry",
+    "subject": "org-gb-example",
+    "max_data_level": 3,
+    "jurisdictions": ["GB", "TH"],
+    "data_residency": "UK",
+    "issued_at": "2026-05-01T00:00:00Z",
+    "expires_at": "2026-06-01T00:00:00Z"
+  },
+  "mcp_endpoint": "https://example-estates.test/mcp",
+  "a2a_endpoint": "https://example-estates.test/a2a",
+  "a2a_agent_card_url": "https://example-estates.test/.well-known/agent.json",
+  "enquiry_endpoint": "https://example-estates.test/api/raia/enquiries",
+  "consent_endpoint": "https://example-estates.test/api/raia/consent-tokens",
+  "contact": {
+    "email": "raia@example-estates.test",
+    "phone": "+44 20 7123 4567",
+    "address": "Example House, London"
+  },
+  "published_at": "2026-05-24T00:00:00Z"
+}
