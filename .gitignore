@@ -13,3 +13,4 @@ sdk/python/dist/
 sdk/python/*.egg-info/
 __pycache__/
 *.pyc
+doc-external

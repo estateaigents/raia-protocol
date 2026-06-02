@@ -14,6 +14,12 @@ Published with v0.2 (May 2026). Field definitions in prose are in [SPEC.md](../S
 
 Public-facing listing card. Full address is never included; location is masked to district/postcode district. Required fields include `raia_id`, `agent_card_url`, `transaction_type`, `status`, `location`, `headline`, `listing_agent`, and `enquiry_endpoint`.
 
+## Related HTTP contracts
+
+- [openapi/raia-portal-feed-api.yaml](../openapi/raia-portal-feed-api.yaml) — vendor-neutral Portal Feed API for listing upload/update/removal, branch reconciliation, performance, enquiries, and product activations. See the [developer guide](../docs/raia-portal-feed-api.md).
+
+## Join the working group
+
 ## agent.json
 
 Discovery card exposed at `/.well-known/raia-agent.json`. Key fields:

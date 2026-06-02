@@ -98,6 +98,14 @@ See [SPEC.md](SPEC.md) and [SECURITY.md](SECURITY.md) for issuer rules, JWT clai
 4. Use the TypeScript or Python SDK in [sdk/](sdk/) for buyer-agent integrations.
 5. Follow the jurisdiction module for each market you operate in.
 
+Full documentation: [estateaigents.org](https://estateaigents.org)
+
+## HTTP API contracts
+
+- [openapi/raia-portal-feed-api.yaml](openapi/raia-portal-feed-api.yaml) — vendor-neutral Portal Feed API for listing syndication, branch reconciliation, performance, enquiries, and product activations ([developer guide](docs/raia-portal-feed-api.md))
+
+---
+
 ## Contribute
 
 We welcome schema review, SDK improvements, MCP adapter work, conformance tests, and jurisdiction modules.
