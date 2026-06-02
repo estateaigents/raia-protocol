@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" suppressHydrationWarning>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.className = theme;
+  })();
+</script>
 <title>RAIA™ — The Open Protocol for Property AI</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="shortcut icon" href="/favicon.svg">
@@ -23,22 +29,11 @@
      Black + Blue + White (current brand)
      Imagery & spatial language inspired by ai.google.dev
      ============================================ */
+  /* ============================================
+     RAIA Design Tokens - Cyan Rebrand
+     Responsive theme resolution (dark/light)
+     ============================================ */
   :root {
-    --bg: #000000;
-    --bg-elev: #0a0a0f;
-    --bg-card: #0f1219;
-    --bg-card-hover: #161a24;
-    --border: #1f2330;
-    --border-bright: #2a3142;
-    --text: #ffffff;
-    --text-dim: #9ca3b5;
-    --text-faint: #5a6175;
-    --blue: #4285f4;
-    --blue-bright: #69a0ff;
-    --blue-deep: #1a73e8;
-    --blue-glow: rgba(66, 133, 244, 0.18);
-    --success: #34a853;
-
     --font-display: 'Inter', system-ui, sans-serif;
     --font-body: 'Inter', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', 'Menlo', monospace;
@@ -47,6 +42,68 @@
     --gutter: clamp(1.25rem, 4vw, 2.5rem);
     --radius: 12px;
     --radius-sm: 8px;
+  }
+
+  /* Default Dark Theme */
+  :root, .dark {
+    --bg: #0B0F1C;
+    --bg-elev: #121A2E;
+    --bg-card: #121A2E;
+    --bg-card-hover: #1E293B;
+    --border: #1E293B;
+    --border-bright: #334155;
+    --text: #F8FAFC;
+    --text-dim: #94A3B8;
+    --text-faint: #475569;
+    
+    /* Cyan Accent Tokens */
+    --blue: #06B6D4;
+    --blue-bright: #22D3EE;
+    --blue-deep: #0891B2;
+    --blue-glow: rgba(6, 182, 212, 0.18);
+    --success: #10B981;
+    --code-bg: #1E293B;
+
+    --nav-bg: rgba(11, 15, 28, 0.8);
+    --flow-bg: rgba(255, 255, 255, 0.02);
+
+    /* CIC Why Callout Theme */
+    --cic-bg: #111827;
+    --cic-border: #1F2937;
+    --cic-text: #9CA3AF;
+    --cic-headline: #F9FAFB;
+    --cic-accent: #06B6D4;
+  }
+
+  /* Light Theme */
+  .light {
+    --bg: #FAFAF9;
+    --bg-elev: #F1F1EF;
+    --bg-card: #FFFFFF;
+    --bg-card-hover: #F1F5F9;
+    --border: #E2E8F0;
+    --border-bright: #CBD5E1;
+    --text: #0F172A;
+    --text-dim: #475569;
+    --text-faint: #64748B;
+    
+    /* Cyan Accent Tokens */
+    --blue: #0891B2;
+    --blue-bright: #06B6D4;
+    --blue-deep: #0e7490;
+    --blue-glow: rgba(8, 145, 178, 0.1);
+    --success: #10B981;
+    --code-bg: #F1F5F9;
+
+    --nav-bg: rgba(250, 250, 249, 0.8);
+    --flow-bg: rgba(0, 0, 0, 0.02);
+
+    /* CIC Why Callout Theme */
+    --cic-bg: #F4F3EF;
+    --cic-border: #E2E1DC;
+    --cic-text: #444444;
+    --cic-headline: #000000;
+    --cic-accent: #0891B2;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -72,7 +129,7 @@
   /* NAV */
   nav.top {
     position: sticky; top: 0; z-index: 100;
-    background: rgba(0, 0, 0, 0.8);
+    background: var(--nav-bg);
     backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
   }
@@ -220,7 +277,7 @@
   .compare-card h3 { font-size: 1.25rem; margin-bottom: 0.75rem; font-weight: 600; }
   .compare-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1.5rem; }
   .flow {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--flow-bg);
     border: 1px solid var(--border);
     padding: 1rem; border-radius: var(--radius-sm);
     font-family: var(--font-mono); font-size: 0.85rem;
@@ -531,9 +588,9 @@
 
   /* CIC Why-We-Built callout */
   .cic-why-band {
-    background: #f4f3ef;
-    border-top: 1px solid #e2e1dc;
-    border-bottom: 1px solid #e2e1dc;
+    background: var(--cic-bg);
+    border-top: 1px solid var(--cic-border);
+    border-bottom: 1px solid var(--cic-border);
     padding: 48px 0;
   }
   .cic-why-outer {
@@ -542,7 +599,7 @@
     padding: 0 var(--gutter);
   }
   .cic-why-card {
-    border-left: 3px solid #2563FF;
+    border-left: 3px solid var(--cic-accent);
     padding-left: 28px;
   }
   .cic-why-eyebrow {
@@ -550,7 +607,7 @@
     font-size: 11px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #2563FF;
+    color: var(--cic-accent);
     margin-bottom: 14px;
     font-weight: 500;
   }
@@ -558,14 +615,14 @@
     font-family: var(--font-display);
     font-size: 22px;
     font-weight: 900;
-    color: #000000;
+    color: var(--cic-headline);
     line-height: 1.25;
     margin-bottom: 16px;
     letter-spacing: -0.02em;
   }
   .cic-why-body {
     font-size: 15px;
-    color: #444444;
+    color: var(--cic-text);
     line-height: 1.75;
     margin-bottom: 24px;
     max-width: 740px;
@@ -579,16 +636,16 @@
   .cic-why-links .cic-link-primary {
     font-size: 14px;
     font-weight: 600;
-    color: #2563FF;
+    color: var(--cic-accent);
     text-decoration: none;
   }
   .cic-why-links .cic-link-primary:hover { text-decoration: underline; }
   .cic-why-links .cic-link-secondary {
     font-size: 14px;
-    color: #666666;
+    color: var(--text-dim);
     text-decoration: none;
   }
-  .cic-why-links .cic-link-secondary:hover { color: #000000; text-decoration: underline; }
+  .cic-why-links .cic-link-secondary:hover { color: var(--text); text-decoration: underline; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -606,6 +663,14 @@
       <li><a href="#about" data-tab="about">About</a></li>
       <li><a href="/charter.html">Charter</a></li>
       <li><a href="https://www.estateaigents.org/faq.html">FAQ</a></li>
+      <li class="theme-toggle-li" style="display: flex; align-items: center;">
+        <button id="theme-toggle" aria-label="Toggle Theme" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0.5rem; color: var(--text-dim); transition: color 0.15s; outline: none;">
+          <!-- Moon icon -->
+          <svg id="theme-toggle-dark-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width: 1.25rem; height: 1.25rem; display: none;"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+          <!-- Sun icon -->
+          <svg id="theme-toggle-light-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width: 1.25rem; height: 1.25rem; display: none;"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+        </button>
+      </li>
       <li><a href="https://github.com/estateaigents/raia-protocol" class="cta" target="_blank" rel="noopener noreferrer">GitHub<svg stroke="currentColor" fill="none" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; height: 0.75em; width: 0.75em; margin-left: 0.25em; vertical-align: middle; position: relative; top: -1px;" xmlns="http://www.w3.org/2000/svg"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a></li>
     </ul>
   </div>
@@ -641,43 +706,43 @@
           <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
             <defs>
               <radialGradient id="centerGlow" cx="50%" cy="50%">
-                <stop offset="0%" stop-color="#4285f4" stop-opacity="0.4"/>
-                <stop offset="100%" stop-color="#4285f4" stop-opacity="0"/>
+                <stop offset="0%" stop-color="var(--blue)" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="var(--blue)" stop-opacity="0"/>
               </radialGradient>
               <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#4285f4" stop-opacity="0.6"/>
-                <stop offset="100%" stop-color="#4285f4" stop-opacity="0.1"/>
+                <stop offset="0%" stop-color="var(--blue)" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="var(--blue)" stop-opacity="0.1"/>
               </linearGradient>
             </defs>
             <circle cx="200" cy="200" r="180" fill="url(#centerGlow)"/>
-            <circle cx="200" cy="200" r="150" fill="none" stroke="#1f2330" stroke-width="1" stroke-dasharray="2 4"/>
-            <circle cx="200" cy="200" r="100" fill="none" stroke="#1f2330" stroke-width="1" stroke-dasharray="2 4"/>
+            <circle cx="200" cy="200" r="150" fill="none" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 4"/>
+            <circle cx="200" cy="200" r="100" fill="none" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 4"/>
             <line x1="200" y1="200" x2="200" y2="50" stroke="url(#lineGrad)" stroke-width="1.5"/>
             <line x1="200" y1="200" x2="350" y2="280" stroke="url(#lineGrad)" stroke-width="1.5"/>
             <line x1="200" y1="200" x2="50" y2="280" stroke="url(#lineGrad)" stroke-width="1.5"/>
             <line x1="200" y1="200" x2="100" y2="100" stroke="url(#lineGrad)" stroke-width="1.5"/>
             <line x1="200" y1="200" x2="300" y2="100" stroke="url(#lineGrad)" stroke-width="1.5"/>
             <g class="pulse-node">
-              <circle cx="200" cy="50" r="22" fill="#0f1219" stroke="#4285f4" stroke-width="1.5"/>
-              <text x="200" y="55" text-anchor="middle" fill="#ffffff" font-size="11" font-family="Inter" font-weight="600">User AI</text>
+              <circle cx="200" cy="50" r="22" fill="var(--bg-elev)" stroke="var(--blue)" stroke-width="1.5"/>
+              <text x="200" y="55" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter" font-weight="600">User AI</text>
             </g>
             <g>
-              <circle cx="350" cy="280" r="22" fill="#0f1219" stroke="#4285f4" stroke-width="1.5"/>
-              <text x="350" y="285" text-anchor="middle" fill="#ffffff" font-size="11" font-family="Inter" font-weight="600">Agent</text>
+              <circle cx="350" cy="280" r="22" fill="var(--bg-elev)" stroke="var(--blue)" stroke-width="1.5"/>
+              <text x="350" y="285" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter" font-weight="600">Agent</text>
             </g>
             <g>
-              <circle cx="50" cy="280" r="22" fill="#0f1219" stroke="#4285f4" stroke-width="1.5"/>
-              <text x="50" y="285" text-anchor="middle" fill="#ffffff" font-size="11" font-family="Inter" font-weight="600">Portal</text>
+              <circle cx="50" cy="280" r="22" fill="var(--bg-elev)" stroke="var(--blue)" stroke-width="1.5"/>
+              <text x="50" y="285" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter" font-weight="600">Portal</text>
             </g>
             <g>
-              <circle cx="100" cy="100" r="22" fill="#0f1219" stroke="#4285f4" stroke-width="1.5"/>
-              <text x="100" y="105" text-anchor="middle" fill="#ffffff" font-size="11" font-family="Inter" font-weight="600">Verify</text>
+              <circle cx="100" cy="100" r="22" fill="var(--bg-elev)" stroke="var(--blue)" stroke-width="1.5"/>
+              <text x="100" y="105" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter" font-weight="600">Verify</text>
             </g>
             <g>
-              <circle cx="300" cy="100" r="22" fill="#0f1219" stroke="#4285f4" stroke-width="1.5"/>
-              <text x="300" y="105" text-anchor="middle" fill="#ffffff" font-size="11" font-family="Inter" font-weight="600">Lender</text>
+              <circle cx="300" cy="100" r="22" fill="var(--bg-elev)" stroke="var(--blue)" stroke-width="1.5"/>
+              <text x="300" y="105" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter" font-weight="600">Lender</text>
             </g>
-            <circle cx="200" cy="200" r="44" fill="#4285f4" filter="drop-shadow(0 0 20px #4285f4)"/>
+            <circle cx="200" cy="200" r="44" fill="var(--blue)" filter="drop-shadow(0 0 20px var(--blue))"/>
             <text x="200" y="195" text-anchor="middle" fill="#ffffff" font-size="14" font-family="Inter" font-weight="700">RAIA</text>
             <text x="200" y="212" text-anchor="middle" fill="#ffffff" font-size="9" font-family="Inter" font-weight="500" opacity="0.9">PROTOCOL</text>
           </svg>
@@ -1377,6 +1442,39 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
+</script>
+
+<script>
+  (function() {
+    var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    var themeToggleBtn = document.getElementById('theme-toggle');
+
+    function updateIcons() {
+      var isDark = document.documentElement.classList.contains('dark');
+      if (isDark) {
+        if (themeToggleDarkIcon) themeToggleDarkIcon.style.display = 'none';
+        if (themeToggleLightIcon) themeToggleLightIcon.style.display = 'block';
+      } else {
+        if (themeToggleDarkIcon) themeToggleDarkIcon.style.display = 'block';
+        if (themeToggleLightIcon) themeToggleLightIcon.style.display = 'none';
+      }
+    }
+
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', function() {
+        var currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        var newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.className = newTheme;
+        localStorage.setItem('theme', newTheme);
+        updateIcons();
+      });
+    }
+
+    // Set initial icon states
+    updateIcons();
+  })();
 </script>
 
 </body>
