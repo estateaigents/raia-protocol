@@ -10,7 +10,7 @@
 
 ## 1. Landscape: The Personal Agent Wave Arrives
 
-The "personal buyer agent" persona predicted in the [RAIA A2A Protocol GTM whitepaper](./A2A_PROTOCOL_GTM.md) is no longer theoretical. In 2026, two of the world's largest AI platforms shipped consumer-facing personal AI agents that can browse the web, fill forms, negotiate, and transact on behalf of individual users — without requiring the user to be present.
+The "personal buyer agent" persona predicted in the RAIA A2A Protocol GTM whitepaper (internal planning document, not yet published to this repo) is no longer theoretical. In 2026, two of the world's largest AI platforms shipped consumer-facing personal AI agents that can browse the web, fill forms, negotiate, and transact on behalf of individual users — without requiring the user to be present.
 
 ### 1.1 Meta Muse
 
@@ -22,7 +22,7 @@ On **September 8, 2026**, Meta introduced [Muse](https://about.fb.com/news/2026/
 - Web at [muse.ai](https://muse.ai)
 - Direct messaging in WhatsApp
 - Meta AI glasses integration planned
-- Free tier available; paid tiers at $20/mo and $100/mo for heavier automation ([TechCrunch](https://techcrunch.com/2026/05/27/meta-officially-launches-instagram-facebook-and-whatsapp-subscriptions-with-more-to-come-including-ai-plans/))
+- Free tier available; paid tiers at $20/mo (Power) and $100/mo (Maximum) for heavier automation ([TechCrunch](https://techcrunch.com/2026/09/08/meta-debuts-its-muse-ai-agent-will-consumers-trust-it/))
 
 **Architecture:**
 Muse introduces a novel dual-agent architecture running inside a dedicated per-user virtual machine:
@@ -50,8 +50,8 @@ The [Meta Model API](https://ai.developer.meta.com/docs) (`api.meta.ai/v1`) serv
 Google launched [Gemini Spark](https://gemini.google/overview/agent/spark/) at Google I/O 2026 (May 19, 2026) as a 24/7 personal AI agent within the Gemini app ecosystem.
 
 **Availability (as of September 2026):**
-- Google AI Pro or Ultra subscription required
-- Available wherever Gemini Apps are supported, EXCEPT: European Economic Area, Nigeria, Switzerland, and the United Kingdom
+- Google AI Pro or Ultra subscription required ([Google Support](https://support.google.com/gemini/answer/17094507))
+- Available wherever Gemini Apps are supported, EXCEPT: European Economic Area, Nigeria, Switzerland, and the United Kingdom ([Google Support](https://support.google.com/gemini/answer/17094507) — note: this exclusion list is volatile and has changed multiple times since Spark's May 2026 launch; verify current status before relying on this data)
 - Gemini mobile app, Gemini app on Mac, and [gemini.google.com](https://gemini.google.com) web app
 - Desktop Chrome auto-browse integration — Spark can use the user's local Chrome browser or a remote cloud browser
 
