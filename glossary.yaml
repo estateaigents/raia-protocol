@@ -1,0 +1,418 @@
+# Ubiquitous Language — glossary.yaml SSOT (ADR-367)
+# Canonical estate nouns, machine-enforced. display_en must equal term modulo casing/underscores.
+# No prose duplicate. Changes ADR-class (Eugin approves) per CLAUDE.md rule 13.
+
+- term: person
+  table: tbl_persons
+  definition: A human the platform knows about (lead, tenant, landlord, agent, staff).
+  display_en: Person
+  forbidden: [contact, lead, human, client_name]
+  exempt:
+    - name: contact
+      reason: legacy column Contact_Information exists in live DDL
+      ADR: ADR-357
+    - name: lead
+      reason: Gmail/streetsign lead nouns deprecated
+      ADR: ADR-321
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: contact, live_count: 0}
+
+- term: asset
+  table: tbl_assets
+  definition: A real property (flat, house, development, plot).
+  display_en: Asset
+  forbidden: [property, flat, unit, listing]
+  exempt:
+    - name: property
+      reason: PropertyChip component per ADR-357 D1
+      ADR: ADR-357
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: property, live_count: 0}
+
+- term: organisation
+  table: tbl_organisations
+  definition: A company or entity (letting agency, landlord, vendor, corporate body).
+  display_en: Organisation
+  forbidden: [company, agency, org]
+  exempt:
+    - name: company
+      reason: legacy DDL tbl_companies_house_leads
+      ADR: ADR-367
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: company, live_count: 0}
+
+- term: tenancy
+  table: tbl_tenancies
+  definition: An occupancy agreement between persons and an asset for a term.
+  display_en: Tenancy
+  forbidden: [lease, tenancy_agreement]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: lease, live_count: 0}
+
+- term: service_agreement
+  table: tbl_service_agreements
+  definition: A contract between an organisation and an asset for services.
+  display_en: Service Agreement
+  forbidden: [agreement, contract, sa]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: agreement, live_count: 0}
+
+- term: address
+  table: tbl_addresses
+  definition: Canonical location record (postcode, unit, street, city, country).
+  display_en: Address
+  forbidden: [location, post_code, zip]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: location, live_count: 0}
+
+- term: enquiry_case
+  table: tbl_enquiry_cases
+  definition: A person-to-platform enquiry tracked as a case.
+  display_en: Enquiry Case
+  forbidden: [case, enquiry, ticket]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: case, live_count: 0}
+
+- term: tag
+  table: tbl_tags
+  definition: A categorisation label applied to any entity.
+  display_en: Tag
+  forbidden: [chip, label, category]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-357
+  enforcement: fail
+  deprecation_ledger: {synonym: chip, live_count: 0}
+
+- term: landlord
+  table: tbl_landlord_data
+  definition: A person who owns assets and lets them to tenants.
+  display_en: Landlord
+  forbidden: [owner, lessor]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: owner, live_count: 0}
+
+- term: tenant
+  table: tbl_tenants
+  definition: A person occupying an asset under a tenancy.
+  display_en: Tenant
+  forbidden: [occupier, lessee]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: occupier, live_count: 0}
+
+- term: agent
+  table: tbl_agents
+  definition: A platform digital worker (aigent) or a human staff member.
+  display_en: Agent
+  forbidden: [worker, staff, employee]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: worker, live_count: 0}
+
+- term: channel
+  table: tbl_channels
+  definition: A communication route (portal, email, SMS, WhatsApp).
+  display_en: Channel
+  forbidden: [medium, route]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: medium, live_count: 0}
+
+- term: compliance_run
+  table: tbl_compliance_runs
+  definition: One verification pass across a person, asset, or agreement.
+  display_en: Compliance Run
+  forbidden: [check_run, verification]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: check_run, live_count: 0}
+
+- term: deposit
+  table: tbl_deposits
+  definition: Money held as security against a tenancy.
+  display_en: Deposit
+  forbidden: [bond, security_deposit]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: bond, live_count: 0}
+
+- term: listing
+  table: tbl_listings
+  definition: A publication of an asset on a channel for a period.
+  display_en: Listing
+  forbidden: [advert, posting, publication]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: advert, live_count: 0}
+
+- term: development
+  table: tbl_developments
+  definition: A block or complex that contains multiple assets.
+  display_en: Development
+  forbidden: [block, complex, estate]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: block, live_count: 0}
+
+- term: amenity
+  table: tbl_amenities
+  definition: A feature of an asset (parking, gym, garden).
+  display_en: Amenity
+  forbidden: [feature]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: feature, live_count: 0}
+
+- term: appliance
+  table: tbl_appliances
+  definition: An appliance in an asset (boiler, washing machine).
+  display_en: Appliance
+  forbidden: [fixture]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: fixture, live_count: 0}
+
+- term: charge
+  table: tbl_charges_pricing
+  definition: A monetary amount applied to a service or tenancy.
+  display_en: Charge
+  forbidden: [price, fee, cost]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: price, live_count: 0}
+
+- term: conversation
+  table: tbl_conversations
+  definition: A dialogue with one or more parties across one or more channels.
+  display_en: Conversation
+  forbidden: [thread, chat]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: thread, live_count: 0}
+
+- term: message
+  table: tbl_conversation_messages
+  definition: A single communication unit sent in a conversation.
+  display_en: Message
+  forbidden: [sms, text, content]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: sms, live_count: 0}
+
+- term: application
+  table: tbl_applications
+  definition: A person applying for an asset or service.
+  display_en: Application
+  forbidden: [form, app]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: form, live_count: 0}
+
+- term: document
+  table: tbl_documents
+  definition: A file uploaded or generated for an entity.
+  display_en: Document
+  forbidden: [file, attachment]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: file, live_count: 0}
+
+- term: dispute
+  table: tbl_disputes
+  definition: A disagreement raised on a tenancy or agreement.
+  display_en: Dispute
+  forbidden: [argument]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: argument, live_count: 0}
+
+- term: referral
+  table: tbl_referrals
+  definition: One party referring another party to the platform.
+  display_en: Referral
+  forbidden: [intro]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: intro, live_count: 0}
+
+- term: mortgage
+  table: tbl_mortgages
+  definition: Loan secured on an asset.
+  display_en: Mortgage
+  forbidden: [loan]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: loan, live_count: 0}
+
+- term: valuation
+  table: tbl_valuations
+  definition: Estimated monetary value of an asset.
+  display_en: Valuation
+  forbidden: [avm, estimate]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: avm, live_count: 0}
+
+- term: consent_record
+  table: tbl_consent_records
+  definition: Log of consent given or withdrawn for a purpose.
+  display_en: Consent Record
+  forbidden: [permission]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: permission, live_count: 0}
+
+- term: audit_log
+  table: tbl_audit_log
+  definition: Immutable record of actions taken on an entity.
+  display_en: Audit Log
+  forbidden: [history, log]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: history, live_count: 0}
+
+- term: dossier
+  table: tbl_dossiers
+  definition: Collated collection of documents for a tenancy or asset.
+  display_en: Dossier
+  forbidden: [bundle, pack]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: bundle, live_count: 0}
+
+- term: billing
+  table: tbl_billing
+  definition: Invoicing and ledger for charges.
+  display_en: Billing
+  forbidden: [invoice]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: invoice, live_count: 0}
+
+- term: notification
+  table: tbl_notifications
+  definition: A push or pull alert to a person.
+  display_en: Notification
+  forbidden: [alert]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: alert, live_count: 0}
+
+- term: inspection
+  table: tbl_inspections
+  definition: Physical viewing or review of an asset.
+  display_en: Inspection
+  forbidden: [viewing]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: viewing, live_count: 0}
+
+- term: inventory
+  table: tbl_inventories
+  definition: Stock list of items in or with an asset.
+  display_en: Inventory
+  forbidden: [stock]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: stock, live_count: 0}
+
+- term: jurisdiction
+  table: tbl_jurisdictions
+  definition: Legal territory (GB, TH, MY) determining compliance rules.
+  display_en: Jurisdiction
+  forbidden: [territory, region]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: territory, live_count: 0}
+
+- term: legacy
+  table: tbl_legacy
+  definition: Extracted cleaned-up versions from deprecated tables.
+  display_en: Legacy
+  forbidden: [dump, old]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: dump, live_count: 0}
+
+- term: sync
+  table: tbl_appsheet_sync_states
+  definition: A synchronisation state between external and internal schema.
+  display_en: Sync
+  forbidden: [import]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: import, live_count: 0}
+
+- term: daisy_chain
+  table: tbl_daisy_chain_scans
+  definition: Bot-based scanning of a corridor.
+  display_en: Daisy Chain
+  forbidden: [corridor_scan]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: corridor_scan, live_count: 0}
+
+- term: situation_map
+  table: tbl_situation_maps
+  definition: Mapping of environment facts for a give moment.
+  display_en: Situation Map
+  forbidden: [map]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: map, live_count: 0}
+
+- term: orchestration
+  table: tbl_orchestrated_agent_runs
+  definition: Agent-run that coordinates other agents.
+  display_en: Orchestration
+  forbidden: [coordinator]
+  scope: [identifiers, filenames, schema, display, cards, docs]
+  since: ADR-367
+  enforcement: fail
+  deprecation_ledger: {synonym: coordinator, live_count: 0}
