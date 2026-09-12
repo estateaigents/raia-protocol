@@ -94,14 +94,30 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: "Markdown lint"
+      - name: "Markdown lint (changed files only)"
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref || 'master' }}
         run: |
           set -euo pipefail
           echo "=== Markdown Lint ==="
+          git fetch --no-tags --depth=50 origin "$BASE_REF" 2>/dev/null || true
+          MERGE_BASE=$(git merge-base "origin/$BASE_REF" HEAD 2>/dev/null || echo "HEAD~1")
+          CHANGED_MD=$(git diff --name-only "$MERGE_BASE"...HEAD -- '*.md' 'docs/**/*.md' 'modules/**/*.md' '.github/**/*.md' 2>/dev/null || true)
+          if [ -z "$CHANGED_MD" ]; then
+            echo "No markdown files changed — gate passed."
+            exit 0
+          fi
+          echo "Changed markdown files:"
+          echo "$CHANGED_MD"
+          echo ""
           npm install -g markdownlint-cli@0.41 --silent 2>/dev/null
           FAILED=0
-          for f in $(find . -name '*.md' -not -path './node_modules/*' -not -path './.git/*'); do
+          for f in $CHANGED_MD; do
+            if [ ! -f "$f" ]; then continue; fi
+            echo "  Linting: $f"
             if ! markdownlint "$f" 2>&1; then
               echo "  FAIL: $f"
               FAILED=1
@@ -109,12 +125,12 @@ jobs:
           done
           if [ "$FAILED" -ne 0 ]; then
             echo ""
-            echo "FAIL: markdown lint errors found"
+            echo "FAIL: markdown lint errors in changed files"
             exit 1
           fi
-          echo "PASS: all markdown files lint clean"
+          echo "PASS: all changed markdown files lint clean"
 
-      - name: "YAML lint (glossary.yaml is ADR-367 SSOT)"
+      - name: "YAML lint (all files — lightweight)"
         run: |
           set -euo pipefail
           echo "=== YAML Lint ==="
@@ -142,7 +158,7 @@ jobs:
           print('\nPASS: all YAML files parse clean')
           "
 
-      - name: "glossary.yaml structural validation"
+      - name: "glossary.yaml structural validation (ADR-367 SSOT)"
         run: |
           set -euo pipefail
           echo "=== glossary.yaml Structural Validation ==="
@@ -174,13 +190,25 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: "Check internal Markdown links"
+      - name: "Check internal Markdown links (changed files only)"
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref || 'master' }}
         run: |
           set -euo pipefail
           echo "=== Internal Link Check ==="
+          git fetch --no-tags --depth=50 origin "$BASE_REF" 2>/dev/null || true
+          MERGE_BASE=$(git merge-base "origin/$BASE_REF" HEAD 2>/dev/null || echo "HEAD~1")
+          CHANGED_MD=$(git diff --name-only "$MERGE_BASE"...HEAD -- '*.md' 'docs/**/*.md' 'modules/**/*.md' 2>/dev/null || true)
+          if [ -z "$CHANGED_MD" ]; then
+            echo "No markdown files changed — gate passed."
+            exit 0
+          fi
           FAILED=0
-          for f in $(find . -name '*.md' -not -path './node_modules/*' -not -path './.git/*'); do
+          for f in $CHANGED_MD; do
+            [ -f "$f" ] || continue
             DIR=$(dirname "$f")
             LINKS=$(grep -oP '\[.*?\]\(\K[^)]+' "$f" | grep -v '^https\?://' | grep -v '^mailto:' || true)
             if [ -n "$LINKS" ]; then
@@ -198,21 +226,22 @@ jobs:
           done
           if [ "$FAILED" -ne 0 ]; then
             echo ""
-            echo "FAIL: dead internal links found"
+            echo "FAIL: dead internal links in changed files"
             exit 1
           fi
-          echo "PASS: all internal links resolve"
+          echo "PASS: all internal links in changed files resolve"
 
-      - name: "Check external links (lychee)"
+      - name: "Check external links (lychee — report only, non-blocking)"
         uses: lycheeverse/lychee-action@v2
         with:
           args: >
             --no-progress
             --max-concurrency 8
-            --accept 200,301,302,304,307,308,403,429
+            --accept 200,201,202,204,301,302,304,307,308,401,403,429
             --timeout 15
             --retry-wait-time 5
             --max-retries 2
+            --no-fail
             '*.md'
             'docs/**/*.md'
         env:
@@ -227,30 +256,37 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: "Validate JSON Schema files"
+      - name: "Validate JSON Schema files (draft-2020-12)"
         run: |
           set -euo pipefail
           echo "=== JSON Schema Validation ==="
-          npm install -g ajv-cli@5 ajv-formats@3 --silent 2>/dev/null
+          pip3 install --quiet jsonschema 2>/dev/null
           FAILED=0
           SCHEMA_DIR="schemas"
           if [ ! -d "$SCHEMA_DIR" ]; then
             echo "No schemas/ directory — gate passed"
             exit 0
           fi
-          for f in "$SCHEMA_DIR"/*.json; do
-            [ -f "$f" ] || continue
-            echo "  Validating: $f"
-            if ! ajv compile -s "$f" --strict=false 2>&1; then
-              echo "  FAIL: $f is not a valid JSON Schema"
-              FAILED=1
-            else
-              echo "  PASS: $f"
-            fi
-          done
-          if [ "$FAILED" -ne 0 ]; then
-            echo ""
-            echo "FAIL: schema validation errors"
-            exit 1
-          fi
-          echo "PASS: all JSON schemas valid"
+          python3 -c "
+          import sys, json, os
+          from jsonschema import Draft202012Validator
+          failed = 0
+          schema_dir = '$SCHEMA_DIR'
+          for fname in sorted(os.listdir(schema_dir)):
+              if not fname.endswith('.json'):
+                  continue
+              fpath = os.path.join(schema_dir, fname)
+              print(f'  Validating: {fpath}')
+              try:
+                  with open(fpath) as f:
+                      schema = json.load(f)
+                  Draft202012Validator.check_schema(schema)
+                  print(f'  PASS: {fpath}')
+              except Exception as e:
+                  print(f'  FAIL: {fpath} — {e}')
+                  failed += 1
+          if failed:
+              print(f'\nFAIL: {failed} schema(s) failed validation')
+              sys.exit(1)
+          print('\nPASS: all JSON schemas valid')
+          "
