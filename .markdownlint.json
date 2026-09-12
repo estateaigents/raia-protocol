@@ -1,0 +1,12 @@
+{
+  "default": true,
+  "line-length": false,
+  "no-inline-html": false,
+  "no-duplicate-heading": { "siblings_only": true },
+  "first-line-heading": false,
+  "no-trailing-punctuation": false,
+  "no-blanks-blockquote": false,
+  "ol-prefix": { "style": "ordered" },
+  "no-emphasis-as-heading": false,
+  "single-trailing-newline": false
+}

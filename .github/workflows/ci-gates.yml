@@ -1,0 +1,256 @@
+name: CI Gates
+
+# Lean CI gates for raia-protocol (docs/schema repo).
+# glossary.yaml is the ADR-367 SSOT — YAML schema validity is the critical gate.
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened, edited]
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # ── GATE 1: Commit Identity ──────────────────────────────────────────
+  commit-identity:
+    name: "Commit Identity — author/committer email allowlist"
+    if: github.event_name == 'pull_request'
+    concurrency:
+      group: commit-identity-${{ github.ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Verify every commit has an allowed author/committer email"
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref || 'master' }}
+        run: |
+          set -euo pipefail
+          echo "=== Commit Identity Gate ==="
+          echo ""
+          MERGE_BASE=$(git merge-base "refs/remotes/origin/${BASE_REF}" HEAD 2>/dev/null)
+          echo "Merge-base: ${MERGE_BASE:0:10}"
+          echo ""
+          COMMITS=$(git rev-list --no-merges "${MERGE_BASE}..HEAD" 2>/dev/null || true)
+          COMMIT_COUNT=$(echo "$COMMITS" | grep -c '^' || echo 0)
+          if [ -z "$COMMITS" ] || [ "$COMMIT_COUNT" -eq 0 ]; then
+            echo "No non-merge commits in this PR — gate passed."
+            exit 0
+          fi
+          echo "Checking $COMMIT_COUNT commit(s)..."
+          ALLOWLIST_PATTERNS=("admin@estateaigents.com" "eugin.song@rentcityflat.com" "tft1996g@gmail.com" "30414285+rentlondonflat@users.noreply.github.com" "30791174+ftteh@users.noreply.github.com" "noreply@github.com" "@users.noreply.github.com" "noreply@anthropic.com")
+          BLOCKLIST_PATTERNS=("root@" "@gb-mnc-01" "ops@estateaigents.com" "architect@estateaigents.com" "agent@example.com" "@hermes.local")
+          FAILS=0
+          for COMMIT in $COMMITS; do
+            AUTHOR_EMAIL=$(git log -1 --format='%ae' "$COMMIT")
+            COMMITTER_EMAIL=$(git log -1 --format='%ce' "$COMMIT")
+            SUBJECT=$(git log -1 --format='%s' "$COMMIT")
+            SHORT_HASH="${COMMIT:0:8}"
+            echo ""
+            echo "  Commit $SHORT_HASH: $SUBJECT"
+            echo "    Author:    $AUTHOR_EMAIL"
+            echo "    Committer: $COMMITTER_EMAIL"
+            BLOCKED=false
+            for EMAIL in "$AUTHOR_EMAIL" "$COMMITTER_EMAIL"; do
+              for PATTERN in "${BLOCKLIST_PATTERNS[@]}"; do
+                if echo "$EMAIL" | grep -qiF "$PATTERN"; then
+                  echo "    BLOCKED: email '$EMAIL' matches blocked pattern '$PATTERN'"
+                  FAILS=$((FAILS + 1))
+                  BLOCKED=true
+                  break
+                fi
+              done
+              if [ "$BLOCKED" = true ]; then break; fi
+              ALLOWED=false
+              for PATTERN in "${ALLOWLIST_PATTERNS[@]}"; do
+                if echo "$EMAIL" | grep -qiF "$PATTERN"; then ALLOWED=true; break; fi
+              done
+              if [ "$ALLOWED" = false ]; then
+                echo "    REJECTED: email '$EMAIL' is not on the allowlist"
+                FAILS=$((FAILS + 1))
+              fi
+            done
+          done
+          echo ""
+          echo "──────────────────────────────────────────────────"
+          if [ "$FAILS" -gt 0 ]; then
+            echo "FAIL: $FAILS email violation(s) found"
+            exit 1
+          fi
+          echo "PASS: All $COMMIT_COUNT commit(s) have allowed author/committer emails"
+
+  # ── GATE 2: Lint (Markdown + YAML) ───────────────────────────────────
+  lint:
+    name: "Lint — Markdown + YAML"
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Markdown lint"
+        run: |
+          set -euo pipefail
+          echo "=== Markdown Lint ==="
+          npm install -g markdownlint-cli@0.41 --silent 2>/dev/null
+          FAILED=0
+          for f in $(find . -name '*.md' -not -path './node_modules/*' -not -path './.git/*'); do
+            if ! markdownlint "$f" 2>&1; then
+              echo "  FAIL: $f"
+              FAILED=1
+            fi
+          done
+          if [ "$FAILED" -ne 0 ]; then
+            echo ""
+            echo "FAIL: markdown lint errors found"
+            exit 1
+          fi
+          echo "PASS: all markdown files lint clean"
+
+      - name: "YAML lint (glossary.yaml is ADR-367 SSOT)"
+        run: |
+          set -euo pipefail
+          echo "=== YAML Lint ==="
+          python3 -c "
+          import sys, yaml, os
+          failed = 0
+          for root, dirs, files in os.walk('.'):
+              dirs[:] = [d for d in dirs if d not in ('.git', 'node_modules')]
+              for f in files:
+                  if f.endswith(('.yaml', '.yml')):
+                      path = os.path.join(root, f)
+                      try:
+                          with open(path) as fh:
+                              data = yaml.safe_load(fh)
+                          if data is None:
+                              print(f'  WARN: {path} is empty')
+                          else:
+                              print(f'  OK:   {path}')
+                      except yaml.YAMLError as e:
+                          print(f'  FAIL: {path} — {e}')
+                          failed += 1
+          if failed:
+              print(f'\nFAIL: {failed} YAML file(s) failed to parse')
+              sys.exit(1)
+          print('\nPASS: all YAML files parse clean')
+          "
+
+      - name: "glossary.yaml structural validation"
+        run: |
+          set -euo pipefail
+          echo "=== glossary.yaml Structural Validation ==="
+          python3 -c "
+          import sys, yaml
+          with open('glossary.yaml') as f:
+              entries = yaml.safe_load(f)
+          if not isinstance(entries, list):
+              print('FAIL: glossary.yaml must be a YAML list')
+              sys.exit(1)
+          print(f'Loaded {len(entries)} glossary entries')
+          required_fields = {'term', 'table', 'definition', 'display_en', 'forbidden', 'scope'}
+          for i, entry in enumerate(entries):
+              if not isinstance(entry, dict):
+                  print(f'FAIL: entry {i} is not a mapping')
+                  sys.exit(1)
+              missing = required_fields - set(entry.keys())
+              if missing:
+                  print(f'FAIL: entry {i} ({entry.get(\"term\", \"?\")}) missing fields: {missing}')
+                  sys.exit(1)
+          print(f'PASS: glossary.yaml structure valid ({len(entries)} entries)')
+          "
+
+  # ── GATE 3: Link Check ───────────────────────────────────────────────
+  link-check:
+    name: "Link Check — dead internal refs"
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Check internal Markdown links"
+        run: |
+          set -euo pipefail
+          echo "=== Internal Link Check ==="
+          FAILED=0
+          for f in $(find . -name '*.md' -not -path './node_modules/*' -not -path './.git/*'); do
+            DIR=$(dirname "$f")
+            LINKS=$(grep -oP '\[.*?\]\(\K[^)]+' "$f" | grep -v '^https\?://' | grep -v '^mailto:' || true)
+            if [ -n "$LINKS" ]; then
+              while IFS= read -r link; do
+                target="${link%%#*}"
+                if [ -z "$target" ]; then continue; fi
+                resolved="$DIR/$target"
+                resolved=$(echo "$resolved" | sed 's|/\./|/|g')
+                if [ ! -e "$resolved" ]; then
+                  echo "  DEAD: $f -> $target (resolved: $resolved) not found"
+                  FAILED=1
+                fi
+              done <<< "$LINKS"
+            fi
+          done
+          if [ "$FAILED" -ne 0 ]; then
+            echo ""
+            echo "FAIL: dead internal links found"
+            exit 1
+          fi
+          echo "PASS: all internal links resolve"
+
+      - name: "Check external links (lychee)"
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >
+            --no-progress
+            --max-concurrency 8
+            --accept 200,301,302,304,307,308,403,429
+            --timeout 15
+            --retry-wait-time 5
+            --max-retries 2
+            '*.md'
+            'docs/**/*.md'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── GATE 4: JSON Schema Validation ───────────────────────────────────
+  schema-validate:
+    name: "Schema Validate — JSON schemas in schemas/"
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Validate JSON Schema files"
+        run: |
+          set -euo pipefail
+          echo "=== JSON Schema Validation ==="
+          npm install -g ajv-cli@5 ajv-formats@3 --silent 2>/dev/null
+          FAILED=0
+          SCHEMA_DIR="schemas"
+          if [ ! -d "$SCHEMA_DIR" ]; then
+            echo "No schemas/ directory — gate passed"
+            exit 0
+          fi
+          for f in "$SCHEMA_DIR"/*.json; do
+            [ -f "$f" ] || continue
+            echo "  Validating: $f"
+            if ! ajv compile -s "$f" --strict=false 2>&1; then
+              echo "  FAIL: $f is not a valid JSON Schema"
+              FAILED=1
+            else
+              echo "  PASS: $f"
+            fi
+          done
+          if [ "$FAILED" -ne 0 ]; then
+            echo ""
+            echo "FAIL: schema validation errors"
+            exit 1
+          fi
+          echo "PASS: all JSON schemas valid"
