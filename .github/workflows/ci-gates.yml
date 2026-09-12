@@ -234,6 +234,7 @@ jobs:
       - name: "Check external links (lychee — report only, non-blocking)"
         uses: lycheeverse/lychee-action@v2
         with:
+          fail: false
           args: >
             --no-progress
             --max-concurrency 8
@@ -241,7 +242,6 @@ jobs:
             --timeout 15
             --retry-wait-time 5
             --max-retries 2
-            --no-fail
             '*.md'
             'docs/**/*.md'
         env:
