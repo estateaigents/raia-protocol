@@ -290,3 +290,33 @@ jobs:
               sys.exit(1)
           print('\nPASS: all JSON schemas valid')
           "
+
+      - name: "Validate samples against their schemas"
+        run: |
+          set -euo pipefail
+          echo "=== Sample Instance Validation ==="
+          pip3 install --quiet 'jsonschema[format-nongpl]' 2>/dev/null
+          python3 -c "
+          import sys, json, glob, os
+          from jsonschema import Draft202012Validator, FormatChecker
+          schemas = {os.path.basename(s)[:-5]: s for s in glob.glob('schemas/*.json')}
+          failed = 0
+          for fpath in sorted(glob.glob('samples/*.json')):
+              base = os.path.basename(fpath).replace('raia-', '', 1)
+              stem = max([k for k in schemas if base.startswith(k + '.') or base.startswith(k + '-')], key=len, default=None)
+              if not stem:
+                  print(f'  SKIP: {fpath} (no matching schemas/*.json)')
+                  continue
+              schema = json.load(open(schemas[stem]))
+              errors = list(Draft202012Validator(schema, format_checker=FormatChecker()).iter_errors(json.load(open(fpath))))
+              if errors:
+                  for e in errors:
+                      print(f'  FAIL: {fpath} - {e.message} at {list(e.path)}')
+                  failed += 1
+              else:
+                  print(f'  PASS: {fpath} (schemas/{stem}.json)')
+          if failed:
+              print(f'\nFAIL: {failed} sample(s) failed validation')
+              sys.exit(1)
+          print('\nPASS: all samples valid')
+          "

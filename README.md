@@ -1,5 +1,6 @@
 # RAIA Protocol
-### Real Estate Artificial Intelligence Agent Protocol
+
+## Real Estate Artificial Intelligence Agent Protocol
 
 > The open standard for AI agents to discover, verify, enquire about, and transact property.
 
@@ -42,6 +43,7 @@ Production implementations should use v0.2 only with registry-issued credentials
 | [agent.json](schemas/agent.json) | 0.1.0 | RAIA discovery card, compliance signals, MCP/A2A endpoints, consent endpoint, max data level |
 | [property.json](schemas/property.json) | 0.2.0 | Public property card for lettings and sales |
 | [enquiry.json](schemas/enquiry.json) | 0.2.0 | Transaction lifecycle plus L0/L1/L2/L3 data-level envelopes |
+| [viewing.json](schemas/viewing.json) | 0.1.0 | Viewing request — buyer agent proposes up to 3 slots, estate agent confirms one |
 
 Providers expose a RAIA card at:
 
