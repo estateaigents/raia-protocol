@@ -295,10 +295,10 @@ jobs:
         run: |
           set -euo pipefail
           echo "=== Sample Instance Validation ==="
-          pip3 install --quiet jsonschema 2>/dev/null
+          pip3 install --quiet 'jsonschema[format-nongpl]' 2>/dev/null
           python3 -c "
           import sys, json, glob, os
-          from jsonschema import Draft202012Validator
+          from jsonschema import Draft202012Validator, FormatChecker
           schemas = {os.path.basename(s)[:-5]: s for s in glob.glob('schemas/*.json')}
           failed = 0
           for fpath in sorted(glob.glob('samples/*.json')):
@@ -308,7 +308,7 @@ jobs:
                   print(f'  SKIP: {fpath} (no matching schemas/*.json)')
                   continue
               schema = json.load(open(schemas[stem]))
-              errors = list(Draft202012Validator(schema).iter_errors(json.load(open(fpath))))
+              errors = list(Draft202012Validator(schema, format_checker=FormatChecker()).iter_errors(json.load(open(fpath))))
               if errors:
                   for e in errors:
                       print(f'  FAIL: {fpath} - {e.message} at {list(e.path)}')

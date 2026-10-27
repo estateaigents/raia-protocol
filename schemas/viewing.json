@@ -116,7 +116,25 @@
         "properties": { "state": { "const": "CONFIRMED" } },
         "required": ["state"]
       },
-      "then": { "required": ["confirmed_slot", "confirmed_at"] }
+      "then": {
+        "required": ["confirmed_slot", "confirmed_at"],
+        "properties": {
+          "confirmed_slot": { "$ref": "#/$defs/TimeSlot" },
+          "confirmed_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "state": { "const": "PROPOSED" } },
+        "required": ["state"]
+      },
+      "then": {
+        "properties": {
+          "confirmed_slot": { "type": "null" },
+          "confirmed_at": { "type": "null" }
+        }
+      }
     }
   ],
   "$defs": {
@@ -154,6 +172,7 @@
     },
     "TimeSlot": {
       "type": "object",
+      "description": "end must be after start. JSON Schema cannot compare two values, so implementations MUST reject a slot whose end is not after its start, and a confirmed_slot that is not one of proposed_slots.",
       "required": ["start", "end"],
       "properties": {
         "start": { "type": "string", "format": "date-time" },
