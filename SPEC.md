@@ -1,4 +1,5 @@
 # RAIA Protocol Specification
+
 ## Version 0.2 - Implementer Release
 
 **Published:** May 2026
@@ -13,8 +14,9 @@
 RAIA (Real Estate Artificial Intelligence Agent) Protocol defines how AI agents discover, query, verify and transact property — lettings, sales and management — agent to agent, without human intervention at each step.
 
 Built on:
-- **Google A2A** (https://github.com/google-a2a/A2A) — agent-to-agent messaging and task routing
-- **Anthropic MCP** (https://github.com/modelcontextprotocol/servers) — model-to-tool connections
+
+- **Google A2A** (<https://github.com/google-a2a/A2A>) — agent-to-agent messaging and task routing
+- **Anthropic MCP** (<https://github.com/modelcontextprotocol/servers>) — model-to-tool connections
 
 RAIA sits on top of both as the property-specific schema and trust layer.
 
@@ -51,7 +53,7 @@ Buyer agents never expose end-client identity in protocol messages. Qualificatio
 
 Every RAIA-compliant estate agent exposes a discovery card at:
 
-```
+```text
 GET /.well-known/raia-agent.json
 ```
 
@@ -117,7 +119,7 @@ Protocol does not mandate specific regulatory bodies. Each jurisdictional module
 
 ### Task State Machine
 
-```
+```text
 IDENTIFIED
   → DATA_GATHERING
     → AWAITING_HUMAN_ASSERTION  (mandatory human approval gate)
@@ -129,17 +131,21 @@ IDENTIFIED
 ```
 
 `AWAITING_HUMAN_ASSERTION` is mandatory for:
+
 - Offer acceptance (landlord or vendor must approve)
 - Fee split finalisation (both agents must explicitly approve)
 - AI confidence score below threshold
 
 ### Viewing request
-Buyer agent proposes up to three slots. Estate agent confirms one.
+
+Buyer agent proposes up to three slots. Estate agent confirms one. See [schemas/viewing.json](schemas/viewing.json).
 
 ### Offer
+
 Structured offer with amount, term, start date, expiry window. Routes to human for approval. Counter-offers follow the same structure.
 
 ### Fee split
+
 Negotiable between agents — no default percentage defined by the protocol. Both agents must explicitly approve. Finalised splits are immutable.
 
 ---
@@ -170,13 +176,14 @@ The reference MCP server is published in [mcp/](mcp/). It runs against stub data
 
 ## 9. Schemas (v0.2)
 
-All three schemas are now published.
+All four schemas are now published. `viewing.json` was added within v0.2 and is additive — it does not change `raia_version` on existing messages.
 
 | Schema | Version | Description |
 |---|---|---|
 | `schemas/agent.json` | 0.1.0 | Agent Card — identity, jurisdiction, compliance signals, MCP/A2A endpoints |
 | `schemas/property.json` | 0.2.0 | Property Card — lettings and sales, all queryable fields |
 | `schemas/enquiry.json` | 0.2.0 | Enquiry - transaction lifecycle plus L0/L1/L2/L3 data-level envelopes |
+| `schemas/viewing.json` | 0.1.0 | Viewing request - buyer agent proposes up to 3 slots, estate agent confirms one |
 
 See [schemas/README.md](schemas/README.md) for field-level summaries and breaking change notes. Example RAIA agent card: [.well-known/raia-agent.json](.well-known/raia-agent.json).
 

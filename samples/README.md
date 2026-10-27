@@ -54,3 +54,5 @@ On macOS/Linux, use `export RAIA_REGISTRY_BASE_URL=...` instead of `$env:...`.
 
 - [raia-agent.example.json](raia-agent.example.json) - public `/.well-known/raia-agent.json`
 - [enquiry-l0-l3.example.json](enquiry-l0-l3.example.json) - full L0-L3 enquiry envelope
+- [viewing.example.json](viewing.example.json) - viewing request with three proposed slots (`PROPOSED`)
+- [viewing-confirmed.example.json](viewing-confirmed.example.json) - estate agent confirms one slot (`CONFIRMED`)
