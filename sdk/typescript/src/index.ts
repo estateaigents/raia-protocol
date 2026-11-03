@@ -36,6 +36,8 @@ export interface SearchInput {
   min_floor_area_sqm?: number;
   term_months?: number;
   limit?: number;
+  /** Skip this many matching listings before returning a page. 0-10000, default 0. */
+  offset?: number;
 }
 
 export interface PropertyCard {

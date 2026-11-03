@@ -1,11 +1,25 @@
 # RAIA Protocol Specification
 
-## Version 0.2 - Implementer Release
+## Version 0.3 - Additive Release
+
+**Published:** November 2026
+**Trademark:** UK00003359082 (Classes 36 + 42)
+**License:** MIT
+**Status:** Additive minor release — search pagination plus a totals envelope. v0.2 stays valid and is superseded in part by this release; no key is renamed, removed, or made required.
+
+Changes in v0.3:
+
+- Search accepts an optional `offset` (integer 0-10000, default 0) alongside `limit` (1-50, default 10). See [§4](#4-query).
+- The A2A search result envelope is exactly `{properties, total, count, offset, limit}`; `properties` remains the canonical and only listing key. See [§4.1](#41-search-response-envelope).
+- Results are ordered ascending by `raia_id`, so pages are disjoint and stable. Clients end a crawl on `count < limit`.
+- `schemas/property.json` gains no constraint change: its `raia_version` *default* moves from `"0.2"` to `"0.3"`. It is a default, not an enum — v0.2 cards remain valid.
+
+## Version 0.2 - Implementer Release (superseded in part)
 
 **Published:** May 2026
 **Trademark:** UK00003359082 (Classes 36 + 42)
 **License:** MIT
-**Status:** Implementer release. Core schemas, reference MCP server, client SDKs, and consent-token contract are published. Breaking changes remain possible before v1.0 certification.
+**Status:** Implementer release. Core schemas, reference MCP server, client SDKs, and consent-token contract are published. Breaking changes remain possible before v1.0 certification. Superseded in part by v0.3: the query parameters in §4 and the search response envelope in §4.1 supersede the v0.2 descriptions.
 
 ---
 
@@ -100,8 +114,40 @@ Buyer agents submit structured search requests to estate agent MCP endpoints via
 | `epc_min_rating` | enum | both | Minimum EPC letter rating. e.g. `C` returns C, B, and A. |
 | `min_floor_area_sqm` | number | both | Minimum floor area in square metres. |
 | `term_months` | integer | lettings | Preferred minimum tenancy length in months. |
+| `limit` | integer | both | Page size — maximum number of cards to return. 1-50. Default 10. Optional. |
+| `offset` | integer | both | Pagination — skip that many matching listings before returning a page. 0-10000. Default 0. Optional. |
 
 Responses return property cards (`schemas/property.json`) at suburb/district level. Full address is only released when session state reaches COMMITTED.
+
+### 4.1 Search response envelope
+
+The A2A `search_properties` result envelope carries **exactly five keys**, in this order, and no others:
+
+```json
+{
+  "properties": ["<PropertyCard>", "..."],
+  "total": 281,
+  "count": 50,
+  "offset": 0,
+  "limit": 50
+}
+```
+
+| Key | Meaning |
+|---|---|
+| `properties` | The page of property cards. Canonical and the **only** listing key — there is no `listings` alias in RAIA. |
+| `total` | Number of matching cards found inside the bounded scan window. It **may under-count**: the window is 1000 rows, deterministically ordered by `public_ref`, so a corpus larger than that is measured only to its edge. Treat `total` as a lower bound, not a guaranteed corpus size. |
+| `count` | `properties.length` — cards returned in this page. |
+| `offset` | The effective offset for this page (after defaulting). |
+| `limit` | The effective limit for this page (after defaulting). |
+
+Pagination and crawl rules:
+
+1. Results are ordered **ascending by `raia_id`** before slicing. That total order is what makes pages disjoint and stable across calls; without it a crawl can duplicate or skip rows.
+2. Page *n* is `matched[offset : offset + limit]`. An `offset` past the end returns an empty `properties` array with `total` unchanged.
+3. `count === properties.length` and `count <= limit` always hold.
+4. **End-of-crawl rule: a client stops when `count < limit`.** Never terminate on `offset >= total` alone — `total` is scan-bounded and can under-count, which would end a crawl early and silently drop listings.
+5. The MCP `raia_search` tool keeps returning its own `{count, query, properties}` object; `offset` is accepted and honoured there, but the five-key envelope above is the A2A search result. The REST v0.2 search route keeps returning a bare `PropertyCard[]`.
 
 ---
 
@@ -161,7 +207,7 @@ No PII in search or property card responses. Jurisdiction scoping mandatory on e
 
 ---
 
-## 8. MCP Tools (v0.2)
+## 8. MCP Tools (v0.3)
 
 | Tool | Description |
 |---|---|
@@ -174,14 +220,16 @@ The reference MCP server is published in [mcp/](mcp/). It runs against stub data
 
 ---
 
-## 9. Schemas (v0.2)
+## 9. Schemas (v0.3)
 
 All four schemas are now published. `viewing.json` was added within v0.2 and is additive — it does not change `raia_version` on existing messages.
+
+v0.3 changes no schema constraint. `schemas/property.json` `raia_version` *defaults* to `"0.3"` (it is a default, not an enum: cards issued under v0.2 remain valid), and the search parameters in §4 gain `offset` — no schema field is added, renamed, or made required.
 
 | Schema | Version | Description |
 |---|---|---|
 | `schemas/agent.json` | 0.1.0 | Agent Card — identity, jurisdiction, compliance signals, MCP/A2A endpoints |
-| `schemas/property.json` | 0.2.0 | Property Card — lettings and sales, all queryable fields |
+| `schemas/property.json` | 0.2.0 | Property Card — lettings and sales, all queryable fields. `raia_version` default `"0.3"` as of v0.3 |
 | `schemas/enquiry.json` | 0.2.0 | Enquiry - transaction lifecycle plus L0/L1/L2/L3 data-level envelopes |
 | `schemas/viewing.json` | 0.1.0 | Viewing request - buyer agent proposes up to 3 slots, estate agent confirms one |
 
