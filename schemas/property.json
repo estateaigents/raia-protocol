@@ -24,8 +24,8 @@
     },
     "raia_version": {
       "type": "string",
-      "description": "RAIA Protocol version that generated this card.",
-      "default": "0.2"
+      "description": "RAIA Protocol version that generated this card. Default is the current published minor; v0.2 cards remain valid.",
+      "default": "0.3"
     },
     "rebuilt_at": {
       "type": "string",

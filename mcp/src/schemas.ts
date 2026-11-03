@@ -313,6 +313,15 @@ export const SearchInputSchema = z.object({
     .max(50)
     .default(10)
     .describe("Maximum number of results to return. Default 10, max 50."),
+  offset: z
+    .number()
+    .int()
+    .min(0)
+    .max(10000)
+    .default(0)
+    .describe(
+      "Number of matching listings to skip before returning a page. Default 0, max 10000."
+    ),
 });
 
 export type SearchInput = z.infer<typeof SearchInputSchema>;

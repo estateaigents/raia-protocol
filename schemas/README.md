@@ -1,6 +1,6 @@
 # RAIA Protocol Schemas
 
-Published with v0.2 (May 2026). Field definitions in prose are in [SPEC.md](../SPEC.md).
+Published with v0.3 (November 2026). Field definitions in prose are in [SPEC.md](../SPEC.md). The `property.json` `raia_version` default is now `"0.3"` (a default, not an enum — v0.2 cards stay valid).
 
 ## Published Schemas
 

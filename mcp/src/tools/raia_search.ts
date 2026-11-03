@@ -36,6 +36,7 @@ export function registerSearchTool(
       min_floor_area_sqm: SearchInputSchema.shape.min_floor_area_sqm,
       term_months: SearchInputSchema.shape.term_months,
       limit: SearchInputSchema.shape.limit,
+      offset: SearchInputSchema.shape.offset,
     },
     async (params) => {
       const parsed = SearchInputSchema.safeParse(params);
