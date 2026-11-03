@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12",
+  "$id": "https://estateaigents.org/schemas/viewing.json",
+  "title": "RAIA Viewing Request",
+  "description": "Viewing request and confirmation for a RAIA property. The buyer agent proposes up to three slots; the estate agent confirms one. A viewing request advances the parent enquiry (see enquiry.json) from IDENTIFIED to DATA_GATHERING, and to AWAITING_HUMAN_ASSERTION where the estate agent's policy requires human approval before the slot is confirmed.",
+  "version": "0.1.0",
+  "type": "object",
+  "required": [
+    "viewing_id",
+    "raia_version",
+    "enquiry_id",
+    "property_raia_id",
+    "transaction_type",
+    "jurisdiction",
+    "buyer_agent",
+    "estate_agent",
+    "state",
+    "enquiry_state",
+    "proposed_slots",
+    "created_at"
+  ],
+  "properties": {
+    "viewing_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID v4 assigned by the estate agent's system when the viewing request is created. Immutable."
+    },
+    "raia_version": {
+      "type": "string",
+      "description": "RAIA Protocol version. Must match the parent enquiry's raia_version. Format: MAJOR.MINOR."
+    },
+    "enquiry_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The enquiry this viewing request belongs to. Viewing requests never exist outside an enquiry."
+    },
+    "property_raia_id": {
+      "type": "string",
+      "pattern": "^prop-[a-z]{2}-[a-z0-9]+-[0-9]+$"
+    },
+    "transaction_type": {
+      "type": "string",
+      "enum": ["LETTINGS", "SALES"]
+    },
+    "jurisdiction": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$",
+      "description": "Jurisdiction (ISO 3166-1 alpha-2) of the property."
+    },
+    "buyer_agent": {
+      "$ref": "#/$defs/AgentRef"
+    },
+    "estate_agent": {
+      "$ref": "#/$defs/AgentRef"
+    },
+    "state": {
+      "$ref": "#/$defs/ViewingState"
+    },
+    "enquiry_state": {
+      "$ref": "#/$defs/ViewingEnquiryState"
+    },
+    "viewing_type": {
+      "type": "string",
+      "enum": ["IN_PERSON", "VIRTUAL"],
+      "default": "IN_PERSON"
+    },
+    "proposed_slots": {
+      "type": "array",
+      "description": "Up to three slots proposed by the buyer agent.",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": { "$ref": "#/$defs/TimeSlot" }
+    },
+    "confirmed_slot": {
+      "description": "Exactly one of proposed_slots, chosen by the estate agent. Required when state is CONFIRMED.",
+      "oneOf": [{ "$ref": "#/$defs/TimeSlot" }, { "type": "null" }]
+    },
+    "confirmed_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "When the estate agent confirmed the slot. Required when state is CONFIRMED."
+    },
+    "decline_reason": {
+      "type": ["string", "null"],
+      "maxLength": 500,
+      "description": "Why the request was declined or cancelled. No personal data."
+    },
+    "notes": {
+      "type": ["string", "null"],
+      "maxLength": 500,
+      "description": "Access or logistics notes. Never carry L1+ personal data here."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "After this time an unconfirmed request moves to EXPIRED."
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional implementation-specific metadata. Never use metadata to carry L1+ personal data.",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": { "state": { "const": "CONFIRMED" } },
+        "required": ["state"]
+      },
+      "then": {
+        "required": ["confirmed_slot", "confirmed_at"],
+        "properties": {
+          "confirmed_slot": { "$ref": "#/$defs/TimeSlot" },
+          "confirmed_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "state": { "const": "PROPOSED" } },
+        "required": ["state"]
+      },
+      "then": {
+        "properties": {
+          "confirmed_slot": { "type": "null" },
+          "confirmed_at": { "type": "null" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "ViewingState": {
+      "type": "string",
+      "enum": [
+        "PROPOSED",
+        "CONFIRMED",
+        "DECLINED",
+        "CANCELLED",
+        "COMPLETED",
+        "EXPIRED"
+      ]
+    },
+    "ViewingEnquiryState": {
+      "type": "string",
+      "enum": ["IDENTIFIED", "DATA_GATHERING", "AWAITING_HUMAN_ASSERTION"],
+      "description": "The parent enquiry's state at the time of this message. Mirrors the enquiry.json state machine."
+    },
+    "AgentRef": {
+      "type": "object",
+      "required": ["raia_id"],
+      "properties": {
+        "raia_id": {
+          "type": "string",
+          "pattern": "^org-[a-z]{2}-[a-z0-9]+$"
+        },
+        "name": { "type": "string" },
+        "agent_card_url": {
+          "type": ["string", "null"],
+          "format": "uri"
+        }
+      },
+      "additionalProperties": false
+    },
+    "TimeSlot": {
+      "type": "object",
+      "description": "end must be after start. JSON Schema cannot compare two values, so implementations MUST reject a slot whose end is not after its start, and a confirmed_slot that is not one of proposed_slots.",
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "type": "string", "format": "date-time" },
+        "end": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    }
+  }
+}
