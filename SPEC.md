@@ -13,6 +13,7 @@ Changes in v0.3:
 - The A2A search result envelope is exactly `{properties, total, count, offset, limit}`; `properties` remains the canonical and only listing key. See [§4.1](#41-search-response-envelope).
 - Results are ordered ascending by `raia_id`, so pages are disjoint and stable. Clients end a crawl on `count < limit`.
 - `schemas/property.json` gains no constraint change: its `raia_version` *default* moves from `"0.2"` to `"0.3"`. It is a default, not an enum — v0.2 cards remain valid.
+- Discovery path corrected: the canonical RAIA agent card is `/.well-known/raia.json`. `/.well-known/raia-agent.json` is a deprecated alias that permanently redirects (HTTP 308) to it (ADR-438 D2). No consumer breaks; a crawler still fetching the legacy path lands on the canonical card. See [§3](#3-discover).
 
 ## Version 0.2 - Implementer Release (superseded in part)
 
@@ -68,10 +69,12 @@ Buyer agents never expose end-client identity in protocol messages. Qualificatio
 Every RAIA-compliant estate agent exposes a discovery card at:
 
 ```text
-GET /.well-known/raia-agent.json
+GET /.well-known/raia.json
 ```
 
 The RAIA agent card declares identity, jurisdiction, UN/LOCODE coverage, markets, compliance signals, max permitted data level, MCP endpoint, consent endpoint, and A2A endpoint.
+
+The legacy path `/.well-known/raia-agent.json` is a **permanent redirect** to `/.well-known/raia.json` (HTTP 308) and is a **deprecated alias** only (ADR-438 D2). Implementers MUST publish and advertise `raia.json`; an agent MAY keep the legacy path answering solely as that redirect so that crawlers coded against the pre-ADR-438 path still land on the canonical card.
 
 Registry of verified agent cards: `estateaigents.org/registry`
 
@@ -81,8 +84,10 @@ RAIA and Google A2A cards coexist.
 
 | Card | Path | Purpose |
 |---|---|---|
-| RAIA Agent Card | `/.well-known/raia-agent.json` | Property/compliance metadata, RAIA registry status, MCP endpoint, consent endpoint, data-level credential summary |
-| Google A2A Agent Card | `/.well-known/agent.json` | Native A2A discovery, skills, messaging, and task-routing metadata |
+| RAIA Agent Card | `/.well-known/raia.json` | Property/compliance metadata, RAIA registry status, MCP endpoint, consent endpoint, data-level credential summary |
+| Google A2A Agent Card | `/.well-known/agent-card.json` (legacy alias `/.well-known/agent.json`) | Native A2A discovery, skills, messaging, and task-routing metadata |
+
+`/.well-known/raia-agent.json` is not a third card: it is a deprecated alias that permanently redirects (HTTP 308) to `/.well-known/raia.json` (ADR-438 D2). `/.well-known/agent.json` likewise remains only as an alias of the canonical A2A path `/.well-known/agent-card.json`.
 
 The RAIA card is not a replacement for the native A2A card. It links to the native card with `a2a_agent_card_url` and to the A2A service with `a2a_endpoint`. A2A messages carrying RAIA payloads MUST use the schemas in `/schemas/` unchanged.
 
@@ -233,7 +238,7 @@ v0.3 changes no schema constraint. `schemas/property.json` `raia_version` *defau
 | `schemas/enquiry.json` | 0.2.0 | Enquiry - transaction lifecycle plus L0/L1/L2/L3 data-level envelopes |
 | `schemas/viewing.json` | 0.1.0 | Viewing request - buyer agent proposes up to 3 slots, estate agent confirms one |
 
-See [schemas/README.md](schemas/README.md) for field-level summaries and breaking change notes. Example RAIA agent card: [.well-known/raia-agent.json](.well-known/raia-agent.json).
+See [schemas/README.md](schemas/README.md) for field-level summaries and breaking change notes. Example RAIA agent card (canonical discovery path): [/.well-known/raia.json](.well-known/raia.json). The same example is also kept under the deprecated alias name at [.well-known/raia-agent.json](.well-known/raia-agent.json), which redirects to the canonical path (ADR-438 D2).
 
 ---
 
