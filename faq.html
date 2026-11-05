@@ -619,7 +619,7 @@
     <div class="faq-item">
       <div class="faq-question">What is an Agent Card in RAIA?</div>
       <div class="faq-answer">
-        <p>An Agent Card is a machine-readable file published at <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">/.well-known/raia-agent.json</code> on any RAIA-compliant agent's domain.</p>
+        <p>An Agent Card is a machine-readable file published at <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">/.well-known/raia.json</code> on any RAIA-compliant agent's domain. (The earlier <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">/.well-known/raia-agent.json</code> path is a deprecated alias that permanently redirects to it.)</p>
         <p>It tells other AI agents: who this agent is (name, jurisdiction, licence number); what they offer (lettings, sales, management); what compliance signals they carry (ARLA, CMP, Ombudsman scheme); how to query their portfolio (MCP endpoint); what languages and jurisdictions they support.</p>
         <p>Any AI assistant that reads RAIA Agent Cards can discover every participating agent's portfolio without going through a portal.</p>
       </div>
@@ -752,7 +752,7 @@
     <div class="faq-item">
       <div class="faq-question">How do I implement RAIA?</div>
       <div class="faq-answer">
-        <p>The simplest implementation is publishing an Agent Card at <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">/.well-known/raia-agent.json</code> on your website.</p>
+        <p>The simplest implementation is publishing an Agent Card at <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;">/.well-known/raia.json</code> on your website.</p>
         <p>This tells AI agents who you are, what you offer, what jurisdictions you operate in, and how to query your portfolio.</p>
         <p>For agents on EstateAigents.com, this is handled automatically. Your Agent Card is generated and maintained by the platform.</p>
         <p>For technical implementation on your own systems, the specification is at <a href="https://github.com/estateaigents/raia-protocol" target="_blank">github.com/estateaigents/raia-protocol</a>. The SDK publishes Q3 2026.</p>

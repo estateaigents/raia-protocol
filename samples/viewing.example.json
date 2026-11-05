@@ -8,12 +8,12 @@
   "buyer_agent": {
     "raia_id": "org-gb-buyeragent",
     "name": "Sample Buyer Agent",
-    "agent_card_url": "https://buyeragent.example/.well-known/raia-agent.json"
+    "agent_card_url": "https://buyeragent.example/.well-known/raia.json"
   },
   "estate_agent": {
     "raia_id": "org-gb-example",
     "name": "Example Estates Ltd",
-    "agent_card_url": "https://estates.example/.well-known/raia-agent.json"
+    "agent_card_url": "https://estates.example/.well-known/raia.json"
   },
   "state": "PROPOSED",
   "enquiry_state": "DATA_GATHERING",

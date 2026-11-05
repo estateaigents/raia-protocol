@@ -41,7 +41,7 @@ const properties = [
     raia_id: "prop-gb-example-000001",
     raia_version: "0.2",
     rebuilt_at: new Date().toISOString(),
-    agent_card_url: "http://localhost:8787/.well-known/raia-agent.json",
+    agent_card_url: "http://localhost:8787/.well-known/raia.json",
     transaction_type: "LETTINGS",
     status: "AVAILABLE",
     property_type: "FLAT",
@@ -89,7 +89,7 @@ const properties = [
     raia_id: "prop-gb-example-000002",
     raia_version: "0.2",
     rebuilt_at: new Date().toISOString(),
-    agent_card_url: "http://localhost:8787/.well-known/raia-agent.json",
+    agent_card_url: "http://localhost:8787/.well-known/raia.json",
     transaction_type: "SALES",
     status: "AVAILABLE",
     property_type: "TERRACED",
@@ -157,6 +157,12 @@ const server = createServer(async (request, response) => {
     if (request.method === "OPTIONS") return json(response, 204, {});
 
     if (request.method === "GET" && url.pathname === "/.well-known/raia-agent.json") {
+      // Deprecated alias: permanent redirect to the canonical card path (ADR-438 D2).
+      response.writeHead(308, { location: "/.well-known/raia.json" });
+      return response.end();
+    }
+
+    if (request.method === "GET" && url.pathname === "/.well-known/raia.json") {
       return json(response, 200, {
         raia_id: agent.raia_id,
         raia_version: "0.2",

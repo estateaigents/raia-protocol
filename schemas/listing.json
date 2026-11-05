@@ -223,7 +223,7 @@
     "agent_card_url": {
       "type": "string",
       "format": "uri",
-      "description": "Absolute URL of the listing agent's RAIA agent card (typically https://{host}/.well-known/raia-agent.json)."
+      "description": "Absolute URL of the listing agent's RAIA agent card (typically https://{host}/.well-known/raia.json)."
     },
     "headline": {
       "type": "string",
@@ -429,7 +429,7 @@
     {
       "raia_id": "prop-gb-rlf-000142",
       "agent_id": "org-gb-rlf",
-      "agent_card_url": "https://app.estateaigents.com/.well-known/raia-agent.json",
+      "agent_card_url": "https://app.estateaigents.com/.well-known/raia.json",
       "headline": "2-bed flat, Bethnal Green E2",
       "marketing_description": "Bright second-floor flat in a quiet Victorian conversion, two minutes from Bethnal Green Underground. Original sash windows, refurbished kitchen, and a south-facing reception room. Communal garden to the rear.",
       "location": { "lat": 51.5269, "lon": -0.0554 },

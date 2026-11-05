@@ -66,7 +66,7 @@ Every listing carries an optional `provenance` object set by the receiving aggre
 
 ### 6. Capabilities discovery on the agent card
 
-The `capabilities` array on the agent card lets the agency declare which protocol verbs it supports. Consumer agents now know — from a single fetch of `/.well-known/raia-agent.json` — whether the agent can take an enquiry, issue a delegation token, accept an offer, etc.
+The `capabilities` array on the agent card lets the agency declare which protocol verbs it supports. Consumer agents now know — from a single fetch of `/.well-known/raia.json` — whether the agent can take an enquiry, issue a delegation token, accept an offer, etc.
 
 ---
 
@@ -89,7 +89,7 @@ The canonical shape of a property listing in the RAIA Protocol. Used by:
 
 ### `schemas/agent-card.json`
 
-The discovery document published at `/.well-known/raia-agent.json`. Required at every RAIA-compliant agency's primary domain.
+The discovery document published at `/.well-known/raia.json`. Required at every RAIA-compliant agency's primary domain. The pre-ADR-438 name `/.well-known/raia-agent.json` remains only as a deprecated alias that permanently redirects (HTTP 308) to the canonical path (ADR-438 D2).
 
 **Required fields:** `schema_version`, `agent_id`, `name`, `endpoints.search`, `endpoints.property`.
 
