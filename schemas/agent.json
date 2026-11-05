@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12",
   "$id": "https://estateaigents.org/schemas/agent.json",
   "title": "RAIA Agent Card",
-  "description": "Discovery card for RAIA-compliant estate agents. Every RAIA participant exposes this document at /.well-known/raia-agent.json on their domain. The estateaigents.org registry indexes verified cards.",
+  "description": "Discovery card for RAIA-compliant estate agents. Every RAIA participant exposes this document at /.well-known/raia.json on their domain (the pre-ADR-438 path /.well-known/raia-agent.json is a deprecated alias that permanently redirects, HTTP 308, to it). The estateaigents.org registry indexes verified cards.",
   "version": "0.1.0",
   "type": "object",
   "required": [
@@ -288,10 +288,10 @@
     }
   },
   "x-raia-notes": {
-    "discovery": "Buyer agents discover estate agents by querying estateaigents.org/registry or by fetching /.well-known/raia-agent.json directly from a known agent domain.",
-    "a2a_interop": "RAIA cards coexist with native Google A2A cards. Publish /.well-known/raia-agent.json for RAIA-specific property/compliance metadata and /.well-known/agent.json for native A2A metadata. Link the native A2A card from a2a_agent_card_url and the A2A endpoint from a2a_endpoint.",
+    "discovery": "Buyer agents discover estate agents by querying estateaigents.org/registry or by fetching /.well-known/raia.json directly from a known agent domain. The pre-ADR-438 path /.well-known/raia-agent.json is a deprecated alias that 308-redirects to it.",
+    "a2a_interop": "RAIA cards coexist with native Google A2A cards. Publish /.well-known/raia.json for RAIA-specific property/compliance metadata and /.well-known/agent.json for native A2A metadata. Link the native A2A card from a2a_agent_card_url and the A2A endpoint from a2a_endpoint.",
     "verification": "The registry verifies compliance signals against the bodies listed in each jurisdiction's module. Verification is manual in v0.x. Automated verification is planned for v1.0.",
     "trust_tiers": "verified=true agents can list properties and receive enquiries. verified=false agents can query the registry but cannot list or transact.",
-    "reference_implementation": "https://app.estateaigents.com/.well-known/raia-agent.json"
+    "reference_implementation": "https://app.estateaigents.com/.well-known/raia.json"
   }
 }

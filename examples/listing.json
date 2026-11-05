@@ -1,7 +1,7 @@
 {
   "raia_id": "prop-gb-small-london-lettings-000017",
   "agent_id": "org-gb-small-london-lettings",
-  "agent_card_url": "https://smalllondonlettings.co.uk/.well-known/raia-agent.json",
+  "agent_card_url": "https://smalllondonlettings.co.uk/.well-known/raia.json",
   "headline": "2-bed flat, Bethnal Green E2",
   "marketing_description": "Bright second-floor flat in a quiet Victorian conversion, two minutes from Bethnal Green Underground. Original sash windows, refurbished kitchen, and a south-facing reception room. Communal garden to the rear.\n\nGas central heating, double glazing throughout, and a long lease. Ideal for a couple or sharers.",
   "location": { "lat": 51.5269, "lon": -0.0554 },

@@ -48,10 +48,12 @@ Production implementations should use v0.2 only with registry-issued credentials
 Providers expose a RAIA card at:
 
 ```text
-GET /.well-known/raia-agent.json
+GET /.well-known/raia.json
 ```
 
-A copy-pasteable example is available at [.well-known/raia-agent.json](.well-known/raia-agent.json).
+A copy-pasteable example is available at [.well-known/raia.json](.well-known/raia.json).
+
+The legacy path `/.well-known/raia-agent.json` is a **deprecated alias**: it permanently redirects (HTTP 308) to `/.well-known/raia.json` (ADR-438 D2). Publish and advertise `raia.json`; keep the legacy path answering only as that redirect if crawlers coded against it still need to land.
 
 ## Reference Implementations
 
@@ -77,7 +79,7 @@ Jurisdictional modules define accepted compliance bodies, local lifecycle mappin
 
 RAIA does not replace Google A2A agent cards. A provider may publish both:
 
-- `/.well-known/raia-agent.json` for RAIA-specific property, compliance, consent, MCP, and data-level metadata
+- `/.well-known/raia.json` for RAIA-specific property, compliance, consent, MCP, and data-level metadata (the pre-ADR-438 `/.well-known/raia-agent.json` path is a deprecated alias that 308-redirects here)
 - `/.well-known/agent.json` for the native Google A2A agent card
 
 The RAIA card links to the native A2A card with `a2a_agent_card_url` and to the A2A service with `a2a_endpoint`.

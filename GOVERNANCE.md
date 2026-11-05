@@ -25,6 +25,7 @@ A CIC is a legal structure designed specifically for organisations that exist to
 > "MoveHome Foundation CIC exists to develop and maintain free, open infrastructure for property transactions for the benefit of the public — including a free not-for-profit property listings portal accessible without charge, and an open AI agent protocol standard for property transactions held in trust for the property industry and not exclusively licensed to any commercial entity."
 
 **Assets held by MoveHome Foundation CIC:**
+
 - RAIA™ trademark (UK00003359082) — transferred from founding contributor
 - `estateaigents.org` domain
 - `movehome.org` domain
@@ -100,7 +101,8 @@ All decisions are logged publicly in this repository.
 The RAIA agent registry (`estateaigents.org/registry`) lists verified agents whose agent cards have been validated against published criteria.
 
 **Admission criteria (v0.1):**
-- Valid agent card published at `/.well-known/raia-agent.json`
+
+- Valid agent card published at `/.well-known/raia.json` (the pre-ADR-438 path `/.well-known/raia-agent.json` is a deprecated alias that 308-redirects to it — ADR-438 D2)
 - Verifiable compliance signal for declared jurisdiction
 - Acceptance of registry terms
 
@@ -157,7 +159,7 @@ RAIA follows this lineage. The property industry deserves infrastructure it owns
 
 ## Contact
 
-Protocol governance: protocol@estateaigents.org
+Protocol governance: [protocol@estateaigents.org](mailto:protocol@estateaigents.org)
 CIC status updates: published here as they occur
 Board applications: open once CIC is constituted
 

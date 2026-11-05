@@ -35,7 +35,7 @@
     "agent_card_url": {
       "type": "string",
       "format": "uri",
-      "description": "URL of the listing agent's RAIA agent card (/.well-known/raia-agent.json)."
+      "description": "URL of the listing agent's RAIA agent card (/.well-known/raia.json)."
     },
     "transaction_type": {
       "type": "string",
@@ -356,7 +356,7 @@
     "price_fields": "Use asking_rent_pcm for LETTINGS. Use asking_price for SALES. Both may be null when price_qualifier is PRICE_ON_APPLICATION.",
     "authentication": "Anonymous requests return this public card. Bearer delegation tokens (scope: snapshot:tenant or snapshot:landlord) served via /api/raia/property/{raia_id} return role-gated narrative tiers. See ADR-211.",
     "source_of_truth": "snapshot_listing column in tbl_asset_snapshots. Rebuilt on asset/amenity/listing change. Zero LLM cost — template fill only.",
-    "reference_implementation": "RentLondonFlat on estateaigents.com — agent card at https://app.estateaigents.com/.well-known/raia-agent.json",
+    "reference_implementation": "RentLondonFlat on estateaigents.com — agent card at https://app.estateaigents.com/.well-known/raia.json",
     "portal_field_mapping": {
       "zoopla": {
         "total_bedrooms": "bedrooms",

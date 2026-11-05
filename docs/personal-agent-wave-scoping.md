@@ -1,4 +1,5 @@
 # Personal AI Agent Wave: Scoping Document
+
 ## Meta Muse & Google Gemini Spark — Reachability Assessment for RAIA Protocol
 
 **Published:** September 2026
@@ -17,6 +18,7 @@ The "personal buyer agent" persona predicted in the RAIA A2A Protocol GTM whitep
 On **September 8, 2026**, Meta introduced [Muse](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent), a secure, private personal AI agent that proactively helps with people's goals and suggests ideas. Muse is a product of [Meta Superintelligence Labs](https://www.wired.com/story/mark-zuckerberg-welcomes-superintelligence-team/), the AI unit CEO Mark Zuckerberg formed to compete with OpenAI and Anthropic.
 
 **Availability (as of September 2026):**
+
 - US-only, age 18+
 - iOS and Android via the Muse app
 - Web at [muse.ai](https://muse.ai)
@@ -35,6 +37,7 @@ Muse introduces a novel dual-agent architecture running inside a dedicated per-u
 | **Confidential VM** (promised) | Future architecture where each VM runs in a "trusted execution environment" with user-managed access keys. Designed with [Moxie Marlinspike](https://www.wired.com/story/signals-creator-is-helping-encrypt-meta-ai/) (creator of Signal). Source code auditable by third-party security firms, published binaries, transparency log. |
 
 **Payment infrastructure:**
+
 - [Stripe Link](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent) for agents: generates one-time-use card numbers so the agent never exposes real financial data
 - First AI agent covered by Link's purchase protections (damage/loss, price drops, no-fee returns, return guarantee)
 - Shop Pay and 1Password integration coming
@@ -50,6 +53,7 @@ The [Meta Model API](https://ai.developer.meta.com/docs) (`api.meta.ai/v1`) serv
 Google launched [Gemini Spark](https://gemini.google/overview/agent/spark/) at Google I/O 2026 (May 19, 2026) as a 24/7 personal AI agent within the Gemini app ecosystem.
 
 **Availability (as of September 2026):**
+
 - Google AI Pro or Ultra subscription required ([Google Support](https://support.google.com/gemini/answer/17094507))
 - Available wherever Gemini Apps are supported, EXCEPT: European Economic Area, Nigeria, Switzerland, and the United Kingdom ([Google Support](https://support.google.com/gemini/answer/17094507) — note: this exclusion list is volatile and has changed multiple times since Spark's May 2026 launch; verify current status before relying on this data)
 - Gemini mobile app, Gemini app on Mac, and [gemini.google.com](https://gemini.google.com) web app
@@ -119,7 +123,7 @@ How can a personal AI agent like Muse or Gemini Spark actually reach a property 
 
 ### 2.3 Agent Cards (`/.well-known/`)
 
-**Mechanism:** A domain hosts a standardized JSON file at a well-known path declaring its AI-agent capabilities, endpoints, and identity. Google's A2A protocol defines `/.well-known/agent.json`. RAIA defines `/.well-known/raia-agent.json`.
+**Mechanism:** A domain hosts a standardized JSON file at a well-known path declaring its AI-agent capabilities, endpoints, and identity. Google's A2A protocol defines `/.well-known/agent.json`. RAIA defines `/.well-known/raia.json` (the pre-ADR-438 name `/.well-known/raia-agent.json` survives only as a deprecated alias that permanently redirects, HTTP 308, to the canonical path — ADR-438 D2).
 
 **Current state:** Google A2A's agent card is the closest thing to a standard. RAIA's agent card is a property-specific extension. However, **neither Muse nor Gemini Spark currently consume agent cards as part of their built-in discovery flow**. An agent card is useful for a developer building a custom agent — it is NOT currently consumed automatically by the major personal AI platforms.
 
@@ -131,7 +135,8 @@ How can a personal AI agent like Muse or Gemini Spark actually reach a property 
 
 **Mechanism:** An MCP-compatible server exposes tools (functions) over `stdio` or `streamable_http`. AI agents that support MCP can discover and call these tools at runtime. [Anthropic's MCP](https://github.com/modelcontextprotocol/servers) is the reference implementation.
 
-**Current state:** 
+**Current state:**
+
 - **Muse / Muse Code:** Supports MCP `stdio` and `streamable_http` ([Muse Code Extending docs](https://dev.meta.ai/docs/muse-code/extending/)). A user can configure their Muse to connect to external MCP servers. Meta publishes at least one official remote MCP server ([Facebook MCP docs](https://developers.facebook.com/documentation/mcp)).
 - **Gemini Spark:** No public MCP support documented.
 - **Claude Desktop / Claude Code:** Full MCP support. Users can add MCP servers to their Claude config.
@@ -174,7 +179,7 @@ For each integration surface, this section maps what raia-protocol already ships
 |---|---|
 | **Grade** | **A** (baseline) |
 | **What exists** | N/A — this surface bypasses RAIA entirely. The agent just browses the property service's website. |
-| **RAIA role** | RAIA provides the structured data that makes browser scraping unnecessary. RAIA's portal feed API ([`openapi/raia-portal-feed-api.yaml`](../openapi/raia-portal-feed-api.yaml)) and agent card ([`.well-known/raia-agent.json`](../.well-known/raia-agent.json)) are the structured alternatives. |
+| **RAIA role** | RAIA provides the structured data that makes browser scraping unnecessary. RAIA's portal feed API ([`openapi/raia-portal-feed-api.yaml`](../openapi/raia-portal-feed-api.yaml)) and agent card ([`.well-known/raia.json`](../.well-known/raia.json)) are the structured alternatives. |
 | **Readiness** | A personal agent can already browse EstateAigents.com or movehome.org today using browser automation. RAIA adoption improves this experience but is not a prerequisite. |
 | **Repo artifacts** | `docs/raia-portal-feed-api.md`, `openapi/raia-portal-feed-api.yaml` |
 
@@ -192,9 +197,9 @@ For each integration surface, this section maps what raia-protocol already ships
 | Attribute | Assessment |
 |---|---|
 | **Grade** | **B** |
-| **What exists** | Full agent card specification at [`SPEC.md`](../SPEC.md) §3. Reference implementation at [`.well-known/raia-agent.json`](../.well-known/raia-agent.json). Schema at [`schemas/agent.json`](../schemas/agent.json). Declares: identity, jurisdiction, UN/LOCODE coverage, compliance signals, MCP endpoint, A2A endpoint, consent endpoint, enquiry endpoint. |
+| **What exists** | Full agent card specification at [`SPEC.md`](../SPEC.md) §3. Reference implementation at [`.well-known/raia.json`](../.well-known/raia.json). Schema at [`schemas/agent.json`](../schemas/agent.json). Declares: identity, jurisdiction, UN/LOCODE coverage, compliance signals, MCP endpoint, A2A endpoint, consent endpoint, enquiry endpoint. |
 | **What's needed** | Consumer personal agents (Muse, Gemini Spark) do not natively consume agent cards. Until they do, RAIA agent cards are useful for developer-built custom agents and for the RAIA Global Indexer — not for zero-touch discovery by consumer agents. |
-| **Repo artifacts** | `SPEC.md` §3, `.well-known/raia-agent.json`, `schemas/agent.json` |
+| **Repo artifacts** | `SPEC.md` §3, `.well-known/raia.json`, `schemas/agent.json` |
 
 #### 3.1.4 MCP Servers
 
@@ -319,7 +324,7 @@ This means:
 
 1. **The browser is the universal surface.** Personal agents WILL reach property services through the browser. The question is whether they find structured RAIA endpoints or unstructured HTML.
 2. **MCP is the developer surface, not the consumer surface.** RAIA's MCP server is excellent infrastructure but requires manual configuration by a technically sophisticated user. It is not a zero-touch consumer channel.
-3. **Agent cards are infrastructure for the future, not a channel today.** Until consumer agents natively consume agent cards, RAIA's `/.well-known/raia-agent.json` provides value to the RAIA Indexer and to custom developer agents — not to Muse or Spark users.
+3. **Agent cards are infrastructure for the future, not a channel today.** Until consumer agents natively consume agent cards, RAIA's `/.well-known/raia.json` provides value to the RAIA Indexer and to custom developer agents — not to Muse or Spark users.
 4. **`llms.txt` is the highest-leverage gap.** A single markdown file at a well-known URL could make every RAIA-compliant property service more reachable than 90% of the web. It costs almost nothing and works with every AI agent that reads instructions before acting.
 
 **RAIA's posture should be: build the infrastructure now (agent cards, MCP, schemas, portal feed API — all done or in progress) and publish the lightweight, agent-consumable surface (`llms.txt` / instructions file) that bridges the gap until the platforms catch up.**

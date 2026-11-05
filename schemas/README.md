@@ -23,7 +23,7 @@ Public-facing listing card. Full address is never included; location is masked t
 
 ## agent.json
 
-Discovery card exposed at `/.well-known/raia-agent.json`. Key fields:
+Discovery card exposed at `/.well-known/raia.json` (the pre-ADR-438 path `/.well-known/raia-agent.json` is a deprecated alias that permanently redirects, HTTP 308, to it). Key fields:
 
 - `raia_id` - stable org identifier
 - `jurisdiction`, `additional_jurisdictions`, `markets`, `coverage`
@@ -33,7 +33,7 @@ Discovery card exposed at `/.well-known/raia-agent.json`. Key fields:
 - `mcp_endpoint`, `enquiry_endpoint`, `consent_endpoint`
 - `a2a_endpoint`, `a2a_agent_card_url` - native Google A2A interop
 
-Example card: [../.well-known/raia-agent.json](../.well-known/raia-agent.json).
+Example card: [../.well-known/raia.json](../.well-known/raia.json).
 
 ## enquiry.json
 
