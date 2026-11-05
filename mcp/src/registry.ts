@@ -36,7 +36,7 @@ export interface RaiaRegistryAdapter {
 
   /**
    * Verify an estate agent's compliance status.
-   * May fetch the agent's /.well-known/raia-agent.json and/or query the registry.
+   * May fetch the agent's /.well-known/raia.json and/or query the registry.
    */
   verifyAgent(raiaId: string): Promise<VerifyAgentResult>;
 
@@ -211,7 +211,7 @@ export class StubRegistryAdapter implements RaiaRegistryAdapter {
       raia_version: "0.2",
       rebuilt_at: new Date().toISOString(),
       agent_card_url:
-        "https://app.estateaigents.com/.well-known/raia-agent.json",
+        "https://app.estateaigents.com/.well-known/raia.json",
       transaction_type: "LETTINGS",
       status: "AVAILABLE",
       property_type: "FLAT",
@@ -280,7 +280,7 @@ export class StubRegistryAdapter implements RaiaRegistryAdapter {
       raia_version: "0.2",
       rebuilt_at: new Date().toISOString(),
       agent_card_url:
-        "https://app.estateaigents.com/.well-known/raia-agent.json",
+        "https://app.estateaigents.com/.well-known/raia.json",
       transaction_type: "SALES",
       status: "AVAILABLE",
       property_type: "SEMI_DETACHED",
