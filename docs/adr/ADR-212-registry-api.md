@@ -180,7 +180,7 @@ List all supported jurisdictions and their module status.
 
 **Read endpoints** (`GET /agents`, `GET /agents/{id}`, `GET /agents/{id}/verify`, `GET /jurisdictions`): **no authentication required**. The registry is publicly readable.
 
-**Write endpoints** (`POST /agents`): Bearer token required. Issued after manual review of initial application. Contact registry@estateaigents.org.
+**Write endpoints** (`POST /agents`): Bearer token required. Issued after manual review of initial application. Contact <registry@estateaigents.org>.
 
 **Rate limits:** 60 requests per minute per IP for unauthenticated reads. 300 per minute for authenticated agents.
 

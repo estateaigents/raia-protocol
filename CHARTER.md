@@ -1,4 +1,5 @@
 # The RAIA Charter
+
 ## An Open Standard for Property AI
 
 *Published April 2026 · estateaigents.org · RAIA™ Protocol*
@@ -38,7 +39,7 @@ For the full evidence base and citations, see: [docs/portal-market-research.md](
 
 The portal fee does not stay with the agent. It cannot. It flows through the transaction:
 
-```
+```text
 Portal charges agent → agent absorbs into operating costs
         ↓
 Agent raises management fees to landlord
@@ -80,7 +81,7 @@ RAIA (Real Estate Artificial Intelligence Agent Protocol) is the open standard f
 
 Built on Google's A2A Protocol (donated to the Linux Foundation) and Anthropic's Model Context Protocol (MCP), RAIA adds the property-specific vocabulary and trust layer that general AI infrastructure does not provide.
 
-```
+```text
 Google A2A    →  How agents find and talk to each other
 RAIA Protocol →  What property agents say — property vocabulary and trust
 Anthropic MCP →  How agents connect to property data tools
@@ -99,6 +100,7 @@ MoveHome.org is a free, not-for-profit property listings portal — for tenants 
 Agents who implement RAIA Protocol receive automatic free listings on MoveHome.org. The portal is funded by the community it serves — not by charging agents for access to their own market.
 
 Together, RAIA Protocol and MoveHome.org form a complete response to the portal problem:
+
 - **RAIA** handles AI-to-AI transactions — the future of how property is found
 - **MoveHome** handles human search — the present, made free
 
@@ -199,11 +201,12 @@ The structural difference from OpenAI:
 EstateAigents Ltd is the founding contributor. It holds one non-controlling board seat. It benefits from free listings on MoveHome.org and a non-exclusive trademark licence. That is the full extent of its position. The protocol does not belong to EstateAigents Ltd. It belongs to the community it serves.
 
 **References:**
+
 - Musk v. Altman et al., US District Court, Northern District of California (Oakland). Verdict: 18 May 2026. All claims dismissed on statute of limitations grounds. Judge Yvonne Gonzalez Rogers adopted the advisory verdict. Musk filing appeal to Ninth Circuit.
-- Elon Musk (@elonmusk) on X, 18 May 2026, 21.4M views: https://x.com/elonmusk [link to post]
-- Reddit discussion (r/singularity), 18 May 2026: https://www.reddit.com/r/singularity/comments/1tgung8/elon_musk_loses_court_battle_against_sam_altman/
+- Elon Musk (@elonmusk) on X, 18 May 2026, 21.4M views: <https://x.com/elonmusk> [link to post]
+- Reddit discussion (r/singularity), 18 May 2026: <https://www.reddit.com/r/singularity/comments/1tgung8/elon_musk_loses_court_battle_against_sam_altman/>
 - Move Home Organisation CIC: Companies House Co. 17202438
-- RAIA Charter (this document): https://github.com/estateaigents/raia-protocol/blob/main/CHARTER.md
+- RAIA Charter (this document): <https://github.com/estateaigents/raia-protocol/blob/main/CHARTER.md>
 
 ---
 
@@ -227,7 +230,7 @@ Open an issue at **github.com/estateaigents/raia-protocol** with the label `sche
 
 RAIA is not a competitor to your product. It is the transport layer that makes your product interoperable with the AI ecosystem. The portal that implements RAIA first stops being a toll booth and starts being a node.
 
-Contact us at **admin@estateaigents.org**.
+Contact us at **<admin@estateaigents.org>**.
 
 ### To AI developers
 
@@ -237,7 +240,7 @@ If your assistant speaks MCP, it can query any RAIA-compliant agent's portfolio.
 
 The protocol's jurisdictional module architecture was designed with regulatory compliance in mind. Every jurisdiction's compliance requirements are encoded in a separate module that plugs into the global core.
 
-We are actively seeking input from professional bodies and regulatory authorities in every market where RAIA is being implemented. Contact us at **admin@estateaigents.org**.
+We are actively seeking input from professional bodies and regulatory authorities in every market where RAIA is being implemented. Contact us at **<admin@estateaigents.org>**.
 
 ### To the community
 

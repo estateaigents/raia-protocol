@@ -28,7 +28,7 @@ The public `PropertyCard` schema (served to anonymous MCP calls) deliberately ma
 
 Delegation tokens are short-lived JWT Bearer tokens issued by the estate agent's system (the `enquiry_endpoint` issuer) when a session advances to a state that warrants elevated access.
 
-```
+```http
 POST {enquiry_endpoint}
 Authorization: Bearer {agent-to-agent credential}
 Body: { "enquiry_id": "...", "state_assertion": "DATA_GATHERING" }
@@ -44,7 +44,7 @@ Response 200:
 
 The delegation token is then passed to the property endpoint:
 
-```
+```http
 GET /api/raia/property/{raia_id}
 Authorization: Bearer {delegation_token}
 ```
@@ -82,7 +82,7 @@ The `agent_card_url` (`/.well-known/raia-agent.json`) should include a `public_k
 
 ## API endpoint spec
 
-```
+```http
 GET /api/raia/property/{raia_id}
 Authorization: Bearer {delegation_token}
 
