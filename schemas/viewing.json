@@ -2,8 +2,8 @@
   "$schema": "https://json-schema.org/draft/2020-12",
   "$id": "https://estateaigents.org/schemas/viewing.json",
   "title": "RAIA Viewing Request",
-  "description": "Viewing request and confirmation for a RAIA property. The buyer agent proposes up to three slots; the estate agent confirms one. A viewing request advances the parent enquiry (see enquiry.json) from IDENTIFIED to DATA_GATHERING, and to AWAITING_HUMAN_ASSERTION where the estate agent's policy requires human approval before the slot is confirmed.",
-  "version": "0.1.0",
+  "description": "Viewing request and confirmation for a RAIA property. The buyer agent proposes up to three slots; the estate agent confirms one or counter-proposes, for at most three rounds. A viewing request advances the parent enquiry (see enquiry.json) from IDENTIFIED to DATA_GATHERING, and to AWAITING_HUMAN_ASSERTION where the estate agent's policy requires human approval before the slot is confirmed.",
+  "version": "0.2.0",
   "type": "object",
   "required": [
     "viewing_id",
@@ -71,8 +71,15 @@
       "maxItems": 3,
       "items": { "$ref": "#/$defs/TimeSlot" }
     },
+    "counter_proposals": {
+      "type": "array",
+      "description": "Negotiation rounds after the buyer agent's first proposal, oldest first. At most three rounds. Required when state is COUNTER_PROPOSED.",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": { "$ref": "#/$defs/CounterProposal" }
+    },
     "confirmed_slot": {
-      "description": "Exactly one of proposed_slots, chosen by the estate agent. Required when state is CONFIRMED.",
+      "description": "Exactly one slot from proposed_slots or from the latest counter-proposal, chosen by the estate agent. Required when state is CONFIRMED.",
       "oneOf": [{ "$ref": "#/$defs/TimeSlot" }, { "type": "null" }]
     },
     "confirmed_at": {
@@ -135,6 +142,19 @@
           "confirmed_at": { "type": "null" }
         }
       }
+    },
+    {
+      "if": {
+        "properties": { "state": { "const": "COUNTER_PROPOSED" } },
+        "required": ["state"]
+      },
+      "then": {
+        "required": ["counter_proposals"],
+        "properties": {
+          "confirmed_slot": { "type": "null" },
+          "confirmed_at": { "type": "null" }
+        }
+      }
     }
   ],
   "$defs": {
@@ -142,6 +162,7 @@
       "type": "string",
       "enum": [
         "PROPOSED",
+        "COUNTER_PROPOSED",
         "CONFIRMED",
         "DECLINED",
         "CANCELLED",
@@ -166,6 +187,31 @@
         "agent_card_url": {
           "type": ["string", "null"],
           "format": "uri"
+        }
+      },
+      "additionalProperties": false
+    },
+    "CounterProposal": {
+      "type": "object",
+      "description": "One negotiation round. Rounds are numbered from 1 in order; implementations MUST reject a round number that is not one more than the previous.",
+      "required": ["round", "proposed_by", "proposed_at", "slots"],
+      "properties": {
+        "round": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "proposed_by": {
+          "type": "string",
+          "enum": ["ESTATE_AGENT", "BUYER_AGENT"]
+        },
+        "proposed_at": { "type": "string", "format": "date-time" },
+        "slots": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/TimeSlot" }
+        },
+        "note": {
+          "type": ["string", "null"],
+          "maxLength": 500,
+          "description": "Why these slots. No personal data."
         }
       },
       "additionalProperties": false

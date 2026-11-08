@@ -9,7 +9,7 @@ Published with v0.3 (November 2026). Field definitions in prose are in [SPEC.md]
 | `property.json` | 0.2.0 | Public property card for lettings and sales |
 | `agent.json` | 0.1.0 | Discovery card with compliance, endpoints, A2A interop, consent endpoint, and max data level |
 | `enquiry.json` | 0.2.0 | Transaction lifecycle plus L0/L1/L2/L3 data-level envelopes |
-| `viewing.json` | 0.1.0 | Viewing request and confirmation — buyer agent proposes up to 3 slots, estate agent confirms one |
+| `viewing.json` | 0.2.0 | Viewing request and confirmation — buyer agent proposes up to 3 slots, estate agent confirms one or counter-proposes |
 
 ## property.json
 
@@ -58,14 +58,17 @@ Every L1+ module carries `data_subject_id`, `data_residency`, and a scoped conse
 
 A viewing request always belongs to an enquiry (`enquiry_id`) and moves that enquiry along the same state machine defined in `enquiry.json`.
 
-- `state` - `PROPOSED` -> `CONFIRMED`, or `DECLINED`, `CANCELLED`, `COMPLETED`, `EXPIRED`
+- `state` - `PROPOSED` -> `CONFIRMED`, or `COUNTER_PROPOSED`, `DECLINED`, `CANCELLED`, `COMPLETED`, `EXPIRED`
 - `enquiry_state` - the parent enquiry's state at the time of the message: `IDENTIFIED`, `DATA_GATHERING`, or `AWAITING_HUMAN_ASSERTION`
 - `proposed_slots` - 1 to 3 `{start, end}` slots proposed by the buyer agent
+- `counter_proposals` - 0.2.0. Up to 3 rounds of `{round, proposed_by, proposed_at, slots, note}`, oldest first; required when `state` is `COUNTER_PROPOSED`
 - `confirmed_slot`, `confirmed_at` - the single slot chosen by the estate agent; both are required when `state` is `CONFIRMED`
 - `viewing_type` - `IN_PERSON` or `VIRTUAL`
 - `decline_reason`, `notes`, `expires_at`
 
-Examples: [../samples/viewing.example.json](../samples/viewing.example.json) (proposed) and [../samples/viewing-confirmed.example.json](../samples/viewing-confirmed.example.json) (confirmed).
+Examples: [../samples/viewing.example.json](../samples/viewing.example.json) (proposed), [../samples/viewing-counter-proposed.example.json](../samples/viewing-counter-proposed.example.json) (counter-proposed) and [../samples/viewing-confirmed.example.json](../samples/viewing-confirmed.example.json) (confirmed).
+
+**0.2.0 compatibility.** Adding `COUNTER_PROPOSED` to a closed enum is a real version bump: a strict 0.1.0 validator rejects a counter-proposed message. Every 0.1.0 message is still valid under 0.2.0.
 
 ## Compatibility Notes
 
