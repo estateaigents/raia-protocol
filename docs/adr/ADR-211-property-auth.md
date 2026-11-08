@@ -2,7 +2,7 @@
 
 **Status:** Accepted — v0.2
 **Date:** May 2026
-**Deciders:** EstateAigents Ltd / MoveHome Foundation CIC
+**Deciders:** EstateAigents Ltd / Move Home Organisation CIC
 
 ---
 

@@ -112,7 +112,7 @@ RAIA Protocol is not a marketplace. It is not a portal. It is infrastructure —
 
 ### 2. No single actor controls it
 
-No company, no individual, no government body holds a controlling position in RAIA Protocol governance. This is not a policy preference. It is a structural requirement encoded in the governance of MoveHome Foundation CIC, the entity that holds the protocol in trust.
+No company, no individual, no government body holds a controlling position in RAIA Protocol governance. This is not a policy preference. It is a structural requirement encoded in the governance of Move Home Organisation CIC, the entity that holds the protocol in trust.
 
 ### 3. The community it serves governs it
 
@@ -185,7 +185,7 @@ Whether Musk is correct on the merits is not the point. The point is that **"you
 
 We drew the obvious conclusion.
 
-**RAIA Protocol is a not-for-profit open standard.** It is governed by MoveHome Foundation CIC (Co. 17202438, incorporated 6 May 2026) — a UK Community Interest Company. The CIC holds the RAIA trademark in trust for the property industry. Its asset lock is enforced by the CIC Regulator — not by board policy, not by a founding promise, not by goodwill.
+**RAIA Protocol is a not-for-profit open standard.** It is governed by Move Home Organisation CIC (Co. 17202438, incorporated 6 May 2026) — a UK Community Interest Company. The CIC holds the RAIA trademark in trust for the property industry. Its asset lock is enforced by the CIC Regulator — not by board policy, not by a founding promise, not by goodwill.
 
 The structural difference from OpenAI:
 
@@ -202,7 +202,7 @@ EstateAigents Ltd is the founding contributor. It holds one non-controlling boar
 - Musk v. Altman et al., US District Court, Northern District of California (Oakland). Verdict: 18 May 2026. All claims dismissed on statute of limitations grounds. Judge Yvonne Gonzalez Rogers adopted the advisory verdict. Musk filing appeal to Ninth Circuit.
 - Elon Musk (@elonmusk) on X, 18 May 2026, 21.4M views: https://x.com/elonmusk [link to post]
 - Reddit discussion (r/singularity), 18 May 2026: https://www.reddit.com/r/singularity/comments/1tgung8/elon_musk_loses_court_battle_against_sam_altman/
-- MoveHome Foundation CIC: Companies House Co. 17202438
+- Move Home Organisation CIC: Companies House Co. 17202438
 - RAIA Charter (this document): https://github.com/estateaigents/raia-protocol/blob/main/CHARTER.md
 
 ---
@@ -241,7 +241,7 @@ We are actively seeking input from professional bodies and regulatory authoritie
 
 ### To the community
 
-MoveHome Foundation CIC — the entity that holds the trademark and governs the registry — is being incorporated now. Board seats will be open. Governance criteria will be published.
+Move Home Organisation CIC — the entity that holds the trademark and governs the registry — was incorporated on 6 May 2026 (Co. 17202438). Board seats will be announced here. Governance criteria will be published.
 
 If you believe that property infrastructure should be a commons — this is where that belief becomes a structure rather than a sentiment.
 
@@ -251,11 +251,11 @@ If you believe that property infrastructure should be a commons — this is wher
 
 We commit to the following, publicly and permanently:
 
-**1.** The protocol will be governed by a multi-stakeholder community foundation. MoveHome Foundation CIC holds the trademark. EstateAigents Ltd has one seat on the board — not a controlling seat.
+**1.** The protocol will be governed by a multi-stakeholder community foundation. Move Home Organisation CIC holds the trademark. EstateAigents Ltd has one seat on the board — not a controlling seat.
 
-MoveHome Foundation CIC was incorporated on 6 May 2026 (Co. 17202438, England and Wales).
+Move Home Organisation CIC was incorporated on 6 May 2026 (Co. 17202438, England and Wales).
 
-**2.** The RAIA™ trademark will be held by MoveHome Foundation CIC in trust for the property industry. It will not be exclusively licensed to any commercial entity.
+**2.** The RAIA™ trademark will be held by Move Home Organisation CIC in trust for the property industry. It will not be exclusively licensed to any commercial entity.
 
 **3.** The registry criteria will be published and enforced transparently. Admission will not be at the discretion of any single commercial actor.
 
@@ -271,7 +271,7 @@ MoveHome Foundation CIC was incorporated on 6 May 2026 (Co. 17202438, England an
 
 Read the spec. Implement the protocol. Find what it gets wrong. Tell us in a GitHub issue.
 
-Join the schema working group. Contribute a jurisdiction module. Apply for a board seat when MoveHome Foundation CIC is constituted.
+Join the schema working group. Contribute a jurisdiction module. Express interest in a board seat.
 
 This Charter is the beginning of that conversation.
 
@@ -279,7 +279,7 @@ This Charter is the beginning of that conversation.
 
 *RAIA™ is a registered UK trademark (UK00003359082, Classes 36 + 42, registered 2018).*
 *Protocol specification MIT licensed.*
-*MoveHome Foundation CIC — incorporated 6 May 2026 (Co. 17202438).*
+*Move Home Organisation CIC — incorporated 6 May 2026 (Co. 17202438).*
 *Founding contributor: EstateAigents Ltd.*
 
 *github.com/estateaigents/raia-protocol · estateaigents.org · movehome.org*

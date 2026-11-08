@@ -1,5 +1,5 @@
 # Global Property Portal Market — Agent Fee Research
-## Reference document for RAIA Protocol / MoveHome Foundation CIC
+## Reference document for RAIA Protocol / Move Home Organisation CIC
 *Compiled: 20 April 2026 · Sources cited throughout*
 
 ---
