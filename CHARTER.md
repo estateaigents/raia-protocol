@@ -1,4 +1,5 @@
 # The RAIA Charter
+
 ## An Open Standard for Property AI
 
 *Published April 2026 · estateaigents.org · RAIA™ Protocol*
@@ -38,7 +39,7 @@ For the full evidence base and citations, see: [docs/portal-market-research.md](
 
 The portal fee does not stay with the agent. It cannot. It flows through the transaction:
 
-```
+```text
 Portal charges agent → agent absorbs into operating costs
         ↓
 Agent raises management fees to landlord
@@ -80,7 +81,7 @@ RAIA (Real Estate Artificial Intelligence Agent Protocol) is the open standard f
 
 Built on Google's A2A Protocol (donated to the Linux Foundation) and Anthropic's Model Context Protocol (MCP), RAIA adds the property-specific vocabulary and trust layer that general AI infrastructure does not provide.
 
-```
+```text
 Google A2A    →  How agents find and talk to each other
 RAIA Protocol →  What property agents say — property vocabulary and trust
 Anthropic MCP →  How agents connect to property data tools
@@ -99,6 +100,7 @@ MoveHome.org is a free, not-for-profit property listings portal — for tenants 
 Agents who implement RAIA Protocol receive automatic free listings on MoveHome.org. The portal is funded by the community it serves — not by charging agents for access to their own market.
 
 Together, RAIA Protocol and MoveHome.org form a complete response to the portal problem:
+
 - **RAIA** handles AI-to-AI transactions — the future of how property is found
 - **MoveHome** handles human search — the present, made free
 
@@ -112,7 +114,7 @@ RAIA Protocol is not a marketplace. It is not a portal. It is infrastructure —
 
 ### 2. No single actor controls it
 
-No company, no individual, no government body holds a controlling position in RAIA Protocol governance. This is not a policy preference. It is a structural requirement encoded in the governance of MoveHome Foundation CIC, the entity that holds the protocol in trust.
+No company, no individual, no government body holds a controlling position in RAIA Protocol governance. This is not a policy preference. It is a structural requirement encoded in the governance of Move Home Organisation CIC, the entity that holds the protocol in trust.
 
 ### 3. The community it serves governs it
 
@@ -185,7 +187,7 @@ Whether Musk is correct on the merits is not the point. The point is that **"you
 
 We drew the obvious conclusion.
 
-**RAIA Protocol is a not-for-profit open standard.** It is governed by MoveHome Foundation CIC (Co. 17202438, incorporated 6 May 2026) — a UK Community Interest Company. The CIC holds the RAIA trademark in trust for the property industry. Its asset lock is enforced by the CIC Regulator — not by board policy, not by a founding promise, not by goodwill.
+**RAIA Protocol is a not-for-profit open standard.** It is governed by Move Home Organisation CIC (Co. 17202438, incorporated 6 May 2026) — a UK Community Interest Company. The CIC holds the RAIA trademark in trust for the property industry. Its asset lock is enforced by the CIC Regulator — not by board policy, not by a founding promise, not by goodwill.
 
 The structural difference from OpenAI:
 
@@ -199,11 +201,12 @@ The structural difference from OpenAI:
 EstateAigents Ltd is the founding contributor. It holds one non-controlling board seat. It benefits from free listings on MoveHome.org and a non-exclusive trademark licence. That is the full extent of its position. The protocol does not belong to EstateAigents Ltd. It belongs to the community it serves.
 
 **References:**
+
 - Musk v. Altman et al., US District Court, Northern District of California (Oakland). Verdict: 18 May 2026. All claims dismissed on statute of limitations grounds. Judge Yvonne Gonzalez Rogers adopted the advisory verdict. Musk filing appeal to Ninth Circuit.
-- Elon Musk (@elonmusk) on X, 18 May 2026, 21.4M views: https://x.com/elonmusk [link to post]
-- Reddit discussion (r/singularity), 18 May 2026: https://www.reddit.com/r/singularity/comments/1tgung8/elon_musk_loses_court_battle_against_sam_altman/
-- MoveHome Foundation CIC: Companies House Co. 17202438
-- RAIA Charter (this document): https://github.com/estateaigents/raia-protocol/blob/main/CHARTER.md
+- Elon Musk (@elonmusk) on X, 18 May 2026, 21.4M views: <https://x.com/elonmusk> [link to post]
+- Reddit discussion (r/singularity), 18 May 2026: <https://www.reddit.com/r/singularity/comments/1tgung8/elon_musk_loses_court_battle_against_sam_altman/>
+- Move Home Organisation CIC: Companies House Co. 17202438
+- RAIA Charter (this document): <https://github.com/estateaigents/raia-protocol/blob/main/CHARTER.md>
 
 ---
 
@@ -227,7 +230,7 @@ Open an issue at **github.com/estateaigents/raia-protocol** with the label `sche
 
 RAIA is not a competitor to your product. It is the transport layer that makes your product interoperable with the AI ecosystem. The portal that implements RAIA first stops being a toll booth and starts being a node.
 
-Contact us at **admin@estateaigents.org**.
+Contact us at **<admin@estateaigents.org>**.
 
 ### To AI developers
 
@@ -237,11 +240,11 @@ If your assistant speaks MCP, it can query any RAIA-compliant agent's portfolio.
 
 The protocol's jurisdictional module architecture was designed with regulatory compliance in mind. Every jurisdiction's compliance requirements are encoded in a separate module that plugs into the global core.
 
-We are actively seeking input from professional bodies and regulatory authorities in every market where RAIA is being implemented. Contact us at **admin@estateaigents.org**.
+We are actively seeking input from professional bodies and regulatory authorities in every market where RAIA is being implemented. Contact us at **<admin@estateaigents.org>**.
 
 ### To the community
 
-MoveHome Foundation CIC — the entity that holds the trademark and governs the registry — is being incorporated now. Board seats will be open. Governance criteria will be published.
+Move Home Organisation CIC — the entity that holds the trademark and governs the registry — was incorporated on 6 May 2026 (Co. 17202438). Board seats will be announced here. Governance criteria will be published.
 
 If you believe that property infrastructure should be a commons — this is where that belief becomes a structure rather than a sentiment.
 
@@ -251,11 +254,11 @@ If you believe that property infrastructure should be a commons — this is wher
 
 We commit to the following, publicly and permanently:
 
-**1.** The protocol will be governed by a multi-stakeholder community foundation. MoveHome Foundation CIC holds the trademark. EstateAigents Ltd has one seat on the board — not a controlling seat.
+**1.** The protocol will be governed by a multi-stakeholder community foundation. Move Home Organisation CIC holds the trademark. EstateAigents Ltd has one seat on the board — not a controlling seat.
 
-MoveHome Foundation CIC was incorporated on 6 May 2026 (Co. 17202438, England and Wales).
+Move Home Organisation CIC was incorporated on 6 May 2026 (Co. 17202438, England and Wales).
 
-**2.** The RAIA™ trademark will be held by MoveHome Foundation CIC in trust for the property industry. It will not be exclusively licensed to any commercial entity.
+**2.** The RAIA™ trademark will be held by Move Home Organisation CIC in trust for the property industry. It will not be exclusively licensed to any commercial entity.
 
 **3.** The registry criteria will be published and enforced transparently. Admission will not be at the discretion of any single commercial actor.
 
@@ -271,7 +274,7 @@ MoveHome Foundation CIC was incorporated on 6 May 2026 (Co. 17202438, England an
 
 Read the spec. Implement the protocol. Find what it gets wrong. Tell us in a GitHub issue.
 
-Join the schema working group. Contribute a jurisdiction module. Apply for a board seat when MoveHome Foundation CIC is constituted.
+Join the schema working group. Contribute a jurisdiction module. Express interest in a board seat.
 
 This Charter is the beginning of that conversation.
 
@@ -279,7 +282,7 @@ This Charter is the beginning of that conversation.
 
 *RAIA™ is a registered UK trademark (UK00003359082, Classes 36 + 42, registered 2018).*
 *Protocol specification MIT licensed.*
-*MoveHome Foundation CIC — incorporated 6 May 2026 (Co. 17202438).*
+*Move Home Organisation CIC — incorporated 6 May 2026 (Co. 17202438).*
 *Founding contributor: EstateAigents Ltd.*
 
 *github.com/estateaigents/raia-protocol · estateaigents.org · movehome.org*

@@ -14,17 +14,17 @@ This commitment is not aspirational language. It is the structural intent behind
 
 ---
 
-## Governing entity — MoveHome Foundation CIC
+## Governing entity — Move Home Organisation CIC
 
-RAIA Protocol and MoveHome.org are both governed by **MoveHome Foundation CIC** — a UK Community Interest Company incorporated for this purpose.
+RAIA Protocol and MoveHome.org are both governed by **Move Home Organisation CIC** — a UK Community Interest Company incorporated for this purpose.
 
 A CIC is a legal structure designed specifically for organisations that exist to benefit a community rather than generate profit for members or shareholders. The community interest test is enforced by the CIC Regulator — it cannot be waived, restructured away, or circumvented by a future board.
 
 **Community interest statement:**
 
-> "MoveHome Foundation CIC exists to develop and maintain free, open infrastructure for property transactions for the benefit of the public — including a free not-for-profit property listings portal accessible without charge, and an open AI agent protocol standard for property transactions held in trust for the property industry and not exclusively licensed to any commercial entity."
+> "Move Home Organisation CIC exists to develop and maintain free, open infrastructure for property transactions for the benefit of the public — including a free not-for-profit property listings portal accessible without charge, and an open AI agent protocol standard for property transactions held in trust for the property industry and not exclusively licensed to any commercial entity."
 
-**Assets held by MoveHome Foundation CIC:**
+**Assets held by Move Home Organisation CIC:**
 
 - RAIA™ trademark (UK00003359082) — transferred from founding contributor
 - `estateaigents.org` domain
@@ -37,16 +37,16 @@ A CIC is a legal structure designed specifically for organisations that exist to
 
 ## Current governance structure (transitional)
 
-MoveHome Foundation CIC is in formation as of April 2026. During the transitional period, EstateAigents Ltd acts as founding contributor and interim steward.
+Move Home Organisation CIC was incorporated on 6 May 2026 (Co. 17202438). During the transitional period, EstateAigents Ltd acts as founding contributor and interim steward.
 
 | Role | Current holder | Intended holder |
 |---|---|---|
-| Trademark (RAIA™) | Founding contributor (personal) | MoveHome Foundation CIC |
+| Trademark (RAIA™) | Founding contributor (personal) | Move Home Organisation CIC |
 | GitHub organisation | estateaigents | estateaigents (unchanged) |
-| estateaigents.org domain | Founding contributor | MoveHome Foundation CIC |
-| movehome.org domain | Founding contributor | MoveHome Foundation CIC |
-| Registry governance | EstateAigents Ltd | MoveHome Foundation CIC |
-| Protocol maintainer | EstateAigents Ltd | MoveHome Foundation CIC (board + committees) |
+| estateaigents.org domain | Founding contributor | Move Home Organisation CIC |
+| movehome.org domain | Founding contributor | Move Home Organisation CIC |
+| Registry governance | EstateAigents Ltd | Move Home Organisation CIC |
+| Protocol maintainer | EstateAigents Ltd | Move Home Organisation CIC (board + committees) |
 
 All transfers complete target: August 2026.
 
@@ -115,7 +115,7 @@ Registry fees: None. Participation is always free.
 **RAIA™** — UK registered word mark, UK00003359082, Classes 36 and 42. Registered 2018.
 
 Current holder: founding contributor (personal)
-Intended holder: MoveHome Foundation CIC (transfer in progress)
+Intended holder: Move Home Organisation CIC (transfer in progress)
 
 The trademark is held in trust for the property industry. It will not be exclusively licensed to any commercial entity, including EstateAigents Ltd.
 
@@ -161,11 +161,11 @@ RAIA follows this lineage. The property industry deserves infrastructure it owns
 
 Protocol governance: [protocol@estateaigents.org](mailto:protocol@estateaigents.org)
 CIC status updates: published here as they occur
-Board applications: open once CIC is constituted
+Board applications: open to expressions of interest
 
 ---
 
-*MoveHome Foundation CIC — incorporated 6 May 2026 (Co. 17202438)*
+*Move Home Organisation CIC — incorporated 6 May 2026 (Co. 17202438)*
 *Founding contributor: EstateAigents Ltd*
 *RAIA™ UK00003359082 · MIT licensed protocol specification*
 *github.com/estateaigents/raia-protocol · estateaigents.org · movehome.org*

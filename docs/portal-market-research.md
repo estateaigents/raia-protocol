@@ -1,5 +1,7 @@
 # Global Property Portal Market — Agent Fee Research
-## Reference document for RAIA Protocol / MoveHome Foundation CIC
+
+## Reference document for RAIA Protocol / Move Home Organisation CIC
+
 *Compiled: 20 April 2026 · Sources cited throughout*
 
 ---
@@ -41,6 +43,7 @@ Bottom-up from listed company revenues (7 listed companies as anchor) plus extra
 **7 listed companies total: ~USD 7.15 billion**
 
 Plus confirmed unlisted:
+
 - Scout24 / ImmobilienScout24 (Germany): EUR 566.3m = ~USD 612m ✅ Confirmed (press release 27 Feb 2025)
 - Zoopla (UK): £84.2m = ~USD 112m ✅ Confirmed (Companies House accounts, reported Sept 2025)
 
@@ -91,7 +94,7 @@ No verified third-party research report with a global property portal TAM figure
 | Nature of claim | Alleged abuse of dominant position; "unfair and excessive prices" in breach of Competition Act 1998 Chapter II and/or Article 102 TFEU |
 | Share price impact | ~6% fall on filing date; ~£300m wiped from market cap (The Telegraph, 1 Apr 2026) |
 | Status (20 Apr 2026) | Early-stage filing; no trial date set; Rightmove defending |
-| Claimant website | https://www.portalfeescandal.co.uk |
+| Claimant website | <https://www.portalfeescandal.co.uk> |
 
 **Key published quotes (public record):**
 
@@ -102,6 +105,7 @@ No verified third-party research report with a global property portal TAM figure
 > "An estate agent who spoke to the BBC said they were charged £5,000 a month for a basic membership to advertise about 30–50 properties online." — The Observer, 4 April 2026
 
 **Progression:**
+
 - 13 November 2025: Scott+Scott pre-action announcement — "up to £1 billion"
 - 1 April 2026: Formal claim filed at CAT — £1.5 billion
 - 20 April 2026: Early proceedings; no trial date
@@ -111,31 +115,32 @@ No verified third-party research report with a global property portal TAM figure
 ## 6. Key Citations
 
 **Company financial reports:**
-1. REA Group FY2024 — ASX, 9 Aug 2024: https://announcements.asx.com.au
-2. CoStar FY2024 — 18 Feb 2025: https://investors.costargroup.com
-3. Zillow FY2024 — 11 Feb 2025: https://investors.zillowgroup.com
-4. Domain FY2024 — ASX 4E, Aug 2024: https://shareholders.domain.com.au
-5. PropertyGuru Q2 2024 — 4 Sep 2024: https://www.propertygurugroup.com/newsroom/
-6. Rightmove FY2024 — RNS, 27 Feb 2025: https://plc.rightmove.co.uk/uploads/2025/02
-7. Hemnet 2024 — 1 Apr 2025: https://www.hemnetgroup.se/financial-reports/
-8. Scout24 FY2024 — 27 Feb 2025: https://www.scout24.com/news-media/news/detail
-9. Zoopla FY2024 — Companies House, reported Sept 2025: https://www.thenegotiator.co.uk
+
+1. REA Group FY2024 — ASX, 9 Aug 2024: <https://announcements.asx.com.au>
+2. CoStar FY2024 — 18 Feb 2025: <https://investors.costargroup.com>
+3. Zillow FY2024 — 11 Feb 2025: <https://investors.zillowgroup.com>
+4. Domain FY2024 — ASX 4E, Aug 2024: <https://shareholders.domain.com.au>
+5. PropertyGuru Q2 2024 — 4 Sep 2024: <https://www.propertygurugroup.com/newsroom/>
+6. Rightmove FY2024 — RNS, 27 Feb 2025: <https://plc.rightmove.co.uk/uploads/2025/02>
+7. Hemnet 2024 — 1 Apr 2025: <https://www.hemnetgroup.se/financial-reports/>
+8. Scout24 FY2024 — 27 Feb 2025: <https://www.scout24.com/news-media/news/detail>
+9. Zoopla FY2024 — Companies House, reported Sept 2025: <https://www.thenegotiator.co.uk>
 
 **Class action sources:**
-10. Scott+Scott pre-action — 13 Nov 2025: https://scott-scott.com/
-11. Scott+Scott formal filing — 1 Apr 2026: https://scott-scott.com/
-12. Reuters — 1 Apr 2026: https://www.reuters.com/boards-policy-regulation/uks-rightmove-hit-2-billion-lawsuit-over-estate-agent-fees-2026-04-01/
-13. BBC — 1 Apr 2026: https://www.bbc.co.uk/news/articles/
-14. The Telegraph — 1 Apr 2026: https://www.telegraph.co.uk/business/2026/04/01/
-15. City AM — 1 Apr 2026: https://www.cityam.com/rightmove-accused-of-bullying-estate-agents-in-1-5bn-claim/
-16. The Observer — 4 Apr 2026: https://observer.co.uk/news/national/article/
-17. One Essex Court — 1 Apr 2026: https://www.oeclaw.co.uk/news/view/1.5bn-claim-filed-against-rightmove-at-the-cat
-18. Letting Agent Today — 1 Apr 2026: https://www.lettingagenttoday.co.uk/2026/04/1-5-billion-legal-action-filed-against-rightmove/
-19. The Negotiator — "costs eat up to 13.5% of agency income" — 13 Nov 2025: https://thenegotiator.co.uk/marketing/
-20. Claimant website: https://www.portalfeescandal.co.uk
+10. Scott+Scott pre-action — 13 Nov 2025: <https://scott-scott.com/>
+11. Scott+Scott formal filing — 1 Apr 2026: <https://scott-scott.com/>
+12. Reuters — 1 Apr 2026: <https://www.reuters.com/boards-policy-regulation/uks-rightmove-hit-2-billion-lawsuit-over-estate-agent-fees-2026-04-01/>
+13. BBC — 1 Apr 2026: <https://www.bbc.co.uk/news/articles/>
+14. The Telegraph — 1 Apr 2026: <https://www.telegraph.co.uk/business/2026/04/01/>
+15. City AM — 1 Apr 2026: <https://www.cityam.com/rightmove-accused-of-bullying-estate-agents-in-1-5bn-claim/>
+16. The Observer — 4 Apr 2026: <https://observer.co.uk/news/national/article/>
+17. One Essex Court — 1 Apr 2026: <https://www.oeclaw.co.uk/news/view/1.5bn-claim-filed-against-rightmove-at-the-cat>
+18. Letting Agent Today — 1 Apr 2026: <https://www.lettingagenttoday.co.uk/2026/04/1-5-billion-legal-action-filed-against-rightmove/>
+19. The Negotiator — "costs eat up to 13.5% of agency income" — 13 Nov 2025: <https://thenegotiator.co.uk/marketing/>
+20. Claimant website: <https://www.portalfeescandal.co.uk>
 
 **Industry sources:**
-21. OnlineMarketplaces.com (formerly PropertyPortalWatch): https://www.onlinemarketplaces.com
+21. OnlineMarketplaces.com (formerly PropertyPortalWatch): <https://www.onlinemarketplaces.com>
 
 ---
 
