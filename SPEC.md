@@ -189,7 +189,7 @@ IDENTIFIED
 
 ### Viewing request
 
-Buyer agent proposes up to three slots. Estate agent confirms one. See [schemas/viewing.json](schemas/viewing.json).
+Buyer agent proposes up to three slots. Estate agent confirms one, or counter-proposes with `state: COUNTER_PROPOSED` and a `counter_proposals[]` round (at most three rounds). See [schemas/viewing.json](schemas/viewing.json).
 
 ### Offer
 
@@ -236,7 +236,7 @@ v0.3 changes no schema constraint. `schemas/property.json` `raia_version` *defau
 | `schemas/agent.json` | 0.1.0 | Agent Card — identity, jurisdiction, compliance signals, MCP/A2A endpoints |
 | `schemas/property.json` | 0.2.0 | Property Card — lettings and sales, all queryable fields. `raia_version` default `"0.3"` as of v0.3 |
 | `schemas/enquiry.json` | 0.2.0 | Enquiry - transaction lifecycle plus L0/L1/L2/L3 data-level envelopes |
-| `schemas/viewing.json` | 0.1.0 | Viewing request - buyer agent proposes up to 3 slots, estate agent confirms one |
+| `schemas/viewing.json` | 0.2.0 | Viewing request - buyer agent proposes up to 3 slots, estate agent confirms one or counter-proposes |
 
 See [schemas/README.md](schemas/README.md) for field-level summaries and breaking change notes. Example RAIA agent card (canonical discovery path): [/.well-known/raia.json](.well-known/raia.json). The same example is also kept under the deprecated alias name at [.well-known/raia-agent.json](.well-known/raia-agent.json), which redirects to the canonical path (ADR-438 D2).
 
