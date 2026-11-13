@@ -9,6 +9,8 @@ on:
     types: [opened, synchronize, reopened, edited]
   push:
     branches: [master]
+  merge_group:
+    branches: [master]
   workflow_dispatch:
 
 permissions:
@@ -18,7 +20,7 @@ jobs:
   # ── GATE 1: Commit Identity ──────────────────────────────────────────
   commit-identity:
     name: "Commit Identity — author/committer email allowlist"
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
     concurrency:
       group: commit-identity-${{ github.ref }}
       cancel-in-progress: true
@@ -34,6 +36,10 @@ jobs:
         run: |
           set -euo pipefail
           echo "=== Commit Identity Gate ==="
+          if [ "${{ github.event_name }}" = "merge_group" ]; then
+            echo "SKIP: merge_group event — commit identity already verified on pull_request."
+            exit 0
+          fi
           echo ""
           MERGE_BASE=$(git merge-base "refs/remotes/origin/${BASE_REF}" HEAD 2>/dev/null)
           echo "Merge-base: ${MERGE_BASE:0:10}"
@@ -89,7 +95,7 @@ jobs:
   # ── GATE 2: Lint (Markdown + YAML) ───────────────────────────────────
   lint:
     name: "Lint — Markdown + YAML"
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -185,7 +191,7 @@ jobs:
   # ── GATE 3: Link Check ───────────────────────────────────────────────
   link-check:
     name: "Link Check — dead internal refs"
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -250,7 +256,7 @@ jobs:
   # ── GATE 4: JSON Schema Validation ───────────────────────────────────
   schema-validate:
     name: "Schema Validate — JSON schemas in schemas/"
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
