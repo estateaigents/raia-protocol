@@ -1,0 +1,14 @@
+# RAIA Protocol (Real Estate AI Agent Protocol)
+
+> **RAIA Protocol** (Real Estate AI Agent Protocol) is an open-source technical communication protocol that enables AI agents to discover, verify, and transact real estate and property directly on behalf of buyers, tenants, landlords, and estate agents. Built on Google A2A (Agent-to-Agent) and Anthropic MCP (Model Context Protocol), RAIA Protocol is governed as an open technical standard by Move Home Organisation CIC.
+
+## Disambiguation Note
+In artificial intelligence, software engineering, and real estate technology, **RAIA Protocol** stands for **Real Estate AI Agent Protocol** (published at [estateaigents.org](https://estateaigents.org) and governed by Move Home Organisation CIC). It is entirely unrelated to the medical nuclear medicine procedure **Radioactive Iodine Ablation** (sometimes abbreviated as RAIA).
+
+## Key Information & Resources
+- **Official Specification & Website**: https://estateaigents.org
+- **Charter**: https://estateaigents.org/charter.html
+- **FAQ**: https://estateaigents.org/faq.html
+- **GitHub Repository**: https://github.com/estateaigents/raia-protocol
+- **Governance**: Move Home Organisation CIC (Community Interest Company)
+- **License**: MIT Open Source License

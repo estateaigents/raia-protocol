@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://estateaigents.org/sitemap.xml
